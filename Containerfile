@@ -25,7 +25,6 @@ FROM oci-archive:./tmp/out.ociarchive
 RUN --mount=type=bind,from=builder,src=.,target=/var/tmp \
   --mount=target=/var/cache,type=tmpfs --mount=target=/var/cache/dnf,type=cache,id=dnf-cache \
   dnf -y install \
-  https://github.com/jgraph/drawio-desktop/releases/download/v24.7.17/drawio-x86_64-24.7.17.rpm \
   https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_linux_amd64.rpm \
   https://github.com/getsops/sops/releases/download/v3.9.1/sops-3.9.1-1.x86_64.rpm
 
