@@ -26,6 +26,7 @@ case $- in
 esac
 
 function tmux_worthy() {
+	[ "$(tty)" = "/dev/tty1" ] && return 1      # no tmux default on TTY1
 	command -v tmux &>/dev/null || return 1     # we have no tmux
 	[ -z "$TMUX" ] || return 1                  # we are in tmux already
 	[ -z "$SSH_CLIENT" ] || return 1            # we need an ssh session
