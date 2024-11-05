@@ -3,6 +3,7 @@ packages:
   - asciinema
   - autoconf
   - automake
+  - cargo
   - cloc
   - cmake
   - fd-find
