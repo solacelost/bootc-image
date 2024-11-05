@@ -21,7 +21,9 @@ packages:
   - rofi
   - slurp
   - sway
+  - sway-systemd
   - swaybg
+  - swayidle
   - swaylock
   - virt-manager
   - virt-viewer
