@@ -1,7 +1,7 @@
 packages:
   - adobe-source-code-pro-fonts
   - alacritty
-  - fontawesome4-fonts
+  - fontawesome-fonts-all
   - grim
   - mako
   - materia-gtk-theme
