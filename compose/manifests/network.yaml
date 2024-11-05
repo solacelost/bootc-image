@@ -1,0 +1,26 @@
+packages:
+  - iproute
+  - iproute-tc
+  - iptables
+  - iptables-services
+  - iptables-nft
+  - net-tools
+  - bind-utils
+  - nftables
+  - NetworkManager
+  - NetworkManager-tui
+  - bridge-utils
+  - firewalld
+  - curl
+  - fail2ban-firewalld
+  - fail2ban-systemd
+  - nmstate
+  - hostname
+  - openssl
+  - openssh-clients
+  - openssh-server
+  - systemd-resolved
+  - socat
+
+exclude-packages:
+  - systemd-networkd

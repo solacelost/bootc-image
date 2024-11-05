@@ -1,0 +1,21 @@
+packages:
+  - ShellCheck
+  - asciinema
+  - autoconf
+  - automake
+  - cloc
+  - cmake
+  - fd-find
+  - fzf
+  - gcc-c++
+  - gh
+  - git
+  - git-lfs
+  - golang
+  - lazygit
+  - neovim
+  - nodejs-npm
+  - oniguruma
+  - patch
+  - python3-virtualenv
+  - ripgrep

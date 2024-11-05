@@ -1,0 +1,164 @@
+#!/bin/bash
+
+set -e
+
+## USER PREFERENCES ##
+MENU="rofi -i -dmenu -u 5,6,7,8"
+RECORDER=wf-recorder
+TARGET=$(xdg-user-dir PICTURES)/screenshots
+TARGET_VIDEOS=$(xdg-user-dir VIDEOS)/recordings
+
+FOCUSED=$(swaymsg -t get_tree | jq '.. | ((.nodes? + .floating_nodes?) // empty) | .[] | select(.focused and .pid) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')
+OUTPUTS=$(swaymsg -t get_outputs | jq -r '.[] | select(.active) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')
+WINDOWS=$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')
+
+NOTIFY=$(pidof mako || pidof dunst) || true
+REC_PID=$(pidof $RECORDER) || true
+
+mkdir -p "$TARGET"
+mkdir -p "$TARGET_VIDEOS"
+FILENAME="$TARGET/$(date +'screenshot-%Y-%m-%d_%H:%M:%S.png')"
+RECORDING="$TARGET_VIDEOS/$(date +'recording-%Y-%m-%d_%H:%M:%S.mp4')"
+RECORDER_OPTS=("--audio=recording-sink.monitor" -f "$RECORDING")
+
+notify() {
+	## if the daemon is not running notify-send will hang indefinitely
+	if [ "$NOTIFY" ]; then
+		notify-send "$@"
+	else
+		echo NOTICE: notification daemon not active
+		echo "$@"
+	fi
+}
+
+if [ -n "$REC_PID" ]; then
+	echo "pid: $REC_PID"
+	kill -SIGINT "$REC_PID"
+	notify "Screen recorder stopped" -t 2000
+	exit 0
+fi
+
+## Check for specific type on args
+case "$1" in
+Fullscreen)
+	CHOICE=$1
+	;;
+Region)
+	CHOICE=$1
+	;;
+Select-output)
+	CHOICE=$1
+	;;
+Select-window)
+	CHOICE=$1
+	;;
+Focused)
+	CHOICE=$1
+	;;
+Record-select-output)
+	CHOICE=$1
+	;;
+Record-select-window)
+	CHOICE=$1
+	;;
+Record-region)
+	CHOICE=$1
+	;;
+Record-focused)
+	CHOICE=$1
+	;;
+-h | --help)
+	prog="$(basename "$(realpath "$0")")"
+	cat <<ENDOFHELP
+$prog - a script for controlling screenshots
+usage: $prog [COMMAND]|[-h|--help]
+
+COMMANDS
+    Fullscreen              Capture the entire visible display from all outputs
+    Region                  Draw a region to capture from
+    Select-output           Select an output to capture
+    Select-window           Select a window to capture
+    Focused                 Capture the currently focused window
+    Record-select-output    Select an output to capture video from
+    Record-select-window    Select a window to capture video from
+    Record-region           Draw a region to capture video from
+    Record-focused          Capture video from the currently focused window
+
+OPTIONS
+    -h | --help             Print this help text and exit
+ENDOFHELP
+	exit 0
+	;;
+*)
+	CHOICE=$(
+		$MENU -l 10 -p "How to make a screenshot?" <<EOF
+Fullscreen
+Focused
+Select-window
+Select-output
+Region
+Record-focused
+Record-select-window
+Record-select-output
+Record-region
+EOF
+	)
+	;;
+esac
+
+function record {
+	set -x
+	REC=true
+	OUTPUT_SOUND_SINK="$(pactl get-default-sink)"
+	INPUT_SOUND_SRC="$(pactl get-default-source)"
+	MODULE_SINK=$(pactl load-module module-null-sink sink_name=recording-sink sink.properties=device.description=recording)
+	MODULE_OUT=$(pactl load-module module-combine-sink sink_name=recording-combined-sink sink_properties=device.description="combined recording" slaves="$OUTPUT_SOUND_SINK",recording-sink)
+	MODULE_IN=$(pactl load-module module-loopback source="$INPUT_SOUND_SRC" sink=recording-sink latency_msec=1)
+	"$RECORDER" "${RECORDER_OPTS[@]}" -g "${@}"
+	for module in "$MODULE_IN" "$MODULE_OUT" "$MODULE_SINK"; do
+		pactl unload-module "$module"
+	done
+	set +x
+}
+
+REC=false
+## React to the choice
+case "$CHOICE" in
+Fullscreen)
+	grim "$FILENAME"
+	;;
+Region)
+	slurp | grim -g - "$FILENAME"
+	;;
+Select-output)
+	echo "$OUTPUTS" | slurp | grim -g - "$FILENAME"
+	;;
+Select-window)
+	echo "$WINDOWS" | slurp | grim -g - "$FILENAME"
+	;;
+Focused)
+	grim -g "$(eval echo "$FOCUSED")" "$FILENAME"
+	;;
+Record-select-output)
+	record "$(echo "$OUTPUTS" | slurp)"
+	;;
+Record-select-window)
+	record "$(echo "$WINDOWS" | slurp)"
+	;;
+Record-region)
+	record -g "$(slurp)"
+	;;
+Record-focused)
+	record "$(eval echo "$FOCUSED")"
+	;;
+*)
+	grim -g "$(eval echo "$CHOICE")" "$FILENAME"
+	;;
+esac
+
+if $REC; then
+	notify "Recording" "Recording stopped: $RECORDING" -t 10000
+else
+	notify "Screenshot" "File saved as $FILENAME\nand copied to clipboard" -t 6000 -i "$FILENAME"
+	wl-copy <"$FILENAME"
+fi

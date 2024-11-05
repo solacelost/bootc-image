@@ -1,0 +1,21 @@
+packages:
+  - ImageMagick
+  - ffmpeg
+  - gphoto2
+  - v4l-utils
+  # akmod-v4l2loopback.post: Building /usr/src/akmods/v4l2loopback-kmod-0.13.2-1.fc41.src.rpm for kernel 6.11.5-300.fc41.x86_64
+  # akmod-v4l2loopback.post: Building target platforms: x86_64
+  # akmod-v4l2loopback.post: Building for target x86_64
+  # akmod-v4l2loopback.post: Installing /usr/src/akmods/v4l2loopback-kmod-0.13.2-1.fc41.src.rpm
+  # akmod-v4l2loopback.post: setting SOURCE_DATE_EPOCH=1727395200
+  # akmod-v4l2loopback.post: warning: Could not canonicalize hostname: 791834efdb07
+  # akmod-v4l2loopback.post: error: Failed build dependencies:
+  # akmod-v4l2loopback.post: 	elfutils-libelf-devel is needed by v4l2loopback-kmod-0.13.2-1.fc41.x86_64
+  # akmod-v4l2loopback.post: 	gcc is needed by v4l2loopback-kmod-0.13.2-1.fc41.x86_64
+  # akmod-v4l2loopback.post: 	kernel-devel-uname-r = 6.11.5-300.fc41.x86_64 is needed by v4l2loopback-kmod-0.13.2-1.fc41.x86_64
+  # akmod-v4l2loopback.post: 	kmodtool is needed by v4l2loopback-kmod-0.13.2-1.fc41.x86_64
+  # akmod-v4l2loopback.post:
+  # akmod-v4l2loopback.post: RPM build warnings:
+  # akmod-v4l2loopback.post:     Could not canonicalize hostname: 791834efdb07
+  # error: compose tree failed: ExitStatus(unix_wait_status(256))
+  #- v4l2loopback

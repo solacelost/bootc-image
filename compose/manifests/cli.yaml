@@ -1,0 +1,27 @@
+packages:
+  - age
+  - btop
+  - fastfetch
+  - jq
+  - light
+  - lm_sensors
+  - lorax
+  - p7zip
+  - pbzip2
+  - tmux
+  - pinentry
+  - policycoreutils-python-utils
+  - psutils
+  - rclone
+  - s3cmd
+  - smartmontools
+  - subscription-manager
+  - vim-common
+  - yt-dlp
+  - nfs-utils
+  - attr
+  - bash-completion
+  - less
+  - vim-minimal
+  - nvme-cli
+  - lsof

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -e
+
+mkdir -p ~/.local/lib/{oc,helm,krew} ~/.krew/bin
+
+curl -sLo - https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz | tar xzf - -C ~/.local/lib/oc
+curl -sLo - https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/oc-mirror.tar.gz | tar xzf - -C ~/.local/lib/oc
+chmod +x ~/.local/lib/oc/oc-mirror
+
+for bin in kubectl oc oc-mirror; do
+	ln -sf ~/.local/lib/oc/$bin ~/.local/bin/$bin
+done
+
+echo "oc:"
+oc version --client
+echo
+
+curl -sLo - https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/helm/latest/helm-linux-amd64.tar.gz | tar xzf - -C ~/.local/lib/helm
+ln -sf ~/.local/lib/helm/helm-linux-amd64 ~/.local/bin/helm
+
+echo "helm:"
+helm version
+echo
+
+krew_tmp=$(mktemp -d)
+cd "$krew_tmp"
+OS="$(uname | tr '[:upper:]' '[:lower:]')"
+ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+KREW="krew-${OS}_${ARCH}"
+curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+tar zxf "${KREW}.tar.gz"
+./"${KREW}" install krew
+rm -rf "$krew_tmp"
+
+echo "krew:"
+oc krew version
+echo
+
+oc krew update
+oc krew upgrade

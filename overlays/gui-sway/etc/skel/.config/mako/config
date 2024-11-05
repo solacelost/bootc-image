@@ -1,0 +1,24 @@
+font=Source Code Pro 11
+width=350
+padding=10
+margin=10
+border-size=2
+default-timeout=5000
+
+background-color=#231f20
+border-color=#009ddc
+text-color=#d9d8d8
+
+[urgency=high]
+border-color=#ee2e24
+ignore-timeout=1
+
+# Notification sound
+on-notify=exec mpv /usr/share/sounds/freedesktop/stereo/message-new-instant.oga
+
+[mode=dnd]
+invisible=1
+
+[app-name="Google Chrome" body~="^calendar\.google\.com.*"]
+ignore-timeout=true
+default-timeout=0

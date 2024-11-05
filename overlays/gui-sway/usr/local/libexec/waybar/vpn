@@ -1,0 +1,112 @@
+#!/bin/bash
+
+# NOTE:
+# If you set the contents of ~/.config/vpn/profile to the name of a NetworkManager VPN profile, that will be the default
+
+default_action=status
+
+print_usage() {
+    echo "usage: $0 [status|toggle|on|off] [(-p |--profile=)PROFILE]"
+}
+
+vpn_status() {
+    active_vpns=()
+    while IFS=: read -r conn uid type int; do
+        if [ "$type" = "vpn" ]; then
+            active_vpns+=("$conn")
+        fi
+    done < <(nmcli -t -m tabular -c no connection show --active)
+
+    joined=$(printf ", %s" "${active_vpns[@]}")
+    if [ ${#active_vpns[@]} -gt 0 ]; then
+        echo '{"text": "'${joined:2}'", "alt": "vpn"}'
+    else
+        echo '{"text": "none", "alt": "novpn"}'
+    fi
+}
+
+vpn_active() {
+    vpn_status | jq -e '.alt == "vpn"' &>/dev/null
+}
+
+wait_for_enter() {
+    read -sp "Press enter to continue..." throwaway
+}
+
+five_lines() {
+    echo; echo; echo; echo; echo
+}
+
+vpn_on() {
+    five_lines
+    nmcli c up "$vpn_profile" --ask || wait_for_enter
+}
+
+vpn_off() {
+    five_lines
+    nmcli c down "$vpn_profile" || wait_for_enter
+}
+
+if [ $# -eq 0 ]; then
+    action="$default_action"
+else
+    action=''
+fi
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        status)
+            action=status
+            ;;
+        toggle)
+            action=toggle
+            ;;
+        on)
+            action=on
+            ;;
+        off)
+            action=off
+            ;;
+        -p|--profile=*)
+            if echo "$1" | grep -qF '--profile='; then
+                vpn_profile=$(echo "$1" | cut -d= -f2-)
+            else
+                shift
+                vpn_profile="$1"
+            fi
+            ;;
+        *)
+            echo "Unknown action: $1" >&2
+            print_usage >&2
+            exit 1
+            ;;
+    esac; shift
+done
+
+# Set the default from file if unspecified
+vpn_profile="${vpn_profile:-$(cat ~/.config/vpn/profile 2>/dev/null)}"
+# Set the default to the hard-coded value if not specified or configured
+vpn_profile="${vpn_profile:-1 - Red Hat Global VPN}"
+
+case $action in
+    status)
+        vpn_status
+        ;;
+    on)
+        if ! vpn_active; then
+            vpn_on
+        fi
+        ;;
+    off)
+        if vpn_active; then
+            vpn_off
+        fi
+        ;;
+    toggle)
+        if vpn_active; then
+            vpn_off
+        else
+            vpn_on
+        fi
+        ;;
+esac

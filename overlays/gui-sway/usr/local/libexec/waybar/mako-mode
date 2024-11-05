@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -e
+
+# toggles between mako mode default and dnd
+# for more information on mako modes run `man 5 mako` and search for MODES
+
+statefile=${XDG_RUNTIME_DIR:-/run/user/${UID:-1000}}/mako-mode
+
+if [ -f $statefile ]; then
+    current_mode=$(cat $statefile)
+else
+    current_mode=default
+fi
+
+status () {
+    echo '{"text": "'$current_mode'", "alt": "'$current_mode'", "class": "'$current_mode'"}'
+}
+update_statefile() {
+    echo -n $current_mode > $statefile
+}
+
+if [ "$1" = "toggle" ]; then
+    case $current_mode in
+        default)
+            makoctl set-mode dnd
+            current_mode=dnd
+            update_statefile
+            status
+            pkill -RTMIN+3 waybar
+            ;;
+        dnd)
+            makoctl set-mode default
+            current_mode=default
+            update_statefile
+            status
+            pkill -RTMIN+3 waybar
+            ;;
+    esac
+else
+    status
+fi

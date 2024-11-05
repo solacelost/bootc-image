@@ -1,0 +1,214 @@
+variables:
+  distro: "fedora"
+
+boot-location: modules
+tmp-is-dir: true
+machineid-compat: true
+recommends: false
+rpmdb: target
+automatic-version-prefix: "${releasever}.<date:%Y%m%d>"
+mutate-os-release: "${releasever}"
+# We want content lifecycled with the image
+opt-usrlocal: "root"
+
+ignore-removed-users:
+  - root
+ignore-removed-groups:
+  - root
+etc-group-members:
+  - wheel
+  - sudo
+  - systemd-journal
+  - adm
+container-cmd:
+  - /sbin/init
+check-passwd:
+  type: "file"
+  filename: "passwd"
+check-groups:
+  type: "file"
+  filename: "group"
+
+packages:
+  - kernel
+  - coreutils
+  - dnf5
+  - selinux-policy-targeted
+  # And we want container-selinux because trying to layer it on later currently causes issues.
+  - container-selinux
+  # Needed for tpm2 bound luks
+  - tpm2-tools
+  # https://gitlab.com/fedora/bootc/base-images/-/issues/12
+  - fedora-repos-archive
+  # Allow communication between sudo and SSSD
+  # for caching sudo rules by SSSD.
+  # https://github.com/coreos/fedora-coreos-tracker/issues/445
+  - sudo
+  - libsss_sudo
+  # SSSD; we only ship a subset of the backends
+  - sssd-client sssd-ad sssd-ipa sssd-krb5 sssd-ldap
+  # Provides terminal tools like clear, reset, tput, and tset
+  - ncurses
+  # i18n
+  - kbd
+  # zram-generator (but not zram-generator-defaults) for F33 change
+  # https://github.com/coreos/fedora-coreos-tracker/issues/509
+  - zram-generator
+  # Ensure happy muilticore support
+  - irqbalance
+  # Ensure pretty booting
+  - plymouth
+  # crun recommends but doesn't require criu and criu-libs. We want them for
+  # checkpoint/restore. https://github.com/coreos/fedora-coreos-tracker/issues/1370
+  - criu criu-libs
+  # storage
+  - cryptsetup
+  - lvm2
+  - tar
+  # linux-firmware now a recommends so let's explicitly include it
+  # https://gitlab.com/cki-project/kernel-ark/-/commit/32271d0cd9bd52d386eb35497c4876a8f041f70b
+  # https://src.fedoraproject.org/rpms/kernel/c/f55c3e9ed8605ff28cb9a922efbab1055947e213?branch=rawhide
+  - linux-firmware
+  # security
+  - polkit
+  - sudo
+  - audit
+  - audit-rules
+  # Allow for configuring different timezones
+  - tzdata
+  # rpm-ostree
+  - ostree rpm-ostree nss-altfiles
+  # firmware updates
+  # If you're using linux-firmware, you probably also want fwupd
+  - fwupd
+  - systemd
+  - bootc
+  # Required by bootc install, sgdisk has been replaced by Rust crate
+  # in bootc https://github.com/containers/bootc/pull/775
+  - xfsprogs e2fsprogs dosfstools
+  # Integration with https://github.com/coreos/bootupd and bootloader logic
+  # xref https://github.com/coreos/fedora-coreos-tracker/issues/510
+  - bootupd
+  - grub2 grub2-efi-x64 efibootmgr shim
+  - microcode_ctl
+  # Explicit dep for RHEL >= 10
+  - crypto-policies-scripts
+  # NTP support
+  - chrony
+  # User configuration
+  - passwd
+  - shadow-utils
+  - acl
+  # Manipulating the kernel keyring; used by bootc
+  - keyutils
+  # There are things that write outside of the journal still (such as the
+  # classic wtmp, etc.). auditd also writes outside the journal but it has its
+  # own log rotation.
+  # Anything package layered will also tend to expect files dropped in
+  # /etc/logrotate.d to work. Really, this is a legacy thing, but if we don't
+  # have it then people's disks will slowly fill up with logs.
+  - logrotate
+  # Boost starving threads
+  # https://github.com/coreos/fedora-coreos-tracker/issues/753
+  - stalld
+  - bzip2
+  - zstd
+  # Improved MOTD experience
+  - console-login-helper-messages-issuegen
+  - console-login-helper-messages-profile
+  # Needed for boogc-generic-growpart
+  - cloud-utils-growpart
+  # We do, in fact, want `man`
+  - man-db
+
+postprocess:
+  # Undo RPM scripts enabling units; we want the presets to be canonical
+  # https://github.com/projectatomic/rpm-ostree/issues/1803
+  - |
+    #!/usr/bin/env bash
+    set -xeuo pipefail
+    rm -rf /etc/systemd/system/*
+    systemctl preset-all
+    rm -rf /etc/systemd/user/*
+    systemctl --user --global preset-all
+  # Integration with https://github.com/coreos/bootupd and bootloader logic
+  # xref https://github.com/coreos/fedora-coreos-tracker/issues/510
+  - |
+    #!/bin/bash
+    set -xeuo pipefail
+    # Transforms /usr/lib/ostree-boot into a bootupd-compatible update payload
+    /usr/bin/bootupctl backend generate-update-metadata
+  # See also https://github.com/openshift/os/blob/f6cde963ee140c02364674db378b2bc4ac42675b/common.yaml#L156
+  # This one undoes the effect of
+  # # RHEL-only: Disable /tmp on tmpfs.
+  #Wants=tmp.mount
+  # in /usr/lib/systemd/system/basic.target
+  # We absolutely must have tmpfs-on-tmp for multiple reasons,
+  # but the biggest is that when we have composefs for / it's read-only,
+  # and for units with ProtectSystem=full systemd clones / but needs
+  # a writable place.
+  - |
+    #!/bin/bash
+    set -xeuo pipefail
+    mkdir -p /usr/lib/systemd/system/local-fs.target.wants
+    if test '!' -f /usr/lib/systemd/system/local-fs.target.wants/tmp.mount; then
+      ln -sf ../tmp.mount /usr/lib/systemd/system/local-fs.target.wants
+    fi
+
+    # See https://github.com/containers/bootc/issues/358
+    # basically systemd-tmpfiles doesn't follow symlinks; ordinarily our
+    # tmpfiles.d unit for `/var/roothome` is fine, but this actually doesn't
+    # work if we want to use tmpfiles.d to write to `/root/.ssh` because
+    # tmpfiles gives up on that before getting to `/var/roothome`.
+    sed -i -e 's, /root, /var/roothome,' /usr/lib/tmpfiles.d/provision.conf
+    # Because /var/roothome is also defined in rpm-ostree-0-integration.conf
+    # we need to delete /var/roothome
+    sed -i -e '/^d- \/var\/roothome /d' /usr/lib/tmpfiles.d/provision.conf
+
+# Ensure that our generated initrd has the modules we want.
+include:
+  - initrd/dracut.yaml
+
+# Things we don't expect to ship on the host.  We currently
+# have recommends: false so these could only come in via
+# hard requirement, in which case the build will fail.
+exclude-packages:
+  - grubby
+  - cowsay # Just in case
+  # Let's make sure initscripts doesn't get pulled back in
+  # https://github.com/coreos/fedora-coreos-tracker/issues/220#issuecomment-611566254
+  - initscripts
+  # Do not use legacy ifcfg config format in NetworkManager
+  # See https://github.com/coreos/fedora-coreos-config/pull/1991
+  - NetworkManager-initscripts-ifcfg-rh
+  # Let's not have both legacy and nft versions in the image. Users are free to
+  # also layer legacy themselves if they want.
+  - iptables-legacy
+  # Exclude kernel-debug-core to make sure that it doesn't somehow get
+  # chosen as the package to satisfy the `kernel-core` dependency from
+  # the kernel package.
+  - kernel-debug
+  - kernel-debug-core
+
+remove-from-packages:
+  # Generally we expect other tools to do this (e.g. Ignition or cloud-init)
+  - [
+      systemd,
+      /usr/lib/systemd/system/sysinit.target.wants/systemd-firstboot.service,
+    ]
+  # We don't want auto-generated mount units. See also
+  # https://github.com/systemd/systemd/issues/13099
+  - [
+      systemd-udev,
+      /usr/lib/systemd/system-generators/systemd-gpt-auto-generator,
+    ]
+  # The grub bits are mainly designed for desktops, and IMO haven't seen
+  # enough testing in concert with ostree. At some point we'll flesh out
+  # the full plan in https://github.com/coreos/fedora-coreos-tracker/issues/47
+  - [
+      grub2-tools,
+      /etc/grub.d/08_fallback_counting,
+      /etc/grub.d/10_reset_boot_success,
+      /etc/grub.d/12_menu_auto_hide,
+      /usr/lib/systemd/.*,
+    ]

@@ -1,0 +1,3 @@
+packages:
+  - yubico-piv-tool
+  - yubikey-manager

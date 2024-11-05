@@ -1,0 +1,28 @@
+metadata:
+  name: feedora-bootc-jharmison
+  summary: Fedora Bootable Desktop for James Harmison
+
+releasever: 41
+
+repos:
+  - fedora
+  - updates
+  - rpmfusion-free
+  - rpmfusion-free-updates
+  - rpmfusion-nonfree
+  - rpmfusion-nonfree-updates
+  - lazygit
+  - xone
+
+include:
+  - manifests/base.yaml
+  - manifests/cli.yaml
+  - manifests/cloud.yaml
+  - manifests/containers.yaml
+  - manifests/development.yaml
+  - manifests/gui-sway.yaml
+  - manifests/gui-apps.yaml
+  - manifests/gui-games.yaml
+  - manifests/network.yaml
+  - manifests/webcam.yaml
+  - manifests/yubikey.yaml

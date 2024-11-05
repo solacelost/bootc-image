@@ -1,0 +1,34 @@
+packages:
+  - adobe-source-code-pro-fonts
+  - alacritty
+  - fontawesome4-fonts
+  - grim
+  - mako
+  - materia-gtk-theme
+  - network-manager-applet
+  - nm-connection-editor-desktop
+  - paper-icon-theme
+  - pavucontrol
+  - pipewire-jack-audio-connection-kit
+  - pipewire-jack-audio-connection-kit-libs
+  - pipewire-jack-audio-connection-kit-devel
+  - playerctl
+  - powerline-fonts
+  - pulseaudio-utils
+  - python3-requests
+  - qjackctl
+  - qpwgraph
+  - rofi
+  - slurp
+  - sway
+  - swaybg
+  - swaylock
+  - virt-manager
+  - virt-viewer
+  - waybar
+  - wf-recorder
+  - wl-clipboard
+
+exclude-packages:
+  # I don't want GDM
+  - gdm

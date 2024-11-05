@@ -1,0 +1,8 @@
+*.iso
+*.ks
+*.rpm
+auth.json
+.build
+.push
+tmp/*
+!tmp/.gitkeep

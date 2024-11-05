@@ -1,0 +1,11 @@
+add-files:
+  - - 20-bootc-base.conf
+    - /usr/lib/dracut/dracut.conf.d/20-bootc-base.conf
+  - - 22-bootc-generic.conf
+    - /usr/lib/dracut/dracut.conf.d/22-bootc-generic.conf
+  - - 30-bootc-tier-1.conf
+    - /usr/lib/dracut/dracut.conf.d/30-bootc-tier-1.conf
+  - - 49-bootc-tpm2-tss.conf
+    - /usr/lib/dracut/dracut.conf.d/49-bootc-tpm2-tss.conf
+  - - 59-altfiles.conf
+    - /usr/lib/dracut/dracut.conf.d/59-altfiles.conf

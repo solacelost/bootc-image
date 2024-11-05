@@ -1,0 +1,8 @@
+packages:
+  - firefox
+  - guitarix
+  - lv2-guitarix-plugins
+  - mpv
+  - pinta
+  - piper
+  - yubikey-personalization-gui

@@ -1,0 +1,19 @@
+[commit]
+	gpgsign = true
+[pull]
+	ff = only
+[init]
+	defaultBranch = main
+[lfs]
+	concurrenttransfers = 10
+	activitytimeout = 3600
+	dialtimeout = 3600
+	keepalive = 3600
+	tlstimeout = 3600
+[http]
+	postBuffer = 624288000
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f

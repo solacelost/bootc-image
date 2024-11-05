@@ -1,0 +1,35 @@
+#!/bin/bash
+
+restore() {
+	light -S "$old_brightness"
+}
+old_brightness=$(light -G)
+
+trap 'restore' EXIT
+
+images=()
+swaylock_args=(
+	--hide-keyboard-layout
+	--indicator-radius 100
+	--indicator-thickness 7
+	--ring-color 455a64
+	--key-hl-color be5046
+	--text-color ffc107
+	--line-color 00000000
+	--inside-color 00000088
+	--separator-color 00000000
+)
+
+for output in $(swaymsg -t get_outputs | jq -r '.[]|select(.active==true) .name'); do
+	image=$(mktemp --suffix=.png)
+	images+=("$image")
+	swaylock_args+=(-i "$output:$image")
+	grim -o "$output" "$image"
+done
+
+printf '%s\n' "${images[@]}" | xargs -P 0 -I{} convert -gamma 1.8 -brightness-contrast -50x-20 -blur 0x25 -virtual-pixel black {} {}
+
+light -S 20.00
+swaylock "${swaylock_args[@]}" -s center
+
+rm "${images[@]}"

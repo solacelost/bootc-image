@@ -1,0 +1,196 @@
+[{
+    "layer": "top",
+    "height": 30, // Waybar height (to be removed for auto height)
+    "modules-left": ["sway/workspaces", "custom/scratchpad", "custom/separator", "sway/mode", "sway/window"],
+    "modules-center": ["custom/weather"],
+    "modules-right": ["custom/media", "idle_inhibitor", "custom/makomode", "pulseaudio", "network", "custom/vpn", "group/hardware", "group/temperature", "backlight", "group/keyboard", "tray", "clock"],
+
+    "group/hardware": {"modules": ["cpu", "memory"]},
+
+    "custom/separator": {
+        "format": " | ",
+        "interval": "once",
+        "tooltip": "false"
+    },
+
+    "custom/scratchpad": {
+        "interval": 3,
+        "exec": "swaymsg -t get_tree | jq 'recurse(.nodes[]) | first(select(.name==\"__i3_scratch\")) | .floating_nodes | length | select(. >= 1)'",
+        "format": "{} ",
+        "on-click": "swaymsg 'scratchpad show'",
+        "on-click-right": "swaymsg 'move scratchpad'"
+    },
+
+    "group/keyboard": {"modules": ["keyboard-state#num", "keyboard-state#caps"]},
+
+    "keyboard-state#num": {
+        "numlock": true,
+        "capslock": false,
+        "format": "{name} {icon}",
+        "format-icons": {
+            "locked": "",
+            "unlocked": ""
+        }
+    },
+
+    "keyboard-state#caps": {
+        "numlock": false,
+        "capslock": true,
+        "format": "{name} {icon}",
+        "format-icons": {
+            "locked": "",
+            "unlocked": ""
+        }
+    },
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        }
+    },
+
+    "tray": {
+        "spacing": 10
+    },
+
+    "clock": {
+        "format": "{:%a %d %b %Y %H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+    },
+
+    "cpu": {
+        "format": "{usage}% ",
+        "tooltip": false
+    },
+
+    "memory": {
+        "format": "{}% "
+    },
+
+    "group/temperature": {"modules": ["temperature#cpu", "temperature#gpu"]},
+
+    "temperature#cpu": {
+        "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
+        "input-filename": "temp1_input",
+        "critical-threshold": 80,
+        "format": "CPU {temperatureC}°C {icon}",
+        "format-icons": ["", "", ""]
+    },
+
+    "temperature#gpu": {
+        "hwmon-path": "/sys/class/hwmon/hwmon1/temp1_input",
+        "critical-threshold": 90,
+        "format": "GPU {temperatureC}°C {icon}",
+        "format-icons": ["", "", ""]
+    },
+
+    "backlight": {
+        "format": "{percent}% {icon}",
+        "format-icons": ["", ""]
+    },
+
+    "battery_mouse": {
+        "bat": "hidpp_battery_0",
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{capacity}% {icon}",
+        "format-charging": "{capacity}% ",
+        "format-plugged": "{capacity}% ",
+        "format-alt": "{time} {icon}",
+        "format-icons": ["", "", "", "", ""]
+    },
+    "battery": {
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{capacity}% {icon}",
+        "format-charging": "{capacity}% ",
+        "format-plugged": "{capacity}% ",
+        "format-alt": "{time} {icon}",
+        "format-icons": ["", "", "", "", ""]
+    },
+
+    "network": {
+        "format-wifi": "{essid} ({signalStrength}%) ",
+        "format-ethernet": "{ipaddr}/{cidr} <span font_desc='Font Awesome 5 Free'></span>",
+        "tooltip-format": "{ifname} via {gwaddr} ",
+        "format-linked": "{ifname} (No IP) ",
+        "format-disconnected": "Disconnected ⚠",
+        "format-alt": "{ipaddr}/{cidr} {ifname}"
+    },
+
+    "pulseaudio": {
+        // "scroll-step": 1, // %, can be a float
+        "format": "{volume}% {icon} {format_source}",
+        "format-bluetooth": "{volume}% {icon} {format_source}",
+        "format-bluetooth-muted": " {icon} {format_source}",
+        "format-muted": "<span font_desc='Font Awesome 5 Free'></span> {format_source}",
+        "format-source": "{volume}% <span font_desc='Font Awesome 5 Free'></span>",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "default": ["", "", ""]
+        },
+        "on-click": "pavucontrol"
+    },
+
+    "custom/media": {
+        "format": "{icon} {}",
+        "return-type": "json",
+        "max-length": 40,
+        "format-icons": {
+            "spotify": "",
+            "default": "🎜"
+        },
+        "escape": true,
+        "exec": "/usr/local/libexec/waybar/spotifyctl.py 2>/dev/null",
+        "on-click": "playerctl --player=spotify previous",
+        "on-click-middle": "playerctl --player=spotify play-pause",
+        "on-click-right": "playerctl --player=spotify next",
+        "on-scroll-up": "playerctl --player=spotify position 5-",
+        "on-scroll-down": "playerctl --player=spotify position 5+"
+    },
+
+    "custom/weather": {
+        "format": "{}",
+        "tooltip": true,
+        "interval": 3600,
+        "exec": "/usr/local/libexec/waybar/wttr.py 2>/dev/null",
+        "return-type": "json",
+        "on-click": "alacritty --class weather -e bash -c 'clear; while curl -s https://v2.wttr.in/?F; do sleep 3600; done'"
+    },
+
+    "custom/makomode": {
+        "format": "{icon}",
+        "return-type": "json",
+        "tooltip": false,
+        "format-icons": {
+            "dnd": "",
+            "default": ""
+        },
+        "interval": 30,
+        "exec": "/usr/local/libexec/waybar/mako-mode",
+        "on-click": "/usr/local/libexec/waybar/mako-mode toggle",
+        "signal": 3
+    },
+
+    "custom/vpn": {
+        "format": "{icon} {}",
+        "tooltip": false,
+        "format-icons": {
+            "vpn": "",
+            "novpn": ""
+        },
+        "return-type": "json",
+        "interval": 5,
+        "exec": "/usr/local/libexec/waybar/vpn",
+        "on-click": "alacritty --class vpn -e /usr/local/libexec/waybar/vpn toggle"
+    }
+}]
