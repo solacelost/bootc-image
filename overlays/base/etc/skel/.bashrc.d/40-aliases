@@ -1,0 +1,16 @@
+alias ls='ls --color=auto'
+alias ll='ls -halF'
+alias vi=nvim
+alias vim=nvim
+alias ssh='TERM=xterm-256color ssh'
+alias butane='podman run --rm --tty --interactive \
+              --security-opt label=disable        \
+              --volume ${PWD}:/pwd --workdir /pwd \
+              quay.io/coreos/butane:release'
+alias coreos-installer='sudo podman run --privileged --rm \
+                       -v /dev:/dev -v /run/udev:/run/udev -v ${PWD}:/pwd -w /pwd \
+                       quay.io/coreos/coreos-installer:release'
+alias k=kubectl
+alias tb=toolbox
+alias terraform=tofu
+alias tf=tofu

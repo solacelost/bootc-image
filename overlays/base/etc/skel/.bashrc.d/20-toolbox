@@ -1,0 +1,26 @@
+if [ -f /run/.toolboxenv ]; then # we are in a toolbox
+	# We need to properly map our hostname
+	TOOLBOX_HOST_HOSTNAME=$(flatpak-spawn --host hostname)
+	export TOOLBOX_HOST_HOSTNAME
+	sudo hostname "$TOOLBOX_HOST_HOSTNAME"
+	echo "$TOOLBOX_HOST_HOSTNAME" | sudo tee /etc/hostname &>/dev/null
+
+	# We need to map the name of the toolbox into the prompt
+	source <(cat /run/.containerenv | grep '^name=')
+	export TOOLBOX_NAME="${name}"
+	function __promptline_host {
+		printf "%s" "$(hostname -s)" " (tb: ${TOOLBOX_NAME})"
+	}
+
+	# Pull the VERSION_ID from /etc/os-release
+	RELEASE_VERSION=$(grep '^VERSION_ID=' /etc/os-release 2>/dev/null)
+	if [ -n "$RELEASE_VERSION" ]; then
+		export RELEASE_VERSION
+	fi
+
+	# Try to fix weird TTY behavior (gpg/pinentry problems)
+	my_tty=$(tty)
+	if [ "$(stat "$my_tty" -c %U)" != "$(whoami)" ]; then
+		sudo chown "$(whoami):tty" "$my_tty"
+	fi
+fi

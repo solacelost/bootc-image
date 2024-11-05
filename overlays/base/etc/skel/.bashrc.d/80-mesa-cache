@@ -1,0 +1,28 @@
+if [ -z "$HOME" ]; then
+	if [ -d "/var/home/$USER" ]; then
+		export HOME="/var/home/$USER"
+	elif [ -d "/home/$USER" ]; then
+		export HOME="/home/$USER"
+	fi
+fi
+export _MESA_SHADER_CACHE_LOCATION="$HOME/.cache"
+export _MESA_SHADER_CACHE="$_MESA_SHADER_CACHE_LOCATION/mesa_shader_cache"
+
+function _new_mesa_cache {
+	# Create new folder for it
+	TMP_MESA_CACHE=$(mktemp -d)
+	mkdir -p "${_MESA_SHADER_CACHE_LOCATION}"
+
+	# Remove old directory/link
+	rm -rf "${_MESA_SHADER_CACHE}"
+	# Create link to new tmp folder
+	ln -s "$TMP_MESA_CACHE" "${_MESA_SHADER_CACHE}"
+}
+
+if [ -L "${_MESA_SHADER_CACHE}" ]; then
+	if [ ! -d "$(realpath "${_MESA_SHADER_CACHE}")" ]; then
+		_new_mesa_cache
+	fi
+else
+	_new_mesa_cache
+fi

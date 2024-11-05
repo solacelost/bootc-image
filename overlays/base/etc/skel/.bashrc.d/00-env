@@ -1,0 +1,19 @@
+# Neovim setup
+EDITOR=nvim
+export EDITOR
+MERGE="nvim -d"
+export MERGE
+
+# libvirt sessions are not great
+VIRSH_DEFAULT_CONNECT_URI=qemu:///system
+export VIRSH_DEFAULT_CONNECT_URI
+
+# Buildah and podman shouldn't build Docker-format images
+BUILDAH_FORMAT=oci
+export BUILDAH_FORMAT
+
+# Bash history should be longer
+HISTSIZE=10000
+export HISTSIZE
+HISTFILESIZE=10000
+export HISTFILESIZE
