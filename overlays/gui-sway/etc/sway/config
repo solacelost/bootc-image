@@ -311,6 +311,6 @@ bindsym $mod+Shift+p exec clipman pick --notify -t rofi
 
 # includes
 include /etc/sway/config.d/*
-include /etc/sway/config.$(hostname).d/*
 include ~/.config/sway/config
+include /etc/sway/config.$(hostname).d/*
 include ~/.config/sway/$(hostname)/*
