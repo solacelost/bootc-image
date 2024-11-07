@@ -43,35 +43,59 @@ RUN mkdir -p /usr/share/fonts/inconsolata && \
 # Ensure our basic user configuration is present
 COPY overlays/users/ /
 
-FROM final as xone-build
+FROM final as module-build
+
+RUN --mount=target=/var/cache,type=tmpfs --mount=target=/var/cache/dnf,type=cache,id=dnf-cache \
+  dnf -y install kernel-devel cabextract
 
 WORKDIR /build
+
+FROM module-build as xone-build
+
+ENV COMMIT=29ec3577e52a50f876440c81267f609575c5161e
 
 COPY overlays/xone/ /
 
 # Download and unpack the firmware
-RUN --mount=target=/var/cache,type=tmpfs --mount=target=/var/cache/dnf,type=cache,id=dnf-cache \
-  dnf -y install cabextract && \
-  curl -sLo /tmp/xow_dongle.cab http://download.windowsupdate.com/c/msdownload/update/driver/drvs/2017/07/1cd6a87c-623f-4407-a52d-c31be49e925c_e19f60808bdcbfbd3c3df6be3e71ffc52e43261e.cab && \
+RUN curl -sLo /tmp/xow_dongle.cab http://download.windowsupdate.com/c/msdownload/update/driver/drvs/2017/07/1cd6a87c-623f-4407-a52d-c31be49e925c_e19f60808bdcbfbd3c3df6be3e71ffc52e43261e.cab && \
   cabextract /tmp/xow_dongle.cab -F FW_ACC_00U.bin && \
   mkdir -p /built/usr/lib/firmware && \
   mv FW_ACC_00U.bin /built/usr/lib/firmware/xow_dongle.bin && \
   rm -f /tmp/xow_dongle.cab
 
 # Download and build xone
-RUN --mount=target=/var/cache,type=tmpfs --mount=target=/var/cache/dnf,type=cache,id=dnf-cache \
-  dnf -y install kernel-devel && \
-  curl -sLo /tmp/xone.tar.gz https://github.com/medusalix/xone/archive/29ec3577e52a50f876440c81267f609575c5161e/xone-29ec357.tar.gz && \
+RUN SHORT_COMMIT=$(expr substr ${COMMIT} 1 7) && \
+  curl -sLo /tmp/xone.tar.gz https://github.com/medusalix/xone/archive/${COMMIT}/xone-${SHORT_COMMIT}.tar.gz && \
   tar xvzf /tmp/xone.tar.gz && \
-  cd xone-29ec3577e52a50f876440c81267f609575c5161e && \
+  cd xone-${COMMIT} && \
   curl -sLo kernel-6.11.patch https://patch-diff.githubusercontent.com/raw/medusalix/xone/pull/48.patch && \
   git apply kernel-6.11.patch && \
   kver=$(cd /usr/lib/modules && ls | sort -V | tail -1) && \
   make -C /usr/lib/modules/$kver/build M=$PWD && \
-  mkdir -p /built/usr/lib/modules/$kver/updates/xone && \
-  cp -r xone-*.ko /built/usr/lib/modules/$kver/updates/xone
+  mkdir -p /built/usr/lib/modules/$kver/extra/xone && \
+  cp -r xone-*.ko /built/usr/lib/modules/$kver/extra/xone/
+
+FROM module-build as v4l2loopback-build
+
+ENV VERSION=0.13.2
+
+RUN --mount=target=/var/cache,type=tmpfs --mount=target=/var/cache/dnf,type=cache,id=dnf-cache \
+  dnf -y install help2man elfutils-libelf-devel
+
+COPY overlays/v4l2loopback/ /
+
+RUN curl -sLo /tmp/v4l2loopback.tar.gz https://github.com/umlaeute/v4l2loopback/archive/v${VERSION}/v4l2loopback-${VERSION}.tar.gz && \
+  kver=$(cd /usr/lib/modules && ls | sort -V | tail -1) && \
+  tar xvzf /tmp/v4l2loopback.tar.gz && \
+  cd v4l2loopback-${VERSION} && \
+  make V=1 install-utils DESTDIR=/built PREFIX=/usr && \
+  make V=1 install-man DESTDIR=/built PREFIX=/usr && \
+  make V=1 -C /usr/lib/modules/$kver/build M=${PWD} && \
+  mkdir -p /built/usr/lib/modules/$kver/extra/v4l2loopback && \
+  cp -r v4l2loopback.ko /built/usr/lib/modules/$kver/extra/v4l2loopback/
 
 FROM final
 COPY --from=xone-build /built/ /
+COPY --from=v4l2loopback-build /built/ /
 RUN kver=$(cd /usr/lib/modules && ls | sort -V | tail -1) && \
   depmod -a -b /usr $kver
