@@ -1,4 +1,4 @@
-FROM quay.io/fedora/fedora:41 as builder
+FROM registry.fedoraproject.org/fedora:41 as builder
 
 ARG MANIFEST=fedora-bootc.yaml
 
