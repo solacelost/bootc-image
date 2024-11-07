@@ -20,3 +20,4 @@ packages:
   - patch
   - python3-virtualenv
   - ripgrep
+  - pigz

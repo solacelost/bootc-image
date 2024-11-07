@@ -5,6 +5,7 @@ packages:
   - grim
   - mako
   - materia-gtk-theme
+  - nautilus
   - network-manager-applet
   - nm-connection-editor-desktop
   - paper-icon-theme
