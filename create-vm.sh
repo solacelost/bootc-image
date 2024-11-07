@@ -18,12 +18,15 @@ virt-install --connect qemu:///system \
 	--virt-type=kvm --cpu=host-passthrough \
 	--video model=virtio --channel spicevmc \
 	--name "${name}" --memory "${memory_size}" \
-	--vcpus "${vcpus}" --disk size="${disk_size},bus=scsi,cache=writethrough,io=threads" --osinfo fedora40 \
+	--vcpus "${vcpus}" --osinfo fedora40 \
+	--disk size="${disk_size},bus=scsi,cache=writethrough,io=threads" \
 	--controller type=scsi,model=virtio-scsi \
 	--channel unix,target_type=virtio,name=org.qemu.guest_agent.0 \
 	--cdrom /var/lib/libvirt/images/bootc-install"${iso_suffix}".iso \
 	--network "bridge=br0${pin_mac},model=virtio" \
 	--boot loader=/usr/share/OVMF/OVMF_CODE.fd,loader.readonly=yes,loader.type=pflash
+
+#	--disk size=10,bus=scsi,cache=writethrough,io=threads \
 
 virsh destroy "$name" || :
 sync

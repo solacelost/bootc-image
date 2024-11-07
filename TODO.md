@@ -1,0 +1,4 @@
+- [ ] Multi-disk handling
+- [ ] Home as a partition
+- [ ] Flatpak handling
+- [ ] Pipeline definition for OKD

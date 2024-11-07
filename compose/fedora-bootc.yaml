@@ -12,7 +12,6 @@ repos:
   - rpmfusion-nonfree
   - rpmfusion-nonfree-updates
   - lazygit
-  - xone
 
 include:
   - manifests/base.yaml

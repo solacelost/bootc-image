@@ -1,6 +1,7 @@
 # Basic setup
 text
 network --bootproto=dhcp --device=link --activate
+
 # Basic partitioning
 clearpart --all --initlabel --disklabel=gpt
 reqpart --add-boot
