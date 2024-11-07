@@ -15,14 +15,22 @@ set -ex
 sudo cp -uf boot-image/bootc-install"${iso_suffix}".iso /var/lib/libvirt/images/
 
 virt-install --connect qemu:///system \
+	--virt-type=kvm --cpu=host-passthrough \
+	--video model=virtio --channel spicevmc \
 	--name "${name}" --memory "${memory_size}" \
-	--vcpus "${vcpus}" --disk size="${disk_size}" --osinfo fedora40 \
+	--vcpus "${vcpus}" --disk size="${disk_size},bus=scsi,cache=writethrough,io=threads" --osinfo fedora40 \
+	--controller type=scsi,model=virtio-scsi \
+	--channel unix,target_type=virtio,name=org.qemu.guest_agent.0 \
 	--cdrom /var/lib/libvirt/images/bootc-install"${iso_suffix}".iso \
-	--network "bridge=br0${pin_mac}"
+	--network "bridge=br0${pin_mac},model=virtio" \
+	--boot loader=/usr/share/OVMF/OVMF_CODE.fd,loader.readonly=yes,loader.type=pflash
 
 virsh destroy "$name" || :
 sync
-virsh undefine "$name" || :
+virsh undefine "$name" || {
+	virsh vol-delete "$name.qcow2" --pool default
+	virsh undefine "$name"
+}
 sync
 virsh vol-delete "$name.qcow2" --pool default || :
 sync
