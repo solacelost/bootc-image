@@ -1,3 +1,4 @@
+# hadolint global ignore=DL3040,DL3041,DL4006
 FROM registry.fedoraproject.org/fedora:41 as builder
 
 ARG MANIFEST=fedora-bootc.yaml
@@ -68,16 +69,17 @@ RUN curl -sLo /tmp/xow_dongle.cab http://download.windowsupdate.com/c/msdownload
     rm -f /tmp/xow_dongle.cab
 
 # Download and build xone
-RUN SHORT_COMMIT=$(expr substr ${COMMIT} 1 7) && \
-    curl -sLo /tmp/xone.tar.gz https://github.com/medusalix/xone/archive/${COMMIT}/xone-${SHORT_COMMIT}.tar.gz && \
+# hadolint ignore=DL3003
+RUN SHORT_COMMIT="$(echo "${COMMIT}" | cut -c1-7)" && \
+    curl -sLo /tmp/xone.tar.gz "https://github.com/medusalix/xone/archive/${COMMIT}/xone-${SHORT_COMMIT}.tar.gz" && \
     tar xvzf /tmp/xone.tar.gz && \
-    cd xone-${COMMIT} && \
+    cd "xone-${COMMIT}" && \
     curl -sLo kernel-6.11.patch https://patch-diff.githubusercontent.com/raw/medusalix/xone/pull/48.patch && \
     git apply kernel-6.11.patch && \
-    kver=$(cd /usr/lib/modules && ls | sort -V | tail -1) && \
-    make -C /usr/lib/modules/$kver/build M=$PWD && \
-    mkdir -p /built/usr/lib/modules/$kver/extra/xone && \
-    cp -r xone-*.ko /built/usr/lib/modules/$kver/extra/xone/
+    kver="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
+    make -C "/usr/lib/modules/$kver/build" "M=$PWD" && \
+    mkdir -p "/built/usr/lib/modules/$kver/extra/xone" && \
+    cp -r xone-*.ko "/built/usr/lib/modules/$kver/extra/xone/"
 
 FROM module-build as v4l2loopback-build
 
@@ -89,18 +91,19 @@ RUN --mount=type=tmpfs,target=/var/cache \
 
 COPY overlays/v4l2loopback/ /
 
-RUN curl -sLo /tmp/v4l2loopback.tar.gz https://github.com/umlaeute/v4l2loopback/archive/v${VERSION}/v4l2loopback-${VERSION}.tar.gz && \
-    kver=$(cd /usr/lib/modules && ls | sort -V | tail -1) && \
+# hadolint ignore=DL3003
+RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/umlaeute/v4l2loopback/archive/v${VERSION}/v4l2loopback-${VERSION}.tar.gz" && \
+    kver="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
     tar xvzf /tmp/v4l2loopback.tar.gz && \
-    cd v4l2loopback-${VERSION} && \
+    cd "v4l2loopback-${VERSION}" && \
     make V=1 install-utils DESTDIR=/built PREFIX=/usr && \
     make V=1 install-man DESTDIR=/built PREFIX=/usr && \
-    make V=1 -C /usr/lib/modules/$kver/build M=${PWD} && \
-    mkdir -p /built/usr/lib/modules/$kver/extra/v4l2loopback && \
-    cp -r v4l2loopback.ko /built/usr/lib/modules/$kver/extra/v4l2loopback/
+    make V=1 -C "/usr/lib/modules/$kver/build" "M=${PWD}" && \
+    mkdir -p "/built/usr/lib/modules/$kver/extra/v4l2loopback" && \
+    cp -r v4l2loopback.ko "/built/usr/lib/modules/$kver/extra/v4l2loopback/"
 
 FROM final
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
-RUN kver=$(cd /usr/lib/modules && ls | sort -V | tail -1) && \
-    depmod -a -b /usr $kver
+RUN kver="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
+    depmod -a -b /usr "$kver"
