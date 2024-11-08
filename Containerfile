@@ -62,7 +62,8 @@ ENV COMMIT=29ec3577e52a50f876440c81267f609575c5161e
 COPY overlays/xone/ /
 
 # Download and unpack the firmware
-RUN curl -sLo /tmp/xow_dongle.cab http://download.windowsupdate.com/c/msdownload/update/driver/drvs/2017/07/1cd6a87c-623f-4407-a52d-c31be49e925c_e19f60808bdcbfbd3c3df6be3e71ffc52e43261e.cab && \
+RUN curl -sLo /tmp/xow_dongle.cab \
+    http://download.windowsupdate.com/c/msdownload/update/driver/drvs/2017/07/1cd6a87c-623f-4407-a52d-c31be49e925c_e19f60808bdcbfbd3c3df6be3e71ffc52e43261e.cab && \
     cabextract /tmp/xow_dongle.cab -F FW_ACC_00U.bin && \
     mkdir -p /built/usr/lib/firmware && \
     mv FW_ACC_00U.bin /built/usr/lib/firmware/xow_dongle.bin && \
