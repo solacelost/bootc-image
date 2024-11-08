@@ -77,10 +77,10 @@ RUN SHORT_COMMIT="$(echo "${COMMIT}" | cut -c1-7)" && \
     cd "xone-${COMMIT}" && \
     curl -sLo kernel-6.11.patch https://patch-diff.githubusercontent.com/raw/medusalix/xone/pull/48.patch && \
     git apply kernel-6.11.patch && \
-    kver="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
-    make -C "/usr/lib/modules/$kver/build" "M=$PWD" && \
-    mkdir -p "/built/usr/lib/modules/$kver/extra/xone" && \
-    cp -r xone-*.ko "/built/usr/lib/modules/$kver/extra/xone/"
+    moddir="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
+    make -C "$moddir/build" "M=$PWD" && \
+    mkdir -p "/built$moddir/extra/xone" && \
+    cp -r xone-*.ko "/built$moddir/extra/xone/"
 
 FROM module-build as v4l2loopback-build
 
@@ -94,17 +94,17 @@ COPY overlays/v4l2loopback/ /
 
 # hadolint ignore=DL3003
 RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/umlaeute/v4l2loopback/archive/v${VERSION}/v4l2loopback-${VERSION}.tar.gz" && \
-    kver="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
+    moddir="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
     tar xvzf /tmp/v4l2loopback.tar.gz && \
     cd "v4l2loopback-${VERSION}" && \
     make V=1 install-utils DESTDIR=/built PREFIX=/usr && \
     make V=1 install-man DESTDIR=/built PREFIX=/usr && \
-    make V=1 -C "/usr/lib/modules/$kver/build" "M=${PWD}" && \
-    mkdir -p "/built/usr/lib/modules/$kver/extra/v4l2loopback" && \
-    cp -r v4l2loopback.ko "/built/usr/lib/modules/$kver/extra/v4l2loopback/"
+    make V=1 -C "$moddir/build" "M=${PWD}" && \
+    mkdir -p "/built$moddir/extra/v4l2loopback" && \
+    cp -r v4l2loopback.ko "/built$moddir/extra/v4l2loopback/"
 
 FROM final
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
-RUN kver="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
+RUN kver="$(basename "$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)")" && \
     depmod -a -b /usr "$kver"
