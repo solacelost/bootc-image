@@ -30,10 +30,7 @@ virt-install --connect qemu:///system \
 
 virsh destroy "$name" || :
 sync
-virsh undefine "$name" || {
-	virsh vol-delete "$name.qcow2" --pool default
-	virsh undefine "$name"
-}
+virsh undefine --nvram "$name" || :
 sync
 virsh vol-delete "$name.qcow2" --pool default || :
 sync
