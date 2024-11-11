@@ -10,6 +10,7 @@ packages:
   - nm-connection-editor-desktop
   - paper-icon-theme
   - pavucontrol
+  - pipewire
   - pipewire-jack-audio-connection-kit
   - pipewire-jack-audio-connection-kit-libs
   - pipewire-jack-audio-connection-kit-devel
@@ -29,6 +30,7 @@ packages:
   - virt-manager
   - virt-viewer
   - waybar
+  - wireplumber
   - wf-recorder
   - wl-clipboard
 
