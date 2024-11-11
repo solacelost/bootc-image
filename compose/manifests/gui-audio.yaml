@@ -1,0 +1,12 @@
+packages:
+  - pavucontrol
+  - pipewire
+  - pipewire-jack-audio-connection-kit
+  - pipewire-jack-audio-connection-kit-libs
+  - pipewire-jack-audio-connection-kit-devel
+  - pipewire-pulseaudio
+  - pipewire-utils
+  - pulseaudio-utils
+  - qjackctl
+  - qpwgraph
+  - wireplumber
