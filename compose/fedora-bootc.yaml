@@ -15,7 +15,6 @@ repos:
 
 include:
   - manifests/base.yaml
-  - manifests/systemd.yaml
   - manifests/cli.yaml
   - manifests/cloud.yaml
   - manifests/containers.yaml
