@@ -1,0 +1,6 @@
+units:
+  - stalld.service
+  - sshd.service
+  - firewalld.service
+  - fail2ban.service
+  - fwupd-refresh.timer

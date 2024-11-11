@@ -33,6 +33,8 @@ packages:
   - kernel
   - coreutils
   - dnf5
+  - systemd
+  - bootc
   - selinux-policy-targeted
   # And we want container-selinux because trying to layer it on later currently causes issues.
   - container-selinux
@@ -81,8 +83,6 @@ packages:
   # firmware updates
   # If you're using linux-firmware, you probably also want fwupd
   - fwupd
-  - systemd
-  - bootc
   # Required by bootc install, sgdisk has been replaced by Rust crate
   # in bootc https://github.com/containers/bootc/pull/775
   - xfsprogs e2fsprogs dosfstools
@@ -113,13 +113,14 @@ packages:
   - stalld
   - bzip2
   - zstd
-  # Improved MOTD experience
-  - console-login-helper-messages-issuegen
-  - console-login-helper-messages-profile
-  # Needed for boogc-generic-growpart
+  # Needed for bootc-generic-growpart
   - cloud-utils-growpart
   # We do, in fact, want `man`
   - man-db
+  # Remote access setup
+  - openssh-server
+  - fail2ban-firewalld
+  - fail2ban-systemd
 
 postprocess:
   # Undo RPM scripts enabling units; we want the presets to be canonical
