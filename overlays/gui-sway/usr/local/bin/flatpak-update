@@ -1,0 +1,32 @@
+#!/bin/bash
+
+readarray -t apps < <(cat /usr/local/etc/flatpak.d/*)
+
+function flathub_working {
+	flatpak --system remote-info flathub org.signal.Signal >/dev/null 2>&1 || return 1
+}
+
+TIMEOUT=600
+STEP=5
+DURATION=0
+
+echo -n 'Waiting for flathub'
+while ! flathub_working; do
+	if ((DURATION >= TIMEOUT)); then
+		echo "Unable to reach flathub" >&2
+		exit 1
+	fi
+	echo -n .
+	sleep ${STEP}
+	((DURATION += STEP))
+done
+echo
+
+set -x
+flatpak install --or-update --system --assumeyes --noninteractive --verbose flathub "${apps[@]}"
+
+# Set apps to dark mode, if we can
+for app in "${apps[@]}"; do
+	flatpak override --system --env=GTK_THEME=Materia-dark-compact
+	flatpak override --system --env=ICON_THEME=Paper
+done

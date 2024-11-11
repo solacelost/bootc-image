@@ -21,7 +21,7 @@ RUN --mount=type=cache,target=/workdir \
     --cachedir=/workdir --format=ociarchive --initialize ${MANIFEST} \
     /buildcontext/out.ociarchive
 
-FROM oci-archive:./tmp/out.ociarchive as final
+FROM oci-archive:./tmp/out.ociarchive as composed
 
 # Install packages we couldn't compose in.
 # NOTE: Need to reference builder here to force ordering.
@@ -35,19 +35,7 @@ RUN --mount=type=bind,from=builder,src=.,target=/var/tmp/host \
 # Ensure our generic system configuration is represented
 COPY overlays/base/ /
 
-# Ensure our Sway image is configured correctly
-COPY overlays/gui-sway/ /
-
-# Some GUI-specific configuration (like fonts)
-RUN mkdir -p /usr/share/fonts/inconsolata && \
-    curl -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
-    chown -R root:root /usr/share/fonts/inconsolata && \
-    fc-cache -f -v
-
-# Ensure our basic user configuration is present
-COPY overlays/users/ /
-
-FROM final as module-build
+FROM composed as module-build
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
@@ -103,8 +91,24 @@ RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/umlaeute/v4l2loopback
     mkdir -p "/built$moddir/extra/v4l2loopback" && \
     cp -r v4l2loopback.ko "/built$moddir/extra/v4l2loopback/"
 
-FROM final
+FROM composed as final
+
+# Ensure our Sway image is configured correctly (configs, flatpaks, .bash_profile, etc.)
+COPY overlays/gui-sway/ /
+
+# GUI-specific font configuration
+RUN mkdir -p /usr/share/fonts/inconsolata && \
+    curl -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
+    chown -R root:root /usr/share/fonts/inconsolata && \
+    fc-cache -f -v
+
+# Copy our built modules
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
+
+# Ensure module dependencies are calculated
 RUN kver="$(basename "$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)")" && \
     depmod -a -b /usr "$kver"
+
+# Ensure our basic user configuration is present
+COPY overlays/users/ /
