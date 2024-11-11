@@ -39,7 +39,7 @@ overlays/users/usr/local/ssh/$(USERNAME).keys:
 build: .build
 
 .push: .build
-	$(RUNTIME) push $(IMAGE)
+	$(RUNTIME) push --compression-format=zstd:chunked $(IMAGE)
 	@touch $@
 
 .PHONY: push
