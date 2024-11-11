@@ -18,7 +18,7 @@ virt-install --connect qemu:///system \
 	--virt-type=kvm --cpu=host-passthrough \
 	--video model=virtio --channel spicevmc \
 	--name "${name}" --memory "${memory_size}" \
-	--vcpus "${vcpus}" --osinfo fedora40 \
+	--vcpus "${vcpus}" --osinfo fedora40 --sound default \
 	--disk size="${disk_size},bus=scsi,cache=writethrough,io=threads" \
 	--controller type=scsi,model=virtio-scsi \
 	--channel unix,target_type=virtio,name=org.qemu.guest_agent.0 \
