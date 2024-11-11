@@ -26,8 +26,4 @@ set -x
 flatpak install --or-update --system --assumeyes --noninteractive --verbose flathub "${apps[@]}"
 
 # Set apps to dark mode, if we can
-flatpak override --system --filesystem=/usr/share/themes:ro \
-	--filesystem=/usr/share/icons:ro \
-	--filesystem=/usr/share/fonts:ro \
-	--env=GTK_THEME=Materia-dark-compact \
-	--env=ICON_THEME=Paper
+flatpak override --system --env=GTK_THEME=Materia-dark-compact

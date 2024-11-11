@@ -1,0 +1,4 @@
+GTK_THEME=Materia-dark-compact
+export GTK_THEME
+ICON_THEME=Paper
+export ICON_THEME
