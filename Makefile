@@ -14,7 +14,7 @@ ARCH := amd64
 LATEST_DIGEST := $(shell hack/latest_base.sh $(BASE) $(ARCH))
 
 # Vars only for building the kickstart-based installer
-DEFAULT_INSTALL_DISK ?= sda
+DEFAULT_INSTALL_DISK ?= vda
 BOOT_VERSION ?= 41
 BOOT_IMAGE_VERSION ?= 1.4
 ISO_SUFFIX ?=

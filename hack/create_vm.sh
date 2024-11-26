@@ -31,8 +31,8 @@ virt-install --connect qemu:///system \
 	--video model=virtio --channel spicevmc \
 	--name "${name}" --memory "${memory_size}" \
 	--vcpus "${vcpus}" --osinfo fedora40 --sound default \
-	--disk "size=${disk_size},bus=scsi,cache=writethrough,io=threads" \
-	--disk "bus=scsi,cache=writethrough,io=threads,vol=default/${second_disk}" \
+	--disk "size=${disk_size},bus=virtio,cache=writethrough,io=threads" \
+	--disk "bus=virtio,cache=writethrough,io=threads,vol=default/${second_disk}" \
 	--controller type=scsi,model=virtio-scsi \
 	--channel unix,target_type=virtio,name=org.qemu.guest_agent.0 \
 	--cdrom /var/lib/libvirt/images/bootc-install"${iso_suffix}".iso \
