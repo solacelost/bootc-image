@@ -63,7 +63,7 @@ boot-image/bootc$(ISO_SUFFIX).ks: boot-image/bootc.ks.tpl
 
 boot-image/bootc-install$(ISO_SUFFIX).iso: boot-image/bootc$(ISO_SUFFIX).ks boot-image/fedora-live.x86_64.iso
 	@if [ -e $@ ]; then rm -f $@; fi
-	sudo mkksiso --ks $< boot-image/fedora-live.x86_64.iso $@
+	sudo mkksiso --rm-args rd.live.check --ks $< boot-image/fedora-live.x86_64.iso $@
 
 .PHONY: iso
 iso: boot-image/bootc-install$(ISO_SUFFIX).iso
