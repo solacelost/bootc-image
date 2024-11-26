@@ -1,6 +1,6 @@
 # Disk configurations
 %pre --log=/tmp/ks_pre.log
-
+set -x
 cat << 'EOF' > /tmp/part-include
 # Basic partitioning
 clearpart --all --initlabel --disklabel=gpt
@@ -28,7 +28,7 @@ sshkey --username root "${SSH_KEY}"
 user --name=${USERNAME} --groups=wheel --password="${PASSWORD}" --plaintext
 
 %post --log=/var/roothome/ks_post.log
-
+set -x
 cat << 'EOF' >> /var/roothome/ks_pre.log
 %include /tmp/ks_pre.log
 EOF
@@ -41,14 +41,6 @@ for passwd in /usr/lib/passwd /etc/passwd; do
             chown -R "$uid":"$gid" "$home"
         fi
     done <$passwd
-done
-
-# Ensure users own any staged SSH keys
-for key in /usr/local/ssh/*.keys; do
-  user=$(basename --suffix=.keys $key)
-  if id -u $user && id -g $user; then
-      chown $(id -u $user):$(id -g $user) $key
-  fi
 done
 
 %end
