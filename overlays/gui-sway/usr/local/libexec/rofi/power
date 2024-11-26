@@ -9,7 +9,7 @@ Suspend,
 Reboot,
 Shutdown"
 
-selected=$(echo "$entries" | rofi -m 0 -dmenu -sep ',' -p "power" -i | awk '{print tolower($1)}')
+selected=$(echo "$entries" | rofi -m 0 -dmenu -sep ',' -p "power" -i | awk '{print tolower($1)}' | tr -d '[:space:]')
 
 case $selected in
 lock)
