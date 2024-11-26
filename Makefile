@@ -9,6 +9,9 @@ REPOSITORY ?= library/fedora-bootc
 REG_REPO := $(REGISTRY)/$(REPOSITORY)
 TAG ?= desktop
 IMAGE = $(REG_REPO):$(TAG)
+# Help find out if our base image has updated
+ARCH := amd64
+LATEST_DIGEST := $(shell hack/latest_base.sh $(BASE) $(ARCH))
 
 # Vars only for building the kickstart-based installer
 DEFAULT_DISK ?= vda
@@ -31,8 +34,11 @@ overlays/users/usr/local/ssh/$(USERNAME).keys:
 	@echo Please put the authorized_keys file you would like for the $(USERNAME) user in $@ >&2
 	@exit 1
 
-.build: Containerfile $(shell find overlays -type f) overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find compose -type f)
-	$(RUNTIME) build --security-opt=label=disable --arch amd64 --pull=newer --cap-add=all --device=/dev/fuse --from $(BASE) . -t $(IMAGE)
+tmp/$(LATEST_DIGEST):
+	@touch $@
+
+.build: Containerfile overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f) $(shell find compose -type f) tmp/$(LATEST_DIGEST)
+	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --from $(BASE) . -t $(IMAGE)
 	@touch $@
 
 .PHONY: build
@@ -47,7 +53,7 @@ push: .push
 
 .PHONY: debug
 debug:
-	$(RUNTIME) run --rm -it --arch amd64 --pull=never --entrypoint /bin/bash $(IMAGE) -li
+	$(RUNTIME) run --rm -it --arch $(ARCH) --pull=never --entrypoint /bin/bash $(IMAGE) -li
 
 boot-image/fedora-live.x86_64.iso:
 	curl -Lo $@ https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/Fedora-Everything-netinst-x86_64-${BOOT_VERSION}-${BOOT_IMAGE_VERSION}.iso
