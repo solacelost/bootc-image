@@ -31,7 +31,7 @@ RUN --mount=type=bind,from=builder,src=.,target=/var/tmp/host \
     --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     dnf -y install \
-    https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_linux_amd64.rpm \
+    https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.rpm \
     https://github.com/getsops/sops/releases/download/v3.9.1/sops-3.9.1-1.x86_64.rpm
 
 # Ensure our generic system configuration is represented
@@ -100,7 +100,7 @@ COPY overlays/gui-sway/ /
 
 # GUI-specific font configuration
 RUN mkdir -p /usr/share/fonts/inconsolata && \
-    curl -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
+    curl -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
     chown -R root:root /usr/share/fonts/inconsolata && \
     fc-cache -f -v
 
