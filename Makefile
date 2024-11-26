@@ -1,7 +1,7 @@
 # Vars for building the bootc image
 RUNTIME ?= podman
 USERNAME ?= james
-PASSWORD ?=
+PASSWORD ?= password
 PRIVATE_KEY ?= $$HOME/.ssh/id_ed25519
 BASE ?= registry.fedoraproject.org/fedora:41
 REGISTRY ?= registry.jharmison.com
