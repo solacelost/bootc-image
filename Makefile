@@ -14,7 +14,7 @@ ARCH := amd64
 LATEST_DIGEST := $(shell hack/latest_base.sh $(BASE) $(ARCH))
 
 # Vars only for building the kickstart-based installer
-DEFAULT_DISK ?= vda
+DEFAULT_INSTALL_DISK ?= sda
 BOOT_VERSION ?= 41
 BOOT_IMAGE_VERSION ?= 1.4
 ISO_SUFFIX ?=
@@ -22,7 +22,7 @@ ISO_SUFFIX ?=
 ISO_DEST ?= /dev/sda
 # Templating the kickstart variables is tricky
 KICKSTART_VARS = IMAGE=$(IMAGE) \
-	DEFAULT_DISK=$(DEFAULT_DISK) \
+	DEFAULT_DISK=$(DEFAULT_INSTALL_DISK) \
 	USERNAME=$(USERNAME) \
 	SSH_KEY="$(shell cat overlays/users/usr/local/ssh/$(USERNAME).keys 2>/dev/null)" \
 	PASSWORD=$(PASSWORD)

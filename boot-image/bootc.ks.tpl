@@ -1,12 +1,53 @@
 # Disk configurations
-%pre --log=/tmp/ks_pre.log
+%pre --log=/tmp/ks-pre.log
+#!/bin/bash
+
 set -x
-cat << 'EOF' > /tmp/part-include
-# Basic partitioning
-clearpart --all --initlabel --disklabel=gpt
-reqpart --add-boot
-part / --grow --fstype xfs
+
+# Read the disks available
+readarray -t disks < <(realpath $(find /dev/disk/by-path -type l | grep -v 'usb' | grep -v 'part') | grep -v '/dev/sr' | cut -d/ -f3)
+declare -a otherdisks
+
+install_disk=""
+
+if (( ${#disks[@]} == 1 )); then # we only have one disk available
+    install_disk="${disks[0]}"
+else
+    for disk in "${disks[@]}"; do
+        if [ "$disk" = "${DEFAULT_DISK}" ]; then # our default disk is in the list of disks
+            install_disk="$disk"
+        else
+            other_disks+=("$disk")
+        fi
+    done
+fi
+if [ -z "$install_disk" ]; then # we didn't find a suitable installation disk
+    exit 1
+fi
+
+cat << EOF > /tmp/part-include
+# Clear installation disk
+clearpart --initlabel --disklabel gpt --drives ${install_disk}
+
+# Configure /boot and /boot/efi
+part /boot --size 1024 --fstype xfs --ondisk ${install_disk} --label boot
+part /boot/efi --size 256 --fstype efi --ondisk ${install_disk}
+
+# Fixed 40Gi partition for installation root
+part / --size 40960 --fstype xfs --ondisk ${install_disk} --label root
+
+# Configure LVM for /var to fill remaining space
+part pv.01 --size 1 --grow --ondisk ${install_disk}
+volgroup fedora pv.01
+logvol /var --percent 100 --grow --fstype xfs --vgname fedora --name var
+
+# Bootloader configuration
+bootloader --driveorder ${install_disk}
+
+# disks without configuration: ${other_disks[@]}
 EOF
+
+cat /tmp/part-include
 
 %end
 
@@ -27,10 +68,14 @@ sshkey --username root "${SSH_KEY}"
 # Configure our user
 user --name=${USERNAME} --groups=wheel --password="${PASSWORD}" --plaintext
 
-%post --log=/var/roothome/ks_post.log
+%post --log=/var/roothome/ks-post.log
+#!/bin/bash
+
 set -x
-cat << 'EOF' >> /var/roothome/ks_pre.log
-%include /tmp/ks_pre.log
+
+# Save the pre logs
+cat << 'EOF' >> /var/roothome/ks-pre.log
+%include /tmp/ks-pre.log
 EOF
 
 # Ensure users and their homes are created
