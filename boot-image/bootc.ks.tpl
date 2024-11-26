@@ -5,7 +5,7 @@
 set -x
 
 # Read the disks available
-readarray -t disks < <(realpath $(find /dev/disk/by-path -type l | grep -v 'usb' | grep -v 'part') | grep -v '/dev/sr' | cut -d/ -f3)
+readarray -t disks < <(realpath $(find /dev/disk/by-path -type l | grep -v 'usb' | grep -v 'part') | grep -v '/dev/sr' | cut -d/ -f3 | sort -u)
 declare -a otherdisks
 
 install_disk=""
