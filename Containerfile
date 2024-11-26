@@ -17,6 +17,8 @@ RUN --mount=type=cache,target=/workdir \
     --mount=type=bind,rw=true,src=./tmp/,dst=/buildcontext \
     cp /etc/yum.repos.d/*.repo ./ && \
     rm -f /buildcontext/out.ociarchive && \
+    releasever=$(grep '^VERSION_ID=' /etc/os-release | cut -d= -f2) && \
+    echo "releasever: ${releasever}" >> ${MANIFEST} && \
     rpm-ostree compose image --image-config fedora-bootc-config.json \
     --cachedir=/workdir --format=ociarchive --initialize ${MANIFEST} \
     /buildcontext/out.ociarchive

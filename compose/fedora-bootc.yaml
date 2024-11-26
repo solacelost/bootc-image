@@ -2,8 +2,6 @@ metadata:
   name: feedora-bootc-jharmison
   summary: Fedora Bootable Desktop for James Harmison
 
-releasever: 41
-
 repos:
   - fedora
   - updates
