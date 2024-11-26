@@ -15,7 +15,14 @@ set -ex
 sudo cp -uf boot-image/bootc-install"${iso_suffix}".iso /var/lib/libvirt/images/
 
 second_disk="$name-1.qcow2"
-if ! virsh vol-list default | grep -qF "$second_disk"; then
+second_disk_source="$name-1.bak.qcow2"
+
+# If our source exists, wipe out the old disk and reclone it
+if virsh vol-list default | grep -qF "$second_disk_source"; then
+	virsh vol-delete "$second_disk" --pool default || :
+	virsh vol-clone "$second_disk_source" "$second_disk" --pool default
+# If our source doesn't exist, and the volume destination doesn't exist, create it as empty
+elif ! virsh vol-list default | grep -qF "$second_disk"; then
 	virsh vol-create-as --pool default --name "$second_disk" --capacity 10G
 fi
 
