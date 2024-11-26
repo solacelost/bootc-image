@@ -45,7 +45,7 @@ tmp/$(LATEST_DIGEST):
 build: .build
 
 .push: .build
-	$(RUNTIME) push --compression-format=zstd:chunked $(IMAGE)
+	$(RUNTIME) push $(IMAGE)
 	@touch $@
 
 .PHONY: push
