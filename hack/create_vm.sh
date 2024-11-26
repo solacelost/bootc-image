@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd "$(dirname "$(realpath "$0")")"
+cd "$(dirname "$(realpath "$0")")/.."
 
 name="bootc-desktop"
 iso_suffix="${1}"
@@ -14,19 +14,23 @@ set -ex
 
 sudo cp -uf boot-image/bootc-install"${iso_suffix}".iso /var/lib/libvirt/images/
 
+second_disk="$name-1.qcow2"
+if ! virsh vol-list default | grep -qF "$second_disk"; then
+	virsh vol-create-as --pool default --name "$second_disk" --capacity 10G
+fi
+
 virt-install --connect qemu:///system \
 	--virt-type=kvm --cpu=host-passthrough \
 	--video model=virtio --channel spicevmc \
 	--name "${name}" --memory "${memory_size}" \
 	--vcpus "${vcpus}" --osinfo fedora40 --sound default \
-	--disk size="${disk_size},bus=scsi,cache=writethrough,io=threads" \
+	--disk "size=${disk_size},bus=scsi,cache=writethrough,io=threads" \
+	--disk "bus=scsi,cache=writethrough,io=threads,vol=default/${second_disk}" \
 	--controller type=scsi,model=virtio-scsi \
 	--channel unix,target_type=virtio,name=org.qemu.guest_agent.0 \
 	--cdrom /var/lib/libvirt/images/bootc-install"${iso_suffix}".iso \
 	--network "bridge=br0${pin_mac},model=virtio" \
 	--boot loader=/usr/share/OVMF/OVMF_CODE.fd,loader.readonly=yes,loader.type=pflash
-
-#	--disk size=10,bus=scsi,cache=writethrough,io=threads \
 
 virsh destroy "$name" || :
 sync

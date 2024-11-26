@@ -68,6 +68,10 @@ boot-image/bootc-install$(ISO_SUFFIX).iso: boot-image/bootc$(ISO_SUFFIX).ks boot
 .PHONY: iso
 iso: boot-image/bootc-install$(ISO_SUFFIX).iso
 
+.PHONY: vm
+vm: boot-image/bootc-install$(ISO_SUFFIX).iso
+	@hack/create_vm.sh
+
 .PHONY: burn
 burn: boot-image/bootc-install$(ISO_SUFFIX).iso
 	sudo dd if=./$< of=$(ISO_DEST) bs=1M conv=fsync status=progress
