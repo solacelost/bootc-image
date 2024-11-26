@@ -1,11 +1,20 @@
-# Basic setup
-text
-network --bootproto=dhcp --device=link --activate
+# Disk configurations
+%pre --log=/tmp/ks_pre.log
 
+cat << 'EOF' > /tmp/part-include
 # Basic partitioning
 clearpart --all --initlabel --disklabel=gpt
 reqpart --add-boot
 part / --grow --fstype xfs
+EOF
+
+%end
+
+# Basic setup
+text
+network --bootproto=dhcp --device=link --activate
+
+%include /tmp/part-include
 
 ostreecontainer --url ${IMAGE}
 
@@ -18,7 +27,11 @@ sshkey --username root "${SSH_KEY}"
 # Configure our user
 user --name=${USERNAME} --groups=wheel --password="${PASSWORD}" --plaintext
 
-%post
+%post --log=/var/roothome/ks_post.log
+
+cat << 'EOF' >> /var/roothome/ks_pre.log
+%include /tmp/ks_pre.log
+EOF
 
 # Ensure users and their homes are created
 for passwd in /usr/lib/passwd /etc/passwd; do
