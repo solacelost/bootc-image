@@ -7,6 +7,7 @@ set -x
 # Read the disks available
 readarray -t disks < <(realpath $(find /dev/disk/by-path -type l | grep -v 'usb' | grep -v 'part') | grep -v '/dev/sr' | cut -d/ -f3 | sort -u)
 declare -a otherdisks
+declare -A otherdiskparts
 
 install_disk=""
 
@@ -17,13 +18,23 @@ else
         if [ "$disk" = "${DEFAULT_DISK}" ]; then # our default disk is in the list of disks
             install_disk="$disk"
         else
-            other_disks+=("$disk")
+            otherdisks+=("$disk")
         fi
     done
 fi
 if [ -z "$install_disk" ]; then # we didn't find a suitable installation disk
     exit 1
 fi
+
+# identify partitions on other disks, if viable mounts
+for disk in "${otherdisks[@]}"; do
+    for dev in $(lsblk /dev/$disk -oNAME -nr); do
+        if [ "$dev" = "$disk" ]; then
+            continue
+        fi
+        otherdiskparts[$disk]+="${otherdiskparts[$disk]} $dev"
+    done
+done
 
 cat << EOF > /tmp/part-include
 # Clear installation disk
@@ -44,7 +55,12 @@ logvol /var --percent 100 --grow --fstype xfs --vgname fedora --name var
 # Bootloader configuration
 bootloader --driveorder ${install_disk}
 
-# disks without configuration: ${other_disks[@]}
+# disks without configuration: ${otherdisks[@]}
+$(for disk in ${otherdisks[@]}; do
+    for part in ${otherdiskparts[$disk]}; do
+        echo "# $part"
+    done
+done)
 EOF
 
 cat /tmp/part-include
