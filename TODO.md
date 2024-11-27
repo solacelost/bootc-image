@@ -1,5 +1,5 @@
-- [ ] Multi-disk handling
-- [ ] Home as a partition
+- [x] Multi-disk handling
+- [x] Home as a partition
 - [x] Flatpak handling
 - [ ] Pipeline definition for OKD
 - [ ] Investigate RaySession?
