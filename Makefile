@@ -1,9 +1,10 @@
 # Vars for building the bootc image
+FEDORA_VERSION ?= 41
 RUNTIME ?= podman
 USERNAME ?= james
 PASSWORD ?= password
 PRIVATE_KEY ?= $$HOME/.ssh/id_ed25519
-BASE ?= registry.fedoraproject.org/fedora:41
+BASE ?= registry.fedoraproject.org/fedora:$(FEDORA_VERSION)
 REGISTRY ?= registry.jharmison.com
 REPOSITORY ?= library/fedora-bootc
 REG_REPO := $(REGISTRY)/$(REPOSITORY)
@@ -15,7 +16,7 @@ LATEST_DIGEST := $(shell hack/latest_base.sh $(BASE) $(ARCH))
 
 # Vars only for building the kickstart-based installer
 DEFAULT_INSTALL_DISK ?= vda
-BOOT_VERSION ?= 41
+BOOT_VERSION ?= $(FEDORA_VERSION)
 BOOT_IMAGE_VERSION ?= 1.4
 ISO_SUFFIX ?=
 # ISO_DEST is the device to burn the iso to (such as a USB flash drive for live booting the installer on metal)
