@@ -95,11 +95,14 @@ cat << 'EOF' >> /var/roothome/ks-pre.log
 EOF
 
 # Ensure users and their homes are created
+{ set +x ; } 2>/dev/null
 for passwd in /usr/lib/passwd /etc/passwd; do
     while IFS=: read -r user x uid gid gecos home shell; do
         if (( uid >= 1000 )) && [[ $user != nfsnobody ]]; then
+            set -x
             mkdir -p "$home"
             chown -R "$uid":"$gid" "$home"
+            { set +x ; } 2>/dev/null
         fi
     done <$passwd
 done
