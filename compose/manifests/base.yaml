@@ -53,9 +53,9 @@ packages:
   - ncurses
   # i18n
   - kbd
-  # zram-generator (but not zram-generator-defaults) for F33 change
-  # https://github.com/coreos/fedora-coreos-tracker/issues/509
+  # use zram swap by default
   - zram-generator
+  - zram-generator-defaults
   # Ensure happy muilticore support
   - irqbalance
   # Ensure pretty booting
