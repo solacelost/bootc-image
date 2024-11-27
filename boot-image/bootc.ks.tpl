@@ -54,16 +54,22 @@ logvol /var --percent 100 --grow --fstype xfs --vgname fedora --name var
 
 # Bootloader configuration
 bootloader --driveorder ${install_disk}
-
-# disks without configuration: ${otherdisks[@]}
-$(for disk in ${otherdisks[@]}; do
-    for part in ${otherdiskparts[$disk]}; do
-        echo "# $part"
-    done
-done)
 EOF
 
 cat /tmp/part-include
+
+touch /tmp/fstab-include
+# Map other partitions to fstab entries for %post
+for disk in ${otherdisks[@]}; do
+    for part in ${otherdiskparts[$disk]}; do
+        fstype=$(lsblk /dev/$part -oFSTYPE -nr 2>/dev/null ||:)
+        if [ -n "$fstype" ] && ! (echo "$fstype" | grep -qF LVM); then
+            echo "/dev/$part /mnt/$part $fstype defaults,noatime 0 0" >> /tmp/fstab-include
+        fi
+    done
+done
+
+cat /tmp/fstab-include
 
 %end
 
@@ -92,6 +98,11 @@ set -x
 # Save the pre logs
 cat << 'EOF' >> /var/roothome/ks-pre.log
 %include /tmp/ks-pre.log
+EOF
+
+# Read fstab adjustments
+cat << 'EOF' >> /etc/fstab
+%include /tmp/fstab-include
 EOF
 
 # Ensure users and their homes are created
