@@ -121,6 +121,12 @@ packages:
   - openssh-server
   - fail2ban-firewalld
   - fail2ban-systemd
+  # Virtualization support
+  - qemu-kvm
+  - libvirt-daemon
+  - libvirt-client
+  - virt-install
+  - guestfs-tools
 
 postprocess:
   # Undo RPM scripts enabling units; we want the presets to be canonical
