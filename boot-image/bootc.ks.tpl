@@ -38,7 +38,7 @@ done
 
 cat << EOF > /tmp/part-include
 # Clear installation disk
-clearpart --initlabel --disklabel gpt --drives ${install_disk}
+clearpart --initlabel --all --disklabel gpt --drives ${install_disk}
 
 # Configure /boot and /boot/efi
 part /boot --size 1024 --fstype xfs --ondisk ${install_disk} --label boot
@@ -75,7 +75,7 @@ cat /tmp/fstab-include
 
 # Basic setup
 text
-network --bootproto=dhcp --device=link --activate
+network ${NETWORK}
 
 %include /tmp/part-include
 

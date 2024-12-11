@@ -21,12 +21,15 @@ BOOT_IMAGE_VERSION ?= 1.4
 ISO_SUFFIX ?=
 # ISO_DEST is the device to burn the iso to (such as a USB flash drive for live booting the installer on metal)
 ISO_DEST ?= /dev/sda
+# NETWORK defines the kickstart arguments for configuring the network, defaulting to DHCP on wired links
+NETWORK := --bootproto=dhcp --device=link --activate
 # Templating the kickstart variables is tricky
 KICKSTART_VARS = IMAGE=$(IMAGE) \
 	DEFAULT_DISK=$(DEFAULT_INSTALL_DISK) \
 	USERNAME=$(USERNAME) \
 	SSH_KEY="$(shell cat overlays/users/usr/local/ssh/$(USERNAME).keys 2>/dev/null)" \
-	PASSWORD=$(PASSWORD)
+	PASSWORD="$(PASSWORD)"
+	NETWORK="$(NETWORK)"
 
 .PHONY: all
 all: push
@@ -60,7 +63,7 @@ boot-image/fedora-live.x86_64.iso:
 	curl -Lo $@ https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/Fedora-Everything-netinst-x86_64-${BOOT_VERSION}-${BOOT_IMAGE_VERSION}.iso
 
 boot-image/bootc$(ISO_SUFFIX).ks: boot-image/bootc.ks.tpl
-	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$SSH_KEY,$$DEFAULT_DISK,$$PASSWORD' < $< >$@
+	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$SSH_KEY,$$DEFAULT_DISK,$$PASSWORD,$$NETWORK' < $< >$@
 
 boot-image/bootc-install$(ISO_SUFFIX).iso: boot-image/bootc$(ISO_SUFFIX).ks boot-image/fedora-live.x86_64.iso
 	@if [ -e $@ ]; then rm -f $@; fi
