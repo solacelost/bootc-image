@@ -28,3 +28,4 @@ packages:
   - yq
   - pciutils
   - rsync
+  - iputils
