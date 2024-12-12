@@ -67,10 +67,6 @@ packages:
   - cryptsetup
   - lvm2
   - tar
-  # linux-firmware now a recommends so let's explicitly include it
-  # https://gitlab.com/cki-project/kernel-ark/-/commit/32271d0cd9bd52d386eb35497c4876a8f041f70b
-  # https://src.fedoraproject.org/rpms/kernel/c/f55c3e9ed8605ff28cb9a922efbab1055947e213?branch=rawhide
-  - linux-firmware
   # security
   - polkit
   - sudo
@@ -127,6 +123,27 @@ packages:
   - libvirt-client
   - virt-install
   - guestfs-tools
+  # A ton of firmware
+  - alsa-sof-firmware
+  - amd-gpu-firmware
+  - amd-ucode-firmware
+  - atheros-firmware
+  - atmel-firmware
+  - brcmfmac-firmware
+  - cirrus-audio-firmware
+  - intel-audio-firmware
+  - intel-gpu-firmware
+  - iwlegacy-firmware
+  - iwlwifi-dvm-firmware
+  - iwlwifi-mvm-firmware
+  - libertas-firmware
+  - linux-firmware
+  - linux-firmware-whence
+  - mt7xxx-firmware
+  - nxpwireless-firmware
+  - realtek-firmware
+  - tiwilink-firmware
+  - zd1211-firmware
 
 postprocess:
   # Undo RPM scripts enabling units; we want the presets to be canonical
