@@ -9,6 +9,7 @@ packages:
   - nftables
   - NetworkManager
   - NetworkManager-tui
+  - NetworkManager-wifi
   - bridge-utils
   - firewalld
   - curl
@@ -21,6 +22,7 @@ packages:
   - openssh-server
   - systemd-resolved
   - socat
+  - wireguard-tools
 
 exclude-packages:
   - systemd-networkd
