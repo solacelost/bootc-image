@@ -1,4 +1,6 @@
 packages:
+  - bluez
+  - bluez-tools
   - iproute
   - iproute-tc
   - iptables
