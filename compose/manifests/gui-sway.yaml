@@ -24,6 +24,7 @@ packages:
   - waybar
   - wf-recorder
   - wl-clipboard
+  - blueman
 
 include:
   - gui-audio.yaml
