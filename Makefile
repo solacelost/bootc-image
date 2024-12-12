@@ -23,13 +23,15 @@ ISO_SUFFIX ?=
 ISO_DEST ?= /dev/sda
 # NETWORK defines the kickstart arguments for configuring the network, defaulting to DHCP on wired links
 NETWORK := --bootproto=dhcp --device=link --activate
+TZ := America/New_York
 # Templating the kickstart variables is tricky
 KICKSTART_VARS = IMAGE=$(IMAGE) \
 	DEFAULT_DISK=$(DEFAULT_INSTALL_DISK) \
 	USERNAME=$(USERNAME) \
 	SSH_KEY="$(shell cat overlays/users/usr/local/ssh/$(USERNAME).keys 2>/dev/null)" \
-	PASSWORD="$(PASSWORD)"
-	NETWORK="$(NETWORK)"
+	PASSWORD="$(PASSWORD)" \
+	NETWORK="$(NETWORK)" \
+	TZ=$(TZ)
 
 .PHONY: all
 all: push
@@ -63,11 +65,15 @@ boot-image/fedora-live.x86_64.iso:
 	curl -Lo $@ https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/Fedora-Everything-netinst-x86_64-${BOOT_VERSION}-${BOOT_IMAGE_VERSION}.iso
 
 boot-image/bootc$(ISO_SUFFIX).ks: boot-image/bootc.ks.tpl
-	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$SSH_KEY,$$DEFAULT_DISK,$$PASSWORD,$$NETWORK' < $< >$@
+	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$SSH_KEY,$$DEFAULT_DISK,$$PASSWORD,$$NETWORK,$$TZ' < $< >$@
 
-boot-image/bootc-install$(ISO_SUFFIX).iso: boot-image/bootc$(ISO_SUFFIX).ks boot-image/fedora-live.x86_64.iso
+boot-image/container/index.json: .build
+	rm -rf boot-image/container
+	skopeo copy containers-storage:$(IMAGE) oci:boot-image/container
+
+boot-image/bootc-install$(ISO_SUFFIX).iso: boot-image/bootc$(ISO_SUFFIX).ks boot-image/fedora-live.x86_64.iso boot-image/container/index.json
 	@if [ -e $@ ]; then rm -f $@; fi
-	sudo mkksiso --ks $< boot-image/fedora-live.x86_64.iso $@
+	sudo mkksiso --add boot-image/container --ks $< boot-image/fedora-live.x86_64.iso $@
 
 .PHONY: iso
 iso: boot-image/bootc-install$(ISO_SUFFIX).iso

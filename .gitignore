@@ -4,5 +4,6 @@
 auth.json
 .build
 .push
+boot-image/container
 tmp/*
 !tmp/.gitkeep

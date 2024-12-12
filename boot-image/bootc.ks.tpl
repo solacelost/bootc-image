@@ -79,12 +79,17 @@ network ${NETWORK}
 
 %include /tmp/part-include
 
-ostreecontainer --url ${IMAGE}
+lang en_US.UTF-8
+keyboard us
+timezone ${TZ}
+
+# Install from our injected image
+ostreecontainer --url=/run/install/repo/container --transport=oci --no-signature-verification
 
 services --enabled=sshd
 
 # Inject an SSH key for root
-rootpw --iscrypted locked
+rootpw --lock
 sshkey --username root "${SSH_KEY}"
 
 # Configure our user
@@ -94,6 +99,9 @@ user --name=${USERNAME} --groups=wheel --password="${PASSWORD}" --plaintext
 #!/bin/bash
 
 set -x
+
+# Ensure we're following our actual bootc remote
+bootc switch --mutate-in-place --transport registry ${IMAGE}
 
 # Save the pre logs
 cat << 'EOF' >> /var/roothome/ks-pre.log
