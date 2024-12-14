@@ -110,7 +110,7 @@
         "format-alt": "{time} {icon}",
         "format-icons": ["", "", "", "", ""]
     },
-    "upower": {}
+    "upower": {},
     "network": {
         "interval": 30,
         "format-wifi": "{essid} ({signalStrength}%) ",
