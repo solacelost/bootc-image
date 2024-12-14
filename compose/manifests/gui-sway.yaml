@@ -28,6 +28,7 @@ packages:
 
 include:
   - gui-audio.yaml
+  - redhat.yaml
 
 exclude-packages:
   # I don't want GDM

@@ -23,4 +23,3 @@ include:
   - manifests/network.yaml
   - manifests/webcam.yaml
   - manifests/yubikey.yaml
-  - manifests/redhat.yaml
