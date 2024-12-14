@@ -14,7 +14,7 @@
     },
 
     "custom/scratchpad": {
-        "interval": 3,
+        "interval": 30,
         "exec": "swaymsg -t get_tree | jq 'recurse(.nodes[]) | first(select(.name==\"__i3_scratch\")) | .floating_nodes | length | select(. >= 1)'",
         "format": "{} ",
         "on-click": "swaymsg 'scratchpad show'",
@@ -24,6 +24,7 @@
     "group/keyboard": {"modules": ["keyboard-state#num", "keyboard-state#caps"]},
 
     "keyboard-state#num": {
+        "interval": 30,
         "numlock": true,
         "capslock": false,
         "format": "{name} {icon}",
@@ -34,6 +35,7 @@
     },
 
     "keyboard-state#caps": {
+        "interval": 30,
         "numlock": false,
         "capslock": true,
         "format": "{name} {icon}",
@@ -44,6 +46,7 @@
     },
 
     "idle_inhibitor": {
+        "interval": 30,
         "format": "{icon}",
         "format-icons": {
             "activated": "",
@@ -52,10 +55,11 @@
     },
 
     "tray": {
-        "spacing": 10
+        "spacing": 30
     },
 
     "clock": {
+        "interval": 30,
         "format": "{:%a %d %b %Y %H:%M}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
     },
@@ -87,11 +91,13 @@
     },
 
     "backlight": {
+        "interval": 30,
         "format": "{percent}% {icon}",
         "format-icons": ["", ""]
     },
 
     "battery_mouse": {
+        "interval": 30,
         "bat": "hidpp_battery_0",
         "states": {
             "good": 95,
@@ -105,6 +111,8 @@
         "format-icons": ["", "", "", "", ""]
     },
     "battery": {
+        "interval": 30,
+	"bat": "BAT0",
         "states": {
             "good": 95,
             "warning": 30,
@@ -118,6 +126,7 @@
     },
 
     "network": {
+        "interval": 30,
         "format-wifi": "{essid} ({signalStrength}%) ",
         "format-ethernet": "{ipaddr}/{cidr} <span font_desc='Font Awesome 5 Free'></span>",
         "tooltip-format": "{ifname} via {gwaddr} ",
@@ -128,6 +137,7 @@
 
     "pulseaudio": {
         // "scroll-step": 1, // %, can be a float
+        "interval": 30,
         "format": "{volume}% {icon} {format_source}",
         "format-bluetooth": "{volume}% {icon} {format_source}",
         "format-bluetooth-muted": " {icon} {format_source}",
@@ -142,6 +152,7 @@
     },
 
     "custom/media": {
+        "interval": 30,
         "format": "{icon} {}",
         "return-type": "json",
         "max-length": 40,
@@ -159,15 +170,16 @@
     },
 
     "custom/weather": {
+        "interval": 3600,
         "format": "{}",
         "tooltip": true,
-        "interval": 3600,
         "exec": "/usr/local/libexec/waybar/wttr.py 2>/dev/null",
         "return-type": "json",
         "on-click": "alacritty --class weather -e bash -c 'clear; while curl -s https://v2.wttr.in/?F; do sleep 3600; done'"
     },
 
     "custom/makomode": {
+        "interval": 30,
         "format": "{icon}",
         "return-type": "json",
         "tooltip": false,
@@ -175,13 +187,13 @@
             "dnd": "",
             "default": ""
         },
-        "interval": 30,
         "exec": "/usr/local/libexec/waybar/mako-mode",
         "on-click": "/usr/local/libexec/waybar/mako-mode toggle",
         "signal": 3
     },
 
     "custom/vpn": {
+        "interval": 30,
         "format": "{icon} {}",
         "tooltip": false,
         "format-icons": {
@@ -189,7 +201,6 @@
             "novpn": ""
         },
         "return-type": "json",
-        "interval": 5,
         "exec": "/usr/local/libexec/waybar/vpn",
         "on-click": "alacritty --class vpn -e /usr/local/libexec/waybar/vpn toggle"
     }
