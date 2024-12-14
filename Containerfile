@@ -112,5 +112,9 @@ COPY --from=v4l2loopback-build /built/ /
 RUN kver="$(basename "$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)")" && \
     depmod -a -b /usr "$kver"
 
+# Ensure we have the latest oc available
+RUN curl -sLo- "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz" | tar xvz -C /usr/local/bin && \
+    chmod +x /usr/local/bin/{kubectl,oc}
+
 # Ensure our basic user configuration is present
 COPY overlays/users/ /
