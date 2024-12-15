@@ -109,6 +109,7 @@
         "format-alt": "{time} {icon}",
         "format-icons": ["", "", "", "", ""]
     },
+
     "battery": {
         "interval": 30,
         "states": {
@@ -122,6 +123,7 @@
         "format-alt": "{time} {icon}",
         "format-icons": ["", "", "", "", ""]
     },
+
     "network": {
         "interval": 30,
         "format-wifi": "{ipaddr}/{cidr} ({signalStrength}%) ",
