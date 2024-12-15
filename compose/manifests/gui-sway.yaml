@@ -25,6 +25,7 @@ packages:
   - wf-recorder
   - wl-clipboard
   - blueman
+  - xdg-desktop-portal-wlr
 
 include:
   - gui-audio.yaml
