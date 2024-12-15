@@ -1,4 +1,5 @@
 packages:
+  - gamemode
   - gamescope
   - mangohud
   - protontricks

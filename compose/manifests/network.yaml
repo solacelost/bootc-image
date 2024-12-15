@@ -21,10 +21,10 @@ packages:
   - hostname
   - openssl
   - openssh-clients
-  - openssh-server
   - systemd-resolved
   - socat
   - wireguard-tools
+  - wpa_supplicant
 
 exclude-packages:
   - systemd-networkd

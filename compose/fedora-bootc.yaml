@@ -18,8 +18,6 @@ include:
   - manifests/containers.yaml
   - manifests/development.yaml
   - manifests/gui-sway.yaml
-  - manifests/gui-apps.yaml
-  - manifests/gui-games.yaml
   - manifests/network.yaml
   - manifests/webcam.yaml
   - manifests/yubikey.yaml

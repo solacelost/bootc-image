@@ -34,8 +34,11 @@ packages:
   - coreutils
   - dnf5
   - systemd
+  - systemd-udev
+  - systemd-oomd-defaults
   - bootc
   - selinux-policy-targeted
+  - util-linux
   # And we want container-selinux because trying to layer it on later currently causes issues.
   - container-selinux
   # Needed for tpm2 bound luks
@@ -82,6 +85,7 @@ packages:
   # Required by bootc install, sgdisk has been replaced by Rust crate
   # in bootc https://github.com/containers/bootc/pull/775
   - xfsprogs e2fsprogs dosfstools
+  - exfatprogs
   # Integration with https://github.com/coreos/bootupd and bootloader logic
   # xref https://github.com/coreos/fedora-coreos-tracker/issues/510
   - bootupd
@@ -144,6 +148,11 @@ packages:
   - realtek-firmware
   - tiwilink-firmware
   - zd1211-firmware
+  # These seem like a good idea
+  - glibc
+  - gnupg2
+  - words
+  - mcelog
 
 postprocess:
   # Undo RPM scripts enabling units; we want the presets to be canonical

@@ -30,3 +30,11 @@ packages:
   - rsync
   - iputils
   - upower
+  - cpio
+  - procps-ng
+  - psmisc
+  - tree
+  - unzip
+  - usbutils
+  - which
+  - zip

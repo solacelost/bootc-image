@@ -26,9 +26,24 @@ packages:
   - wl-clipboard
   - blueman
   - xdg-desktop-portal-wlr
+  - xdg-desktop-portal-gtk
+  - fprintd-pam
+  - kanshi
+  - plymouth-system-theme
+  - lxqt-policykit
+  - wev
+  - wlr-randr
+  - bolt
+  - colord
+  - gutenprint
+  - uresourced
+  - dbus-daemon
 
 include:
+  - gui-apps.yaml
   - gui-audio.yaml
+  - gui-games.yaml
+  - gui-media.yaml
   - redhat.yaml
 
 exclude-packages:
