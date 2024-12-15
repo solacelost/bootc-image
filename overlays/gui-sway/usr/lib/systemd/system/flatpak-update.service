@@ -1,5 +1,5 @@
 [Unit]
-Description=Update an install system flatpaks
+Description=Update and install system flatpaks
 Requires=network.target
 After=network.target
 
