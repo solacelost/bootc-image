@@ -1,5 +1,5 @@
 packages:
-  - gstreamer1-plugins-libav
+  - gstreamer1-plugin-libav
   - gstreamer1-plugins-bad-free
   - gstreamer1-plugins-good
   - gstreamer1-plugins-ugly-free
