@@ -1,5 +1,2 @@
-repos:
-  - google-chrome
-
 packages:
   - google-chrome-stable

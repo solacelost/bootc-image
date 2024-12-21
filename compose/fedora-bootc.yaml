@@ -10,6 +10,7 @@ repos:
   - rpmfusion-nonfree
   - rpmfusion-nonfree-updates
   - lazygit
+  - google-chrome
 
 include:
   - manifests/base.yaml
