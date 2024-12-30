@@ -65,8 +65,8 @@ RUN SHORT_COMMIT="$(echo "${COMMIT}" | cut -c1-7)" && \
     curl -sLo /tmp/xone.tar.gz "https://github.com/medusalix/xone/archive/${COMMIT}/xone-${SHORT_COMMIT}.tar.gz" && \
     tar xvzf /tmp/xone.tar.gz && \
     cd "xone-${COMMIT}" && \
-    curl -sLo kernel-6.11.patch https://patch-diff.githubusercontent.com/raw/medusalix/xone/pull/48.patch && \
-    git apply kernel-6.11.patch && \
+    curl -sLo kernel-6.12.patch https://patch-diff.githubusercontent.com/raw/medusalix/xone/pull/53.patch && \
+    git apply kernel-6.12.patch && \
     moddir="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
     make -C "$moddir/build" "M=$PWD" && \
     mkdir -p "/built$moddir/extra/xone" && \
