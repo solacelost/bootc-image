@@ -2,3 +2,10 @@ if ! tmux_worthy; then
 	GPG_TTY="$(tty)"
 	export GPG_TTY
 fi
+
+if [ "$(oc whoami --show-server 2>/dev/null)" = "https://api.okd.jharmison.com:6443" ] && \
+    podman info >/dev/null 2>&1 && \
+    [ ! -e /run/user/$UID/containers/auth.json ]; then
+    # We're logged into the cluster, we have podman, and we're not logged into any registries
+    podman login registry.jharmison.com -u $(oc whoami) -p $(oc whoami -t) >/dev/null 2>&1
+fi
