@@ -3,8 +3,6 @@ EDITOR=nvim
 export EDITOR
 MERGE="nvim -d"
 export MERGE
-VIM=/etc/xdg/nvim
-export VIM
 
 # libvirt sessions are not great
 VIRSH_DEFAULT_CONNECT_URI=qemu:///system
