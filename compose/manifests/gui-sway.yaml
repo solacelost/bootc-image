@@ -30,7 +30,7 @@ packages:
   - fprintd-pam
   - kanshi
   - plymouth-system-theme
-  - lxqt-policykit
+  - lxpolkit
   - wev
   - wlr-randr
   - bolt
