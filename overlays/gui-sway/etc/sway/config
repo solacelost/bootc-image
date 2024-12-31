@@ -195,7 +195,7 @@ bindsym $mod+Shift+F12 exec /usr/local/bin/swayworkspaces -r 12
 ###################
 
 input "type:touchpad" {
-    dwt enabled
+    dwt disabled
     tap enabled
     tap_button_map lrm
     natural_scroll enabled
