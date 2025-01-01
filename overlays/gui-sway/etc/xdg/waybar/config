@@ -126,11 +126,11 @@
 
     "network": {
         "interval": 30,
-        "format-wifi": "{ipaddr}/{cidr} ({signalStrength}%) ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "Disconnected ⚠",
+        "format-wifi": "({signalStrength}%) ",
+        "format-ethernet": "",
+        "format-linked": "",
+        "format-disconnected": "⚠",
+        "tooltip-format": "{ipaddr}/{cidr} on {ifname} via {gwaddr} ",
         "format-alt": "{ipaddr}/{cidr} {ifname}"
     },
 
