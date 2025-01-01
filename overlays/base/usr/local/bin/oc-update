@@ -2,14 +2,14 @@
 
 set -e
 
-mkdir -p ~/.local/lib/{oc,helm,krew} ~/.krew/bin
+mkdir -p ~/.local/lib/{oc,helm,krew} ~/.krew/bin ~/.local/bin
 
 curl -sLo - https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz | tar xzf - -C ~/.local/lib/oc
 curl -sLo - https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/oc-mirror.tar.gz | tar xzf - -C ~/.local/lib/oc
 chmod +x ~/.local/lib/oc/oc-mirror
 
 for bin in kubectl oc oc-mirror; do
-	ln -sf ~/.local/lib/oc/$bin ~/.local/bin/$bin
+    ln -sf ~/.local/lib/oc/$bin ~/.local/bin/$bin
 done
 
 echo "oc:"
@@ -37,5 +37,39 @@ echo "krew:"
 oc krew version
 echo
 
+plugins_desired=(
+    browse-pvc
+    cert-manager
+    ctx
+    edit-status
+    images
+    kueue
+    modify-secret
+    neat
+    ns
+    operator
+    pexec
+    pvmigrate
+    rbac-view
+    resource-capacity
+    rook-ceph
+    sick-pods
+    sniff
+    view-secret
+    virt
+    who-can
+)
+plugins_to_install=()
+
+for plugin in "${plugins_desired[@]}"; do
+    if ! oc krew list | grep "^$plugin$"; then
+        plugins_to_install+=("$plugin")
+    fi
+done
+
 oc krew update
 oc krew upgrade
+
+if ((${#plugins_to_install[@]} > 0)); then
+    oc krew install "${plugins_to_install[@]}"
+fi
