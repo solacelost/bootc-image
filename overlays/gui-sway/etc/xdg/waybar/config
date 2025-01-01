@@ -72,9 +72,9 @@
         "format": "{}% "
     },
 
-    "group/temperature": {"modules": ["temperature#cpu", "temperature#gpu"]},
+    "group/temperature": {"modules": ["temperature-cpu", "temperature-gpu"]},
 
-    "temperature#cpu": {
+    "temperature-cpu": {
         "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
         "input-filename": "temp1_input",
         "critical-threshold": 80,
@@ -82,7 +82,7 @@
         "format-icons": ["", "", ""]
     },
 
-    "temperature#gpu": {
+    "temperature-gpu": {
         "hwmon-path": "/sys/class/hwmon/hwmon1/temp1_input",
         "critical-threshold": 90,
         "format": "GPU {temperatureC}°C {icon}",
@@ -160,7 +160,7 @@
             "default": "🎜"
         },
         "escape": true,
-        "exec": "/usr/local/libexec/waybar/spotifyctl.py 2>/dev/null",
+        "exec": "/usr/local/libexec/waybar/spotifyctl.py",
         "on-click": "playerctl --player=spotify previous",
         "on-click-middle": "playerctl --player=spotify play-pause",
         "on-click-right": "playerctl --player=spotify next",
