@@ -14,7 +14,7 @@ border-color=#ee2e24
 ignore-timeout=1
 
 # Notification sound
-on-notify=exec mpv /usr/share/sounds/freedesktop/stereo/message-new-instant.oga
+on-notify=exec mpv --no-video /usr/share/sounds/freedesktop/stereo/message-new-instant.oga
 
 [mode=dnd]
 invisible=1
