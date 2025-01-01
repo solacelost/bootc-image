@@ -152,6 +152,8 @@
 
     "custom/media": {
         "format": "{icon} {0}",
+        "tooltip": true,
+        "tooltip-format": "{0}",
         "return-type": "json",
         "max-length": 40,
         "format-icons": {
