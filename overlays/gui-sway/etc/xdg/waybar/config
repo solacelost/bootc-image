@@ -151,7 +151,6 @@
     },
 
     "custom/media": {
-        "interval": 30,
         "format": "{icon} {}",
         "return-type": "json",
         "max-length": 40,
