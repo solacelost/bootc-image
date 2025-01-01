@@ -7,3 +7,4 @@
 - [ ] Enable fprintd to detect fingerprint reader and prompt to set if unset
 - [ ] Investigate RaySession?
 - [ ] Re-implement DSLR webcam setup
+- [ ] Red Hat VPN and certificates
