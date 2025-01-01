@@ -1,6 +1,6 @@
 [{
     "layer": "top",
-    "height": 30, // Waybar height (to be removed for auto height)
+    "height": 34, // Waybar height (to be removed for auto height)
     "modules-left": ["sway/workspaces", "custom/scratchpad", "custom/separator", "sway/mode", "sway/window"],
     "modules-right": ["custom/weather", "custom/media", "idle_inhibitor", "custom/makomode", "pulseaudio", "network", "custom/vpn", "group/hardware", "group/temperature", "backlight", "battery", "group/keyboard", "tray", "clock"],
 
@@ -151,7 +151,7 @@
     },
 
     "custom/media": {
-        "format": "{icon} {}",
+        "format": "{icon} {0}",
         "return-type": "json",
         "max-length": 40,
         "format-icons": {
@@ -192,7 +192,7 @@
 
     "custom/vpn": {
         "interval": 30,
-        "format": "{icon} {}",
+        "format": "{icon} {0}",
         "tooltip": false,
         "format-icons": {
             "vpn": "",
