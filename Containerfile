@@ -4,7 +4,7 @@ FROM registry.fedoraproject.org/fedora:41 as builder
 ARG MANIFEST=fedora-bootc.yaml
 
 RUN --mount=type=tmpfs,target=/var/cache \
-    --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install rpm-ostree selinux-policy-targeted
 
 COPY compose /src
@@ -29,7 +29,7 @@ FROM oci-archive:./tmp/out.ociarchive as composed
 # NOTE: Need to reference builder here to force ordering.
 RUN --mount=type=bind,from=builder,src=.,target=/var/tmp/host \
     --mount=type=tmpfs,target=/var/cache \
-    --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install \
     https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.rpm \
     https://github.com/getsops/sops/releases/download/v3.9.1/sops-3.9.1-1.x86_64.rpm
@@ -40,7 +40,7 @@ COPY overlays/base/ /
 FROM composed as module-build
 
 RUN --mount=type=tmpfs,target=/var/cache \
-    --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install kernel-devel cabextract
 
 WORKDIR /build
@@ -77,7 +77,7 @@ FROM module-build as v4l2loopback-build
 ENV VERSION=0.13.2
 
 RUN --mount=type=tmpfs,target=/var/cache \
-    --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install help2man elfutils-libelf-devel
 
 COPY overlays/v4l2loopback/ /
