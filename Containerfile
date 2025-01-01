@@ -93,6 +93,8 @@ RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/umlaeute/v4l2loopback
     mkdir -p "/built$moddir/extra/v4l2loopback" && \
     cp -r v4l2loopback.ko "/built$moddir/extra/v4l2loopback/"
 
+# TODO: Shikane: https://gitlab.com/w0lff/shikane
+
 FROM composed as final
 
 # Ensure our Sway image is configured correctly (configs, flatpaks, .bash_profile, etc.)

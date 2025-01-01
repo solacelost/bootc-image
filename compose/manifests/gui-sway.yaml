@@ -28,7 +28,6 @@ packages:
   - xdg-desktop-portal-wlr
   - xdg-desktop-portal-gtk
   - fprintd-pam
-  - kanshi
   - plymouth-system-theme
   - lxpolkit
   - wev
