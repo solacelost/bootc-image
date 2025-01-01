@@ -67,8 +67,8 @@ for plugin in "${plugins_desired[@]}"; do
     fi
 done
 
-oc krew update >/dev/null 2&!
-oc krew upgrade >/dev/null 2&!
+oc krew update >/dev/null 2>&1
+oc krew upgrade >/dev/null 2>&1
 
 if ((${#plugins_to_install[@]} > 0)); then
     oc krew install "${plugins_to_install[@]}"
