@@ -160,7 +160,7 @@
             "default": "🎜"
         },
         "escape": true,
-        "exec": "/usr/local/libexec/waybar/spotifyctl.py",
+        "exec": "/usr/local/libexec/waybar/spotifyctl.py 2>/dev/null",
         "on-click": "playerctl --player=spotify previous",
         "on-click-middle": "playerctl --player=spotify play-pause",
         "on-click-right": "playerctl --player=spotify next",
