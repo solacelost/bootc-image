@@ -25,17 +25,8 @@ RUN --mount=type=cache,target=/workdir \
 
 FROM oci-archive:./tmp/out.ociarchive as composed
 
-# Install packages we couldn't compose in.
-# NOTE: Need to reference builder here to force ordering.
-RUN --mount=type=bind,from=builder,src=.,target=/var/tmp/host \
-    --mount=type=tmpfs,target=/var/cache \
-    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install \
-    https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.rpm \
-    https://github.com/getsops/sops/releases/download/v3.9.1/sops-3.9.1-1.x86_64.rpm
-
-# Ensure our generic system configuration is represented
-COPY overlays/base/ /
+# Ensure libostree configuration and other important base files are present
+COPY overlays/composed/ /
 
 FROM composed as module-build
 
@@ -96,6 +87,18 @@ RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/umlaeute/v4l2loopback
 # TODO: Shikane: https://gitlab.com/w0lff/shikane
 
 FROM composed as final
+
+# Install packages we couldn't compose in.
+# NOTE: Need to reference builder here to force ordering.
+RUN --mount=type=bind,from=builder,src=.,target=/var/tmp/host \
+    --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install \
+    https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.rpm \
+    https://github.com/getsops/sops/releases/download/v3.9.1/sops-3.9.1-1.x86_64.rpm
+
+# Ensure our generic system configuration is represented
+COPY overlays/base/ /
 
 # Ensure our Sway image is configured correctly (configs, flatpaks, .bash_profile, etc.)
 COPY overlays/gui-sway/ /
