@@ -62,14 +62,16 @@ plugins_desired=(
 plugins_to_install=()
 
 for plugin in "${plugins_desired[@]}"; do
-    if ! oc krew list | grep "^$plugin$"; then
+    if ! oc krew list | grep -q "^$plugin$"; then
         plugins_to_install+=("$plugin")
     fi
 done
 
-oc krew update
-oc krew upgrade
+oc krew update >/dev/null 2&!
+oc krew upgrade >/dev/null 2&!
 
 if ((${#plugins_to_install[@]} > 0)); then
     oc krew install "${plugins_to_install[@]}"
 fi
+
+oc krew list
