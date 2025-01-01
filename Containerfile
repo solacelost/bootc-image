@@ -97,12 +97,6 @@ RUN --mount=type=bind,from=builder,src=.,target=/var/tmp/host \
     https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.rpm \
     https://github.com/getsops/sops/releases/download/v3.9.1/sops-3.9.1-1.x86_64.rpm
 
-# Ensure our generic system configuration is represented
-COPY overlays/base/ /
-
-# Ensure our Sway image is configured correctly (configs, flatpaks, .bash_profile, etc.)
-COPY overlays/gui-sway/ /
-
 # GUI-specific font configuration
 RUN mkdir -p /usr/share/fonts/inconsolata && \
     curl -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
@@ -126,3 +120,9 @@ RUN authselect enable-feature with-fingerprint
 
 # Ensure our basic user configuration is present
 COPY overlays/users/ /
+
+# Ensure our generic system configuration is represented
+COPY overlays/base/ /
+
+# Ensure our Sway image is configured correctly (configs, flatpaks, .bash_profile, etc.)
+COPY overlays/gui-sway/ /
