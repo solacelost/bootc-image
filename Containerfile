@@ -126,3 +126,6 @@ COPY overlays/base/ /
 
 # Ensure our Sway image is configured correctly (configs, flatpaks, .bash_profile, etc.)
 COPY overlays/gui-sway/ /
+
+# Make sure we're gucci
+RUN bootc container lint
