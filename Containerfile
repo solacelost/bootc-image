@@ -124,6 +124,9 @@ COPY overlays/users/ /
 # Ensure our generic system configuration is represented
 COPY overlays/base/ /
 
+# Ensure Red Hat configuration (keys, git configs, VPN, etc) are staged
+COPY overlays/redhat/ /
+
 # Ensure our Sway image is configured correctly (configs, flatpaks, .bash_profile, etc.)
 COPY overlays/gui-sway/ /
 

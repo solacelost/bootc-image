@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+repo="$1"
+if ! echo "$repo" | grep -qF '//' && echo "$repo" | grep -qF ':'; then # SSH style
+    repo=$(echo "$repo" | cut -d: -f2-)
+else
+    repo=$(echo "$repo" | cut -d/ -f4-)
+fi
+echo "Identified repo: $repo"
+
+shift
+
+remote='git@github.com-work'
+echo "Using remote: $remote"
+
+echo "Executing: git clone \"$remote:$repo\" ${@}"
+git clone "$remote:$repo" "${@}"
+
+dir=$(echo "$repo" | cut -d/ -f2 | cut -d. -f1)
+cd "$dir"
+git-workconfig

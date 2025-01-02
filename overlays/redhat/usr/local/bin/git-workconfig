@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+echo "Setting user.email"
+git config --local --add user.email jharmison@redhat.com
+echo "Setting user.signingkey"
+git config --local --add user.signingkey 34AC1822
