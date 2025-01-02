@@ -38,6 +38,7 @@ packages:
   - uresourced
   - dbus-daemon
   - sound-theme-freedesktop
+  - xdg-user-dirs
 
 include:
   - gui-apps.yaml
