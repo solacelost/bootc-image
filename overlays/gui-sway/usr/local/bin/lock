@@ -45,7 +45,7 @@ for output in $(swaymsg -t get_outputs | jq -r '.[]|select(.active==true) .name'
     grim -o "$output" "$image"
 done
 
-printf '%s\n' "${images[@]}" | xargs -P 0 -I{} magick -gamma 1.8 -brightness-contrast -50x-20 -blur 0x25 -virtual-pixel black {} {}
+printf '%s\n' "${images[@]}" | xargs -P 0 -I{} magick convert -gamma 1.8 -brightness-contrast -50x-20 -blur 0x25 -virtual-pixel black {} {}
 
 if $adjust_brightness; then
     light -G >/var/tmp/.pre-lock-brightness
