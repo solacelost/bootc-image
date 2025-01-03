@@ -5,51 +5,51 @@ set -e
 adjust_brightness=true
 
 while (($# > 0)); do
-    case "$1" in
-    unlock)
-        if [ -e /var/tmp/.pre-lock-brightness ]; then
-            light -S $(cat /var/tmp/.pre-lock-brightness)
-            rm -f /var/tmp/.pre-lock-brightness
-        fi
-        exit 0
-        ;;
-    nobright)
-        adjust_brightness=false
-        ;;
-    esac
-    shift
+	case "$1" in
+	unlock)
+		if [ -e /var/tmp/.pre-lock-brightness ]; then
+			light -S $(cat /var/tmp/.pre-lock-brightness)
+			rm -f /var/tmp/.pre-lock-brightness
+		fi
+		exit 0
+		;;
+	nobright)
+		adjust_brightness=false
+		;;
+	esac
+	shift
 done
 
 if [ "$(playerctl status)" = "Playing" ]; then
-    playerctl pause
+	playerctl pause
 fi
 
 images=()
 swaylock_args=(
-    --daemonize
-    --hide-keyboard-layout
-    --indicator-radius 100
-    --indicator-thickness 7
-    --ring-color 455a64
-    --key-hl-color be5046
-    --text-color ffc107
-    --line-color 00000000
-    --inside-color 00000088
-    --separator-color 00000000
+	--daemonize
+	--hide-keyboard-layout
+	--indicator-radius 100
+	--indicator-thickness 7
+	--ring-color 455a64
+	--key-hl-color be5046
+	--text-color ffc107
+	--line-color 00000000
+	--inside-color 00000088
+	--separator-color 00000000
 )
 
 for output in $(swaymsg -t get_outputs | jq -r '.[]|select(.active==true) .name'); do
-    image=$(mktemp --suffix=.png)
-    images+=("$image")
-    swaylock_args+=(-i "$output:$image")
-    grim -o "$output" "$image"
+	image=$(mktemp --suffix=.png)
+	images+=("$image")
+	swaylock_args+=(-i "$output:$image")
+	grim -o "$output" "$image"
 done
 
-printf '%s\n' "${images[@]}" | xargs -P 0 -I{} magick convert -gamma 1.8 -brightness-contrast -50x-20 -blur 0x25 -virtual-pixel black {} {}
+printf '%s\n' "${images[@]}" | xargs -P 0 -I{} magick convert -gamma 1.2 -brightness-contrast -20x-10 -blur 0x25 -virtual-pixel black {} {}
 
 if $adjust_brightness; then
-    light -G >/var/tmp/.pre-lock-brightness
-    light -S 20.00
+	light -G >/var/tmp/.pre-lock-brightness
+	light -S 20.00
 fi
 
 swaylock "${swaylock_args[@]}" -s center
