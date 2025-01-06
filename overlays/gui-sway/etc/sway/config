@@ -12,6 +12,9 @@ exec lxpolkit
 # nm-applet support for better VPN behavior
 exec nm-applet
 
+# bluetooth control
+exec blueman-applet
+
 gaps inner 4
 gaps outer 4
 smart_gaps on
