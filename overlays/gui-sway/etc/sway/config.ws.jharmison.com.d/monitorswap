@@ -1,0 +1,4 @@
+# config for monitors
+exec bash -c 'echo single > /run/user/1000/monitorswap'
+exec_always --no-startup-id "sh -c 'sleep 1 ; ~/.config/rofi/modi/monitorswap reload'"
+bindsym $mod+Shift+m exec ~/.config/rofi/modi/monitorswap
