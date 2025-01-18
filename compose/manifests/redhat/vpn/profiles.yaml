@@ -1,0 +1,33 @@
+add-files:
+  - - 1-RHVPN.ovpn
+    - /etc/NetworkManager/system-connections/1-RHVPN.ovpn
+  - - AMS2.ovpn
+    - /etc/NetworkManager/system-connections/AMS2.ovpn
+  - - BRQ2.ovpn
+    - /etc/NetworkManager/system-connections/BRQ2.ovpn
+  - - GRU2.ovpn
+    - /etc/NetworkManager/system-connections/GRU2.ovpn
+  - - IAD2.ovpn
+    - /etc/NetworkManager/system-connections/IAD2.ovpn
+  - - LCY.ovpn
+    - /etc/NetworkManager/system-connections/LCY.ovpn
+  - - NRT.ovpn
+    - /etc/NetworkManager/system-connections/NRT.ovpn
+  - - PEK2-ALT.ovpn
+    - /etc/NetworkManager/system-connections/PEK2-ALT.ovpn
+  - - PEK2.ovpn
+    - /etc/NetworkManager/system-connections/PEK2.ovpn
+  - - PNQ2.ovpn
+    - /etc/NetworkManager/system-connections/PNQ2.ovpn
+  - - RDU2.ovpn
+    - /etc/NetworkManager/system-connections/RDU2.ovpn
+  - - RHVPN-MTU.ovpn
+    - /etc/NetworkManager/system-connections/RHVPN-MTU.ovpn
+  - - RHVPN-TCP.ovpn
+    - /etc/NetworkManager/system-connections/RHVPN-TCP.ovpn
+  - - SIN2.ovpn
+    - /etc/NetworkManager/system-connections/SIN2.ovpn
+  - - SYD.ovpn
+    - /etc/NetworkManager/system-connections/SYD.ovpn
+  - - TLV2.ovpn
+    - /etc/NetworkManager/system-connections/TLV2.ovpn

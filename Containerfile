@@ -125,6 +125,9 @@ COPY overlays/users/ /
 # Ensure our generic system configuration is represented
 COPY overlays/base/ /
 
+# Ensure our certificates have been compiled into a trusted bundle
+RUN update-ca-trust
+
 # Ensure Red Hat configuration (keys, git configs, VPN, etc) are staged
 COPY overlays/redhat/ /
 
