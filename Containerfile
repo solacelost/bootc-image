@@ -95,7 +95,8 @@ RUN --mount=type=bind,from=builder,src=.,target=/var/tmp/host \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install \
     https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.rpm \
-    https://github.com/getsops/sops/releases/download/v3.9.1/sops-3.9.1-1.x86_64.rpm
+    https://github.com/getsops/sops/releases/download/v3.9.1/sops-3.9.1-1.x86_64.rpm && \
+    python3 -m pip install git+https://github.com/AUNaseef/protonup.git@4ff9d5474eeb868d375f53a144177ba44f3b77cc
 
 # GUI-specific font configuration
 RUN mkdir -p /usr/share/fonts/inconsolata && \

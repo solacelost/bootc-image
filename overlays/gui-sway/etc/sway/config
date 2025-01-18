@@ -326,6 +326,8 @@ for_window {
     [class="info|Mate-color-select|gcolor2|timesup|QtPass|GtkFileChooserDialog"] sticky enable
 }
 
+# keep proton up to date
+exec protonup
 
 # clipboard
 exec wl-paste -t text --watch clipman store --notify
