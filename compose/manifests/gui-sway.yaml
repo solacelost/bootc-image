@@ -39,6 +39,7 @@ packages:
   - dbus-daemon
   - sound-theme-freedesktop
   - xdg-user-dirs
+  - clipman
 
 include:
   - gui-apps.yaml

@@ -15,30 +15,38 @@ exec nm-applet
 # bluetooth control
 exec blueman-applet
 
-gaps inner 4
-gaps outer 4
+gaps {
+    inner 4
+    outer 4
+}
 smart_gaps on
 default_border pixel 2
 default_floating_border pixel 2
 
-# Shortcuts and modi
-set $screenshot /usr/local/libexec/rofi/screenshot
-set $power /usr/local/libexec/rofi/power
-set $wifi /usr/local/libexec/rofi/nmcli
-set $finder /usr/local/libexec/rofi/finder
-set $emoji /usr/local/libexec/rofi/emoji
-set $lock /usr/local/bin/lock
+set {
+    # Shortcuts and modi
+    $screenshot /usr/local/libexec/rofi/screenshot
+    $power /usr/local/libexec/rofi/power
+    $wifi /usr/local/libexec/rofi/nmcli
+    $finder /usr/local/libexec/rofi/finder
+    $emoji /usr/local/libexec/rofi/emoji
+    $lock /usr/local/bin/lock
 
-# Set colors
-set $bg-color            #333333
-set $inactive-bg-color   #333333dd
-set $text-color          #f3f4f5
-set $inactive-text-color #a68059
-set $urgent-bg-color     #e53935
-set $focus-text-color    #dfbf9f
-set $black       #282828
-set $darkblack   #1d2021
-set $transparent #000000aa
+    # Set colors
+    $bg-color            #333333
+    $inactive-bg-color   #333333dd
+    $text-color          #f3f4f5
+    $inactive-text-color #a68059
+    $urgent-bg-color     #e53935
+    $focus-text-color    #dfbf9f
+    $black               #282828
+    $darkblack           #1d2021
+    $transparent         #000000aa
+}
+
+# Set the background
+output "*" bg /usr/share/backgrounds/galaxypair.png fill
+
 
 # client.class <border> <background> <text> [<indicator> [<child_border>]]
 client.focused $focus-text-color $bg-color $focus-text-color $focus-text-color $focus-text-color
@@ -57,141 +65,144 @@ font pango:FontAwesome 12, "Source Code Pro" 12
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# start a terminal
-bindsym $mod+Return exec $terminal
+bindsym {
+    # start a terminal
+    $mod+Return exec $terminal
 
-# kill focused window
-bindsym $mod+q kill
+    # kill focused window
+    $mod+q kill
 
-# start rofi (a program launcher)
-bindsym $mod+d exec rofi -show run -m -1
-bindsym $mod+Shift+d exec rofi -show drun -m -1
+    # start rofi (a program launcher)
+    $mod+d exec rofi -show run -m -1
+    $mod+Shift+d exec rofi -show drun -m -1
 
-# change focus
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
+    # change focus
+    $mod+h focus left
+    $mod+j focus down
+    $mod+k focus up
+    $mod+l focus right
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+    # alternatively, you can use the cursor keys:
+    $mod+Left focus left
+    $mod+Down focus down
+    $mod+Up focus up
+    $mod+Right focus right
 
-# move focused window
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
+    # move focused window
+    $mod+Shift+h move left
+    $mod+Shift+j move down
+    $mod+Shift+k move up
+    $mod+Shift+l move right
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+    # alternatively, you can use the cursor keys:
+    $mod+Shift+Left move left
+    $mod+Shift+Down move down
+    $mod+Shift+Up move up
+    $mod+Shift+Right move right
 
-# split in horizontal orientation
-bindsym $mod+Alt+h split h
+    # split in horizontal orientation
+    $mod+Alt+h split h
 
-# split in vertical orientation
-bindsym $mod+Alt+v split v
+    # split in vertical orientation
+    $mod+Alt+v split v
 
-# enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle
+    # enter fullscreen mode for the focused container
+    $mod+f fullscreen toggle
 
-# change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+t layout tabbed
-bindsym $mod+e layout toggle split
+    # change container layout (stacked, tabbed, toggle split)
+    $mod+s layout stacking
+    $mod+t layout tabbed
+    $mod+e layout toggle split
 
-# toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
+    # toggle tiling / floating
+    $mod+Shift+space floating toggle
 
-# change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+    # change focus between tiling / floating windows
+    $mod+space focus mode_toggle
 
-# sticky toggle
-bindsym $mod+Alt+space sticky toggle
+    # sticky toggle
+    $mod+Alt+space sticky toggle
 
-# focus the parent/child container
-bindsym $mod+a focus parent
-bindsym $mod+z focus child
-
+    # focus the parent/child container
+    $mod+a focus parent
+    $mod+z focus child
+}
 ########################
 # Workspace Management #
 ########################
 
 # ensure basic setup
-exec_always /usr/local/bin/swayworkspaces -s
+exec /usr/local/bin/swayworkspaces -s
 
-# switch to workspace
-bindsym $mod+1 exec /usr/local/bin/swayworkspaces -w 1
-bindsym $mod+2 exec /usr/local/bin/swayworkspaces -w 2
-bindsym $mod+3 exec /usr/local/bin/swayworkspaces -w 3
-bindsym $mod+4 exec /usr/local/bin/swayworkspaces -w 4
-bindsym $mod+5 exec /usr/local/bin/swayworkspaces -w 5
-bindsym $mod+6 exec /usr/local/bin/swayworkspaces -w 6
-bindsym $mod+7 exec /usr/local/bin/swayworkspaces -w 7
-bindsym $mod+8 exec /usr/local/bin/swayworkspaces -w 8
-bindsym $mod+9 exec /usr/local/bin/swayworkspaces -w 9
-bindsym $mod+0 exec /usr/local/bin/swayworkspaces -w 0
+bindsym {
+    # switch to workspace
+    $mod+1 exec /usr/local/bin/swayworkspaces -w 1
+    $mod+2 exec /usr/local/bin/swayworkspaces -w 2
+    $mod+3 exec /usr/local/bin/swayworkspaces -w 3
+    $mod+4 exec /usr/local/bin/swayworkspaces -w 4
+    $mod+5 exec /usr/local/bin/swayworkspaces -w 5
+    $mod+6 exec /usr/local/bin/swayworkspaces -w 6
+    $mod+7 exec /usr/local/bin/swayworkspaces -w 7
+    $mod+8 exec /usr/local/bin/swayworkspaces -w 8
+    $mod+9 exec /usr/local/bin/swayworkspaces -w 9
+    $mod+0 exec /usr/local/bin/swayworkspaces -w 0
 
-# move focused container to workspace
-bindsym $mod+Shift+1 exec /usr/local/bin/swayworkspaces -m 1
-bindsym $mod+Shift+2 exec /usr/local/bin/swayworkspaces -m 2
-bindsym $mod+Shift+3 exec /usr/local/bin/swayworkspaces -m 3
-bindsym $mod+Shift+4 exec /usr/local/bin/swayworkspaces -m 4
-bindsym $mod+Shift+5 exec /usr/local/bin/swayworkspaces -m 5
-bindsym $mod+Shift+6 exec /usr/local/bin/swayworkspaces -m 6
-bindsym $mod+Shift+7 exec /usr/local/bin/swayworkspaces -m 7
-bindsym $mod+Shift+8 exec /usr/local/bin/swayworkspaces -m 8
-bindsym $mod+Shift+9 exec /usr/local/bin/swayworkspaces -m 9
-bindsym $mod+Shift+0 exec /usr/local/bin/swayworkspaces -m 0
+    # move focused container to workspace
+    $mod+Shift+1 exec /usr/local/bin/swayworkspaces -m 1
+    $mod+Shift+2 exec /usr/local/bin/swayworkspaces -m 2
+    $mod+Shift+3 exec /usr/local/bin/swayworkspaces -m 3
+    $mod+Shift+4 exec /usr/local/bin/swayworkspaces -m 4
+    $mod+Shift+5 exec /usr/local/bin/swayworkspaces -m 5
+    $mod+Shift+6 exec /usr/local/bin/swayworkspaces -m 6
+    $mod+Shift+7 exec /usr/local/bin/swayworkspaces -m 7
+    $mod+Shift+8 exec /usr/local/bin/swayworkspaces -m 8
+    $mod+Shift+9 exec /usr/local/bin/swayworkspaces -m 9
+    $mod+Shift+0 exec /usr/local/bin/swayworkspaces -m 0
 
-# move entire workspace to alternate output
-bindsym $mod+Control+Shift+Right move workspace to output right
-bindsym $mod+Control+Shift+Left move workspace to output left
-bindsym $mod+Control+Shift+Down move workspace to output down
-bindsym $mod+Control+Shift+Up move workspace to output up
-bindsym $mod+Control+Shift+l move workspace to output right
-bindsym $mod+Control+Shift+h move workspace to output left
-bindsym $mod+Control+Shift+j move workspace to output down
-bindsym $mod+Control+Shift+k move workspace to output up
+    # move entire workspace to alternate output
+    $mod+Control+Shift+Right move workspace to output right
+    $mod+Control+Shift+Left move workspace to output left
+    $mod+Control+Shift+Down move workspace to output down
+    $mod+Control+Shift+Up move workspace to output up
+    $mod+Control+Shift+l move workspace to output right
+    $mod+Control+Shift+h move workspace to output left
+    $mod+Control+Shift+j move workspace to output down
+    $mod+Control+Shift+k move workspace to output up
 
-# Just cycle through
-bindsym $mod+Next workspace next
-bindsym $mod+Prior workspace prev
+    # Just cycle through
+    $mod+Next workspace next
+    $mod+Prior workspace prev
 
-# dynamic workspace control
-# create new dynamic workspace
-bindsym $mod+grave exec /usr/local/bin/swayworkspaces -d +
-# select specific dynamic workspaces
-bindsym $mod+F1 exec /usr/local/bin/swayworkspaces -d 1
-bindsym $mod+F2 exec /usr/local/bin/swayworkspaces -d 2
-bindsym $mod+F3 exec /usr/local/bin/swayworkspaces -d 3
-bindsym $mod+F4 exec /usr/local/bin/swayworkspaces -d 4
-bindsym $mod+F5 exec /usr/local/bin/swayworkspaces -d 5
-bindsym $mod+F6 exec /usr/local/bin/swayworkspaces -d 6
-bindsym $mod+F7 exec /usr/local/bin/swayworkspaces -d 7
-bindsym $mod+F8 exec /usr/local/bin/swayworkspaces -d 8
-bindsym $mod+F9 exec /usr/local/bin/swayworkspaces -d 9
-bindsym $mod+F10 exec /usr/local/bin/swayworkspaces -d 10
-bindsym $mod+F11 exec /usr/local/bin/swayworkspaces -d 11
-bindsym $mod+F12 exec /usr/local/bin/swayworkspaces -d 12
-# move focused containers into dynamic workspaces
-bindsym $mod+Shift+F1 exec /usr/local/bin/swayworkspaces -r 1
-bindsym $mod+Shift+F2 exec /usr/local/bin/swayworkspaces -r 2
-bindsym $mod+Shift+F3 exec /usr/local/bin/swayworkspaces -r 3
-bindsym $mod+Shift+F4 exec /usr/local/bin/swayworkspaces -r 4
-bindsym $mod+Shift+F5 exec /usr/local/bin/swayworkspaces -r 5
-bindsym $mod+Shift+F6 exec /usr/local/bin/swayworkspaces -r 6
-bindsym $mod+Shift+F7 exec /usr/local/bin/swayworkspaces -r 7
-bindsym $mod+Shift+F8 exec /usr/local/bin/swayworkspaces -r 8
-bindsym $mod+Shift+F9 exec /usr/local/bin/swayworkspaces -r 9
-bindsym $mod+Shift+F10 exec /usr/local/bin/swayworkspaces -r 10
-bindsym $mod+Shift+F11 exec /usr/local/bin/swayworkspaces -r 11
-bindsym $mod+Shift+F12 exec /usr/local/bin/swayworkspaces -r 12
+    # dynamic workspace control
+    # create new dynamic workspace
+    $mod+grave exec /usr/local/bin/swayworkspaces -d +
+    # select specific dynamic workspaces
+    $mod+F1 exec /usr/local/bin/swayworkspaces -d 1
+    $mod+F2 exec /usr/local/bin/swayworkspaces -d 2
+    $mod+F3 exec /usr/local/bin/swayworkspaces -d 3
+    $mod+F4 exec /usr/local/bin/swayworkspaces -d 4
+    $mod+F5 exec /usr/local/bin/swayworkspaces -d 5
+    $mod+F6 exec /usr/local/bin/swayworkspaces -d 6
+    $mod+F7 exec /usr/local/bin/swayworkspaces -d 7
+    $mod+F8 exec /usr/local/bin/swayworkspaces -d 8
+    $mod+F9 exec /usr/local/bin/swayworkspaces -d 9
+    $mod+F10 exec /usr/local/bin/swayworkspaces -d 10
+    $mod+F11 exec /usr/local/bin/swayworkspaces -d 11
+    $mod+F12 exec /usr/local/bin/swayworkspaces -d 12
+    # move focused containers into dynamic workspaces
+    $mod+Shift+F1 exec /usr/local/bin/swayworkspaces -r 1
+    $mod+Shift+F2 exec /usr/local/bin/swayworkspaces -r 2
+    $mod+Shift+F3 exec /usr/local/bin/swayworkspaces -r 3
+    $mod+Shift+F4 exec /usr/local/bin/swayworkspaces -r 4
+    $mod+Shift+F5 exec /usr/local/bin/swayworkspaces -r 5
+    $mod+Shift+F6 exec /usr/local/bin/swayworkspaces -r 6
+    $mod+Shift+F7 exec /usr/local/bin/swayworkspaces -r 7
+    $mod+Shift+F8 exec /usr/local/bin/swayworkspaces -r 8
+    $mod+Shift+F9 exec /usr/local/bin/swayworkspaces -r 9
+    $mod+Shift+F10 exec /usr/local/bin/swayworkspaces -r 10
+    $mod+Shift+F11 exec /usr/local/bin/swayworkspaces -r 11
+    $mod+Shift+F12 exec /usr/local/bin/swayworkspaces -r 12
+}
 
 ###################
 # Laptop Settings #
@@ -204,119 +215,117 @@ input "type:touchpad" {
     natural_scroll enabled
 }
 
-bindgesture swipe:right workspace prev
-bindgesture swipe:left workspace next
-bindgesture pinch:inward+up move up
-bindgesture pinch:inward+down move down
-bindgesture pinch:inward+left move left
-bindgesture pinch:inward+right move right
+bindgesture {
+    swipe:right workspace prev
+    swipe:left workspace next
+    pinch:inward+up move up
+    pinch:inward+down move down
+    pinch:inward+left move left
+    pinch:inward+right move right
+}
 
 ########################
 # Miscellaneous things #
 ########################
 
-# reload the configuration file
-bindsym $mod+Shift+c reload
+bindsym {
+    # reload the configuration file
+    $mod+Shift+c reload
 
-# restart sway inplace (preserves your layout/session)
-bindsym $mod+Shift+r restart
+    # restart sway inplace (preserves your layout/session)
+    $mod+Shift+r restart
+
+    # scratchpad stuff
+    $mod+minus move scratchpad
+    $mod+Shift+minus scratchpad show
+
+    XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5% # Raise
+    XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5% # Lower
+    XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle # Mute
+
+    # Sreen brightness controls -- # https://github.com/haikarainen/light
+    XF86MonBrightnessUp exec light -A 5    # increase screen brightness
+    XF86MonBrightnessDown exec light -U 5  # decrease screen brightness
+
+    # multimedia keys
+    XF86AudioPlay  exec "playerctl play-pause"
+    XF86AudioStop  exec "playerctl stop"
+    XF86AudioNext  exec "playerctl next"
+    XF86AudioPrev  exec "playerctl previous"
+    XF86AudioPause exec "playerctl pause"
+
+    # Shutdown, Reboot, Lock Screen, and Logout
+    $mod+Escape exec $power
+
+    # Just lock
+    Ctrl+Alt+l exec $lock
+
+    # Wifi connection menu
+    $mod+End exec $wifi
+
+    # screenshots
+    --release Print exec $screenshot Fullscreen
+    --release Alt+Print exec $screenshot Focused
+    --release Control+Print exec $screenshot Select-output
+    --release Control+Alt+Print exec $screenshot Region
+    --release $mod+Print exec $screenshot Select-window
+    --release $mod+Shift+Print exec $screenshot
+
+    # finder
+    $mod+Shift+f exec rofi -show find -modi find:$finder
+
+    # very important stuff
+    $mod+Shift+e exec $emoji
+}
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
-        bindsym h resize shrink width 10 px or 10 ppt
-        bindsym j resize grow height 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow width 10 px or 10 ppt
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
 
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Up resize grow height 10 px or 10 ppt
-        bindsym Down resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
+    # same bindings, but for the arrow keys
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Up resize grow height 10 px or 10 ppt
+    bindsym Down resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
 
-        # back to normal: Enter or Escape
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
 }
 
 bindsym $mod+r mode "resize"
 
-# scratchpad stuff
-bindsym $mod+minus move scratchpad
-bindsym $mod+Shift+minus scratchpad show
-
-# Pulse Audio controls
-
-exec pactl set-default-sink $(pactl info | awk '/^Default Sink:/{print $3}')
-
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5% # Raise
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5% # Lower
-bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle # Mute
-
-# Sreen brightness controls -- # https://github.com/haikarainen/light
-bindsym XF86MonBrightnessUp exec light -A 5    # increase screen brightness
-bindsym XF86MonBrightnessDown exec light -U 5  # decrease screen brightness
-
-# multimedia keys
-bindsym XF86AudioPlay  exec "playerctl play-pause"
-bindsym XF86AudioStop  exec "playerctl stop"
-bindsym XF86AudioNext  exec "playerctl next"
-bindsym XF86AudioPrev  exec "playerctl previous"
-bindsym XF86AudioPause exec "playerctl pause"
 
 bar {
-  swaybar_command waybar
-  workspace_buttons yes
+    swaybar_command waybar
+    workspace_buttons yes
 }
-
-# Set your background
-output "*" bg /usr/share/backgrounds/galaxypair.png fill
 
 # See also https://bugs.kde.org/show_bug.cgi?id=387091
 exec /usr/libexec/gsd-xsettings
 
-# Shutdown, Reboot, Lock Screen, and Logout
-bindsym $mod+Escape exec $power
-
 # Idle control
 exec swayidle -w \
-   timeout 600 /usr/local/bin/lock \
+    timeout 600 /usr/local/bin/lock \
         resume '/usr/local/bin/lock unlock' \
-  timeout 1800 'swaymsg "output * dpms off"' \
+    timeout 1800 'swaymsg "output * dpms off"' \
         resume 'swaymsg "output * dpms on"' \
-  before-sleep '/usr/local/bin/lock nobright'
+    before-sleep '/usr/local/bin/lock nobright'
 
-# Just lock
-bindsym Ctrl+Alt+l exec $lock
+# Window configurations
+for_window {
+    # To list windows: swaymsg -t get_tree
+    [window_role="task_dialog|bubble|page-info|Preferences|pop-up|dialog|Save As|menu|Open Files"] floating enable
+    [window_role="File Operation Progress"] floating enable sticky
+    [instance="file_progress"] floading enable sticky
+    [app_id="zenity|nmtui|vpn"] floating enable
+    [class="Steam|steam"] floating enable
+    [class="info|Mate-color-select|gcolor2|timesup|QtPass|GtkFileChooserDialog"] sticky enable
+}
 
-# Wifi connection menu
-bindsym $mod+End exec $wifi
-
-# Floating windows
-# To list windows: swaymsg -t get_tree
-for_window [window_role="task_dialog|bubble|page-info|Preferences|pop-up|dialog|Save As|menu|Open Files"] floating enable
-for_window [window_role="File Operation Progress"] floating enable sticky
-for_window [instance="file_progress"] floading enable sticky
-for_window [app_id="zenity|nmtui|vpn"] floating enable
-for_window [class="Steam|steam"] floating enable
-for_window [class="info|Mate-color-select|gcolor2|timesup|QtPass|GtkFileChooserDialog"] sticky enable
-# Game stuff
-for_window [class="gamescope|gw2-64.exe"] gaps inner 0, gaps outer 0, border none, floating disable
-for_window [title="Guild Wars 2"] gaps inner 0, gaps outer 0, border none, floating disable
-
-# screenshots
-bindsym --release Print exec $screenshot Fullscreen
-bindsym --release Alt+Print exec $screenshot Focused
-bindsym --release Control+Print exec $screenshot Select-output
-bindsym --release Control+Alt+Print exec $screenshot Region
-bindsym --release $mod+Print exec $screenshot Select-window
-bindsym --release $mod+Shift+Print exec $screenshot
-
-# finder
-bindsym $mod+Shift+f exec rofi -show find -modi find:$finder
-
-# very important stuff
-bindsym $mod+Shift+e exec $emoji
 
 # clipboard
 exec wl-paste -t text --watch clipman store --notify

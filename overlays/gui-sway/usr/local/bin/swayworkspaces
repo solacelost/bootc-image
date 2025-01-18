@@ -7,53 +7,45 @@
 # F keys for dynamic workspaces
 
 declare -A workspace
-declare -A assignment
 
 # Normal terminal workspace
 workspace[1]=""
 # Primary personal browser workspace
 workspace[2]=""
-assignment[google-chrome]=2
 # Games and primary scratch pad
 workspace[3]=""
-assignment[game]=3
 # Mattermost and Discord
 workspace[4]=""
-assignment[discord]=4
-assignment[mattermost]=4
 # Red Hat browser/calendar/etc
 workspace[5]=""
-assignment[work-browser]=5
 workspace[6]=""
 # Slack and Signal
 workspace[7]=""
-assignment[slack]=7
-assignment[signal]=7
 # Just spotify
 workspace[8]=""
 
 function wrap {
-    if [ $# -gt 0 ]; then
-        if [ "$1" = '-h' ]; then
-            shift
-            echo "${*}" | fold -sw 78 | awk -v INDENT=0 'INDENT==1{print "  "$0} INDENT==0{print $0; INDENT=1}'
-        else
-            echo "${*}" | fold -s
-        fi
-    else
-        fold -s
-    fi
+	if [ $# -gt 0 ]; then
+		if [ "$1" = '-h' ]; then
+			shift
+			echo "${*}" | fold -sw 78 | awk -v INDENT=0 'INDENT==1{print "  "$0} INDENT==0{print $0; INDENT=1}'
+		else
+			echo "${*}" | fold -s
+		fi
+	else
+		fold -s
+	fi
 }
 
 prog="$(basename "$(realpath "$0")")"
 print_usage() {
-    wrap -h "usage: $prog [(-w |--workspace=)NUM] [(-m |--move=)NUM] [(-d |--dynamic=)[+]NUM] [(-r |--relocate=)NUM] [(-a |--assign=)APP]"
+	wrap -h "usage: $prog [(-w |--workspace=)NUM] [(-m |--move=)NUM] [(-d |--dynamic=)[+]NUM] [(-r |--relocate=)NUM]"
 }
 print_help() {
-    wrap "$prog - Copyright 2021 James Harmison <jharmison@gmail.com>"
-    echo
-    print_usage
-    cat << ENDOFHELP
+	wrap "$prog - Copyright 2021 James Harmison <jharmison@gmail.com>"
+	echo
+	print_usage
+	cat <<ENDOFHELP
 
 DESCRIPTION
     A script to help with workspace and app management on swaywm.
@@ -64,122 +56,117 @@ OPTIONS
     -m NUM|--move=NUM         Move the focused container to primary workspace NUM
     -d +|NUM|--dynamic=+|NUM  Move to dynamic workspace NUM or (if +) add one
     -r NUM|--relocate=NUM     Move the focused container to dynamic workspace NUM
-    -a APP|--assign=APP       Move the app for which rules already exist to the
-                                assigned workspace
     -s|--setup                Perform initial workspace setup
 ENDOFHELP
 }
 
 parse() {
-    if [ "${1:0:2}" = "--" ]; then
-        echo "${1#--*=}"
-        return 0
-    else
-        echo "$2"
-        return 1
-    fi
+	if [ "${1:0:2}" = "--" ]; then
+		echo "${1#--*=}"
+		return 0
+	else
+		echo "$2"
+		return 1
+	fi
 }
 err=0
 app=
 num=
 action=
 while [ $# -gt 0 ]; do
-    case "$1" in
-        -w|--workspace=*)
-            num=$(parse "${@}"); shift $?
-            action=switch
-            ;;
-        -m|--move=*)
-            num=$(parse "${@}"); shift $?
-            action=move
-            ;;
-        -d|--dynamic=*)
-            num=$(parse "${@}"); shift $?
-            action=dynamic
-            ;;
-        -r|--relocate=*)
-            num=$(parse "${@}"); shift $?
-            action=relocate
-            ;;
-        -a|--assign=*)
-            app=$(parse "${@}"); shift $?
-            action=assign
-            ;;
-        -s|--setup)
-            action=setup
-            ;;
-        -h|--help)
-            print_help
-            exit 0
-            ;;
-        *)
-            echo "Unknown arg: $1" >&2
-            ((err++))
-    esac; shift
+	case "$1" in
+	-w | --workspace=*)
+		num=$(parse "${@}")
+		shift $?
+		action=switch
+		;;
+	-m | --move=*)
+		num=$(parse "${@}")
+		shift $?
+		action=move
+		;;
+	-d | --dynamic=*)
+		num=$(parse "${@}")
+		shift $?
+		action=dynamic
+		;;
+	-r | --relocate=*)
+		num=$(parse "${@}")
+		shift $?
+		action=relocate
+		;;
+	-s | --setup)
+		action=setup
+		;;
+	-h | --help)
+		print_help
+		exit 0
+		;;
+	*)
+		echo "Unknown arg: $1" >&2
+		((err++))
+		;;
+	esac
+	shift
 done
-if (( err > 0 )); then
-    print_usage >&2
-    exit "$err"
+if ((err > 0)); then
+	print_usage >&2
+	exit "$err"
 fi
 
-navigate () {
-    swaymsg "workspace $*"
+navigate() {
+	swaymsg "workspace $*"
 }
-move () {
-    swaymsg "move container to workspace $*"
+move() {
+	swaymsg "move container to workspace $*"
 }
-workspace () {
-    label="${workspace[$1]}"
-    if [ -n "$label" ]; then
-        echo -n "$1: ${workspace[$1]}"
-    else
-        echo -n "$1"
-    fi
+workspace() {
+	label="${workspace[$1]}"
+	if [ -n "$label" ]; then
+		echo -n "$1: ${workspace[$1]}"
+	else
+		echo -n "$1"
+	fi
 }
-dynamic_workspaces () {
-    remap='map({name: .name, nodes: [.nodes, .floating_nodes, .focus]|flatten|length})[]'
-    has_nodes='select(.nodes != 0)'
-    is_dynamic='select (.name|startswith("("))'
-    swaymsg -t get_workspaces | jq -r ". | $remap | $has_nodes | $is_dynamic | .name"
+dynamic_workspaces() {
+	remap='map({name: .name, nodes: [.nodes, .floating_nodes, .focus]|flatten|length})[]'
+	has_nodes='select(.nodes != 0)'
+	is_dynamic='select (.name|startswith("("))'
+	swaymsg -t get_workspaces | jq -r ". | $remap | $has_nodes | $is_dynamic | .name"
 }
-new_dynamic () {
-    readarray existing < <(dynamic_workspaces | tr '\n' ' ')
-    echo "existing dynamic spaces: ${existing[*]}" >&2
-    echo -n "creating new workspace" >&2
-    for i in $(seq 12); do
-        if [[ ! " ${existing[*]} " =~ " ($i) " ]]; then
-            echo " ($i)"
-            navigate "($i)"
-            return 0
-        fi
-    done
-    return 1
+new_dynamic() {
+	readarray existing < <(dynamic_workspaces | tr '\n' ' ')
+	echo "existing dynamic spaces: ${existing[*]}" >&2
+	echo -n "creating new workspace" >&2
+	for i in $(seq 12); do
+		if [[ ! " ${existing[*]} " =~ " ($i) " ]]; then
+			echo " ($i)"
+			navigate "($i)"
+			return 0
+		fi
+	done
+	return 1
 }
 
 case $action in
-    switch)
-        navigate $(workspace $num)
-        ;;
-    move)
-        move $(workspace $num)
-        ;;
-    dynamic)
-        if [ "${num}" = "+" ]; then
-            new_dynamic
-        else
-            navigate "($num)"
-        fi
-        ;;
-    relocate)
-        move "($num)"
-        ;;
-    assign)
-        # disabled for now
-        # num="${assignment[$app]:-12}"
-        # move $(workspace $num)
-        # navigate $(workspace $num)
-        ;;
-    setup)
-        navigate $(workspace 1)
-        ;;
+switch)
+	navigate $(workspace $num)
+	;;
+move)
+	move $(workspace $num)
+	;;
+dynamic)
+	if [ "${num}" = "+" ]; then
+		new_dynamic
+	else
+		navigate "($num)"
+	fi
+	;;
+relocate)
+	move "($num)"
+	;;
+setup)
+	sleep 1
+	navigate $(workspace 1)
+	;;
 esac
