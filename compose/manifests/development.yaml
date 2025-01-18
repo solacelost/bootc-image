@@ -18,6 +18,7 @@ packages:
   - nodejs-npm
   - oniguruma
   - patch
+  - python3-pip
   - python3-virtualenv
   - ripgrep
   - pigz
