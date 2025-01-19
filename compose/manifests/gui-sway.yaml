@@ -29,7 +29,7 @@ packages:
   - xdg-desktop-portal-gtk
   - fprintd-pam
   - plymouth-system-theme
-  - lxpolkit
+  - mate-polkit
   - wev
   - wlr-randr
   - bolt
