@@ -2,8 +2,8 @@
 *.ks
 *.rpm
 auth.json
-.build
-.push
-boot-image/container
+.build*
+.push*
+boot-image/container*
 tmp/*
 !tmp/.gitkeep

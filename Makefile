@@ -27,6 +27,7 @@ TZ := America/New_York
 # Templating the kickstart variables is tricky
 KICKSTART_VARS = IMAGE=$(IMAGE) \
 	DEFAULT_DISK=$(DEFAULT_INSTALL_DISK) \
+	ISO_SUFFIX=$(ISO_SUFFIX) \
 	USERNAME=$(USERNAME) \
 	SSH_KEY="$(shell cat overlays/users/usr/local/ssh/$(USERNAME).keys 2>/dev/null)" \
 	PASSWORD="$(PASSWORD)" \
@@ -43,19 +44,19 @@ overlays/users/usr/local/ssh/$(USERNAME).keys:
 tmp/$(LATEST_DIGEST):
 	@touch $@
 
-.build: Containerfile overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f) $(shell find compose -type f) tmp/$(LATEST_DIGEST)
+.build-$(TAG): Containerfile overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f) $(shell find compose -type f) tmp/$(LATEST_DIGEST)
 	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --from $(BASE) . -t $(IMAGE)
 	@touch $@
 
 .PHONY: build
-build: .build
+build: .build-$(TAG)
 
-.push: .build
+.push-$(TAG): .build-$(TAG)
 	$(RUNTIME) push $(IMAGE)
 	@touch $@
 
 .PHONY: push
-push: .push
+push: .push-$(TAG)
 
 .PHONY: debug
 debug:
@@ -65,22 +66,22 @@ boot-image/fedora-live.x86_64.iso:
 	curl -Lo $@ https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/Fedora-Everything-netinst-x86_64-${BOOT_VERSION}-${BOOT_IMAGE_VERSION}.iso
 
 boot-image/bootc$(ISO_SUFFIX).ks: boot-image/bootc.ks.tpl
-	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$SSH_KEY,$$DEFAULT_DISK,$$PASSWORD,$$NETWORK,$$TZ' < $< >$@
+	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$SSH_KEY,$$DEFAULT_DISK,$$ISO_SUFFIX,$$PASSWORD,$$NETWORK,$$TZ' < $< >$@
 
-boot-image/container/index.json: .build
-	rm -rf boot-image/container
-	skopeo copy containers-storage:$(IMAGE) oci:boot-image/container
+boot-image/container$(ISO_SUFFIX)/index.json: .build-$(TAG)
+	rm -rf boot-image/container$(ISO_SUFFIX)
+	skopeo copy containers-storage:$(IMAGE) oci:boot-image/container$(ISO_SUFFIX)
 
-boot-image/bootc-install$(ISO_SUFFIX).iso: boot-image/bootc$(ISO_SUFFIX).ks boot-image/fedora-live.x86_64.iso boot-image/container/index.json
+boot-image/bootc-install$(ISO_SUFFIX).iso: boot-image/bootc$(ISO_SUFFIX).ks boot-image/fedora-live.x86_64.iso boot-image/container$(ISO_SUFFIX)/index.json
 	@if [ -e $@ ]; then rm -f $@; fi
-	sudo mkksiso --add boot-image/container --ks $< boot-image/fedora-live.x86_64.iso $@
+	sudo mkksiso --add boot-image/container$(ISO_SUFFIX) --ks $< boot-image/fedora-live.x86_64.iso $@
 
 .PHONY: iso
 iso: boot-image/bootc-install$(ISO_SUFFIX).iso
 
 .PHONY: vm
 vm: boot-image/bootc-install$(ISO_SUFFIX).iso
-	@hack/create_vm.sh
+	@hack/create_vm.sh $(ISO_SUFFIX)
 
 .PHONY: burn
 burn: boot-image/bootc-install$(ISO_SUFFIX).iso

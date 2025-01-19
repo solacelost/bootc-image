@@ -84,7 +84,7 @@ keyboard us
 timezone ${TZ}
 
 # Install from our injected image
-ostreecontainer --url=/run/install/repo/container --transport=oci --no-signature-verification
+ostreecontainer --url=/run/install/repo/container${ISO_SUFFIX} --transport=oci --no-signature-verification
 
 services --enabled=sshd
 
