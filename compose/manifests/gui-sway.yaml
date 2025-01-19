@@ -40,13 +40,13 @@ packages:
   - sound-theme-freedesktop
   - xdg-user-dirs
   - clipman
+  - tuigreet
 
 include:
-  - gui-apps.yaml
-  - gui-audio.yaml
-  - gui-games.yaml
-  - gui-media.yaml
-  - redhat.yaml
+  - gui/apps.yaml
+  - gui/audio.yaml
+  - gui/games.yaml
+  - gui/media.yaml
 
 exclude-packages:
   # I don't want GDM

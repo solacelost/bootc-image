@@ -24,10 +24,10 @@ container-cmd:
   - /sbin/init
 check-passwd:
   type: "file"
-  filename: "passwd"
+  filename: "base/passwd"
 check-groups:
   type: "file"
-  filename: "group"
+  filename: "base/group"
 
 packages:
   - kernel

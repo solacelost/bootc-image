@@ -20,5 +20,6 @@ include:
   - manifests/development.yaml
   - manifests/gui-sway.yaml
   - manifests/network.yaml
+  - manifests/redhat.yaml
   - manifests/webcam.yaml
   - manifests/yubikey.yaml
