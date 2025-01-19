@@ -1,1 +1,0 @@
-/usr/local/home/.bash_profile
