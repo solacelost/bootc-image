@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 XDG_CURRENT_DESKTOP=sway
 export XDG_CURRENT_DESKTOP
