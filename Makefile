@@ -1,3 +1,13 @@
+ifndef __mk_ready
+MAKEFLAGS += --check-symlink-times
+MAKEFLAGS += --no-print-directory
+.DEFAULT_GOAL := all
+
+%:
+	@$(MAKE) __mk_ready=1 $@
+
+else
+
 # Vars for building the bootc image
 FEDORA_VERSION ?= 41
 RUNTIME ?= podman
@@ -91,3 +101,5 @@ burn: boot-image/bootc-install$(ISO_SUFFIX).iso
 clean:
 	rm -rf .build* .push* boot-image/*.iso boot-image/*.ks
 	buildah prune -f
+
+endif # __mk_ready
