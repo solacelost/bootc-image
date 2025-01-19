@@ -44,7 +44,7 @@ overlays/users/usr/local/ssh/$(USERNAME).keys:
 tmp/$(LATEST_DIGEST):
 	@touch $@
 
-.build-$(TAG): Containerfile overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f) $(shell find compose -type f) tmp/$(LATEST_DIGEST)
+.build-$(TAG): Containerfile overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l) $(shell find compose -type f -o -type l) tmp/$(LATEST_DIGEST)
 	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --from $(BASE) . -t $(IMAGE)
 	@touch $@
 
