@@ -185,13 +185,11 @@ label:focus {
     background-color: #ffa000;
 }
 
-#temperature-cpu,
-#temperature-gpu {
+#temperature {
     background-color: #f0932b;
 }
 
-#temperature-cpu.critical,
-#temperature-gpu.critical {
+#temperature.critical {
     background-color: #eb4d4b;
 }
 
