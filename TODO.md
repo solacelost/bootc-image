@@ -3,7 +3,7 @@
 - [x] Flatpak handling
 - [ ] Pipeline definition for OKD
 - [ ] Implement a decent Shikane setup
-- [ ] Encrypt home by default
+- [ ] Encrypt /var partition by default
 - [ ] Enable fprintd to detect fingerprint reader and prompt to set if unset
 - [ ] Investigate RaySession?
 - [ ] Re-implement DSLR webcam setup
