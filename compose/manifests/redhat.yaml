@@ -1,7 +1,3 @@
 packages:
   - google-chrome-stable
   - NetworkManager-openvpn
-
-include:
-  - redhat/certs/certs.yaml
-  - redhat/vpn/profiles.yaml
