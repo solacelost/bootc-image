@@ -2,7 +2,8 @@
     "layer": "top",
     "height": 34, // Waybar height (to be removed for auto height)
     "modules-left": ["sway/workspaces", "custom/scratchpad", "custom/separator", "sway/mode", "sway/window"],
-    "modules-right": ["custom/weather", "custom/media", "idle_inhibitor", "custom/makomode", "pulseaudio", "network", "custom/vpn", "group/hardware", "group/temperature", "backlight", "battery", "group/keyboard", "tray", "clock"],
+    "modules-center": ["custom/weather"],
+    "modules-right": ["custom/media", "idle_inhibitor", "custom/makomode", "pulseaudio", "network", "custom/vpn", "group/hardware", "group/temperature", "backlight", "battery", "group/keyboard", "tray", "clock"],
 
     "group/hardware": {"modules": ["cpu", "memory"]},
 

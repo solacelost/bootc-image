@@ -53,8 +53,7 @@ window#waybar.hidden {
 #cpu,
 #memory,
 #disk,
-#temperature-cpu,
-#temperature-gpu,
+#temperature,
 #backlight,
 #network,
 #pulseaudio,
@@ -186,10 +185,12 @@ label:focus {
 }
 
 #temperature {
+    padding: 0 5 px;
     background-color: #f0932b;
 }
 
 #temperature.critical {
+    padding: 0 5 px;
     background-color: #eb4d4b;
 }
 
