@@ -14,7 +14,7 @@ RUNTIME ?= podman
 USERNAME ?= james
 PASSWORD ?= password
 PRIVATE_KEY ?= $$HOME/.ssh/id_ed25519
-BASE ?= registry.fedoraproject.org/fedora:$(FEDORA_VERSION)
+BASE ?= registry.fedoraproject.org/fedora:rawhide
 REGISTRY ?= registry.jharmison.com
 REPOSITORY ?= library/fedora-bootc
 REG_REPO := $(REGISTRY)/$(REPOSITORY)
@@ -55,7 +55,7 @@ tmp/$(LATEST_DIGEST):
 	@touch $@
 
 .build-$(TAG): Containerfile overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l) $(shell find compose -type f -o -type l) tmp/$(LATEST_DIGEST)
-	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --from $(BASE) . -t $(IMAGE)
+	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --build-arg=FEDORA_VERSION=$(FEDORA_VERSION) --from $(BASE) . -t $(IMAGE)
 	@touch $@
 
 .PHONY: build

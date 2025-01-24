@@ -1,7 +1,8 @@
 # hadolint global ignore=DL3040,DL3041,DL4006
-FROM registry.fedoraproject.org/fedora:41 as builder
+FROM registry.fedoraproject.org/fedora:rawhide as builder
 
 ARG MANIFEST=fedora-bootc.yaml
+ARG FEDORA_VERSION=41
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
@@ -17,8 +18,7 @@ RUN --mount=type=cache,target=/workdir \
     --mount=type=bind,rw=true,src=./tmp/,dst=/buildcontext \
     cp /etc/yum.repos.d/*.repo ./ && \
     rm -f /buildcontext/out.ociarchive && \
-    releasever=$(grep '^VERSION_ID=' /etc/os-release | cut -d= -f2) && \
-    echo "releasever: ${releasever}" >> ${MANIFEST} && \
+    echo "releasever: ${FEDORA_VERSION}" >> ${MANIFEST} && \
     rpm-ostree compose image --image-config fedora-bootc-config.json \
     --cachedir=/workdir --format=ociarchive --initialize ${MANIFEST} \
     /buildcontext/out.ociarchive

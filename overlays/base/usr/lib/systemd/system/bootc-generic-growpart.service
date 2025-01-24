@@ -6,6 +6,8 @@ Documentation=https://gitlab.com/fedora/bootc/docs
 ConditionVirtualization=vm
 # This helps verify that we're running in a bootc/ostree based target.
 ConditionPathIsMountPoint=/sysroot
+# For someone making a smaller image, assume they have this handled.
+ConditionPathExists=/usr/bin/growpart
 # We want to run before any e.g. large container images might be pulled.
 DefaultDependencies=no
 Requires=sysinit.target

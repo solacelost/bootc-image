@@ -1,8 +1,7 @@
 variables:
   distro: "fedora"
 
-boot-location: modules
-tmp-is-dir: true
+edition: "2024"
 machineid-compat: true
 recommends: false
 rpmdb: target
@@ -65,7 +64,7 @@ packages:
   - plymouth
   # crun recommends but doesn't require criu and criu-libs. We want them for
   # checkpoint/restore. https://github.com/coreos/fedora-coreos-tracker/issues/1370
-  - criu criu-libs
+  - crun criu criu-libs
   # storage
   - cryptsetup
   - lvm2
@@ -155,6 +154,28 @@ packages:
   - mcelog
 
 postprocess:
+  # Configuration to enable kernel-install integration
+  - |
+    #!/usr/bin/env bash
+    set -xeuo pipefail
+    source /usr/lib/os-release
+    # Check if the ID is Fedora and VERSION_ID is 42 or higher
+    if [[ "$ID" == "fedora" && "$VERSION_ID" -ge 42 ]]; then
+        echo -e "# kernel-install will not try to run dracut and allow rpm-ostree to\n\
+    # take over. Rpm-ostree will use this to know that it is responsible\n\
+    # to run dracut and ensure that there is only one kernel in the image\n\
+    layout=ostree" | tee /usr/lib/kernel/install.conf > /dev/null
+    fi
+    # By default dnf keeps multiple versions of the kernel, with this
+    # configuration we tell dnf to treat the kernel as everything else.
+    # https://dnf.readthedocs.io/en/latest/conf_ref.html#main-options
+    # Let's add the config to a distribution configuration file if dnf5
+    # is used, we append to /etc/dnf/dnf.conf if not.
+    if [ -d "/usr/share/dnf5/libdnf.conf.d/" ]; then
+      echo -e "[main]\ninstallonlypkgs=''" >> /usr/share/dnf5/libdnf.conf.d/20-ostree-installonlypkgs.conf
+    else
+      echo "installonlypkgs=''" >> /etc/dnf/dnf.conf
+    fi
   # Undo RPM scripts enabling units; we want the presets to be canonical
   # https://github.com/projectatomic/rpm-ostree/issues/1803
   - |
