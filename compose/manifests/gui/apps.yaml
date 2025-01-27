@@ -2,7 +2,7 @@ packages:
   - firefox
   - guitarix
   - lv2-guitarix-plugins
-  - pinta
+  - drawing
   - piper
   - yubikey-personalization-gui
   - flatpak
