@@ -1,0 +1,10 @@
+[Unit]
+Description=DSLR webcam script using gphoto2 and ffmpeg
+
+[Service]
+ExecStart=/usr/local/bin/dslr-webcam --first
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=basic.target
