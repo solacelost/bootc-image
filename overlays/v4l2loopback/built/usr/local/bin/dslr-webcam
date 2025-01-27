@@ -4,7 +4,7 @@ camera_name="Canon_EOS_Rebel_T7"
 camera_device=04a9:32e1
 
 capture_running() {
-    ps -elf | grep -qF -- 'gphoto2 --stdout --capture-movie'
+    ps -elf | grep -q -- '[g]photo2 --stdout --capture-movie'
 }
 camera_plugged_in() {
     lsusb -d $camera_device >/dev/null 2>&1
@@ -23,7 +23,19 @@ capture() {
 }
 
 # Save the device name of the camera after following all the logic
-device=$(v4l2loopback-ctl list 2>/dev/null | awk "/$camera_name/{print $1}")
+device=$(v4l2loopback-ctl list 2>/dev/null | awk "/$camera_name/{print \$1}")
+
+if [ ! -e /run/.v4l2loopback-image ]; then
+    set -x
+    v4l2loopback-ctl set-timeout-image -t 2000 $device /usr/local/share/images/unavailable.png
+    { set +x; } 2>/dev/null
+    touch /run/.v4l2loopback-image
+fi
+if ! { v4l2loopback-ctl get-caps $device || :; } | grep -qF 'YU12:1056'; then
+    set -x
+    v4l2loopback-ctl set-caps $device YU12:1056x704@25/1
+    { set +x; } 2>/dev/null
+fi
 
 was_plugged=false
 
