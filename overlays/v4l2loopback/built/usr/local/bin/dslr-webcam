@@ -1,16 +1,25 @@
 #!/bin/bash -e
 
-camera_name="Canon EOS Rebel T7"
+camera_name="Canon_EOS_Rebel_T7"
 camera_device=04a9:32e1
 
 capture_running() {
-    ps -elf | grep -q -- '[g]photo2 --stdout --capture-movie'
+    ps -elf | grep -qF -- 'gphoto2 --stdout --capture-movie'
 }
 camera_plugged_in() {
     lsusb -d $camera_device >/dev/null 2>&1
 }
 capture() {
-    gphoto2 --stdout --capture-movie | ffmpeg -vaapi_device /dev/dri/renderD128 -vcodec rawvideo -pix_fmt yuv420p -threads:v 1 -filter_threads 1 -i - -vf 'format=nv12,hwupload' -c:v mjpeg_vaapi -f v4l2 -c copy $device
+    set -x
+    gphoto2 --stdout --capture-movie | ffmpeg \
+        -hwaccel vaapi \
+        -c:v mjpeg \
+        -i - \
+        -vcodec rawvideo \
+        -pix_fmt yuv420p \
+        -threads 2 \
+        -f v4l2 $device
+    { set +x; } 2>/dev/null
 }
 
 # Save the device name of the camera after following all the logic
