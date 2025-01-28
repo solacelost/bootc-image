@@ -16,10 +16,8 @@ COPY overlays/repos/ /
 RUN --mount=type=cache,id=ostree-cache,target=/cache \
     --mount=type=bind,rw=true,src=./tmp/,dst=/buildcontext,bind-propagation=shared \
     cp /etc/yum.repos.d/*.repo ./ && \
-    ls -halF /buildcontext && \
     rm -f /buildcontext/out.ociarchive && \
     echo "releasever: ${FEDORA_VERSION}" >> fedora-bootc.yaml && \
-    sleep 1 && \
     rpm-ostree compose image --image-config fedora-bootc-config.json \
     --cachedir=/cache --format=ociarchive --initialize fedora-bootc.yaml \
     /buildcontext/out.ociarchive
