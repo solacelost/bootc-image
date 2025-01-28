@@ -20,15 +20,14 @@ RUN --mount=type=cache,id=ostree-cache,target=/cache \
     echo "releasever: ${FEDORA_VERSION}" >> fedora-bootc.yaml && \
     rpm-ostree compose image --image-config fedora-bootc-config.json \
     --cachedir=/cache --format=ociarchive --initialize fedora-bootc.yaml \
-    /buildcontext/out.ociarchive && \
+    /buildcontext/out.ociarchive
 
 FROM oci-archive:./tmp/out.ociarchive as composed
 
-# Need to reference builder here to force ordering. But since we have to run
-# something anyway, we might as well cleanup after ourselves.
+# Need to reference builder here to force ordering.
 RUN --mount=type=bind,from=builder,src=.,target=/var/tmp \
     --mount=type=bind,rw=true,src=./tmp,dst=/buildcontext,bind-propagation=shared \
-      rm -f /buildcontext/out.ociarchive
+      true
 
 # Ensure libostree configuration and other important base files are present
 COPY overlays/composed/ /
