@@ -1,7 +1,6 @@
 # hadolint global ignore=DL3040,DL3041,DL4006
 FROM registry.fedoraproject.org/fedora:41 as builder
 
-ARG MANIFEST=fedora-bootc.yaml
 ARG FEDORA_VERSION=41
 
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -15,13 +14,14 @@ WORKDIR /src
 COPY overlays/repos/ /
 
 RUN --mount=type=cache,id=ostree-cache,target=/cache \
-    --mount=type=bind,rw=true,src=./tmp/,dst=/buildcontext \
+    --mount=type=bind,rw=true,src=./tmp/,dst=/buildcontext,bind-propagation=shared \
     cp /etc/yum.repos.d/*.repo ./ && \
     ls -halF /buildcontext && \
     rm -f /buildcontext/out.ociarchive && \
-    echo "releasever: ${FEDORA_VERSION}" >> ${MANIFEST} && \
+    echo "releasever: ${FEDORA_VERSION}" >> fedora-bootc.yaml && \
+    sleep 1 && \
     rpm-ostree compose image --image-config fedora-bootc-config.json \
-    --cachedir=/cache --format=ociarchive --initialize ${MANIFEST} \
+    --cachedir=/cache --format=ociarchive --initialize fedora-bootc.yaml \
     /buildcontext/out.ociarchive
 
 FROM oci-archive:./tmp/out.ociarchive as composed
