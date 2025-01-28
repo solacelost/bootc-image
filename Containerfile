@@ -1,5 +1,5 @@
 # hadolint global ignore=DL3040,DL3041,DL4006
-FROM registry.fedoraproject.org/fedora:rawhide as builder
+FROM registry.fedoraproject.org/fedora:41 as builder
 
 ARG MANIFEST=fedora-bootc.yaml
 ARG FEDORA_VERSION=41
@@ -14,13 +14,14 @@ WORKDIR /src
 # Ensure our repos and keys are available for composing
 COPY overlays/repos/ /
 
-RUN --mount=type=cache,target=/workdir \
+RUN --mount=type=cache,id=ostree-cache,target=/cache \
     --mount=type=bind,rw=true,src=./tmp/,dst=/buildcontext \
     cp /etc/yum.repos.d/*.repo ./ && \
+    ls -halF /buildcontext && \
     rm -f /buildcontext/out.ociarchive && \
     echo "releasever: ${FEDORA_VERSION}" >> ${MANIFEST} && \
     rpm-ostree compose image --image-config fedora-bootc-config.json \
-    --cachedir=/workdir --format=ociarchive --initialize ${MANIFEST} \
+    --cachedir=/cache --format=ociarchive --initialize ${MANIFEST} \
     /buildcontext/out.ociarchive
 
 FROM oci-archive:./tmp/out.ociarchive as composed
