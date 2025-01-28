@@ -31,6 +31,8 @@ RUN --mount=type=bind,from=builder,src=.,target=/var/tmp \
 
 # Ensure libostree configuration and other important base files are present
 COPY overlays/composed/ /
+# Ensure our repos and keys are available for use later maybe
+COPY overlays/repos/ /
 
 FROM composed as module-build
 
