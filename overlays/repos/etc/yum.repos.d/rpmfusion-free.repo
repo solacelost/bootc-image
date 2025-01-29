@@ -7,7 +7,7 @@ metadata_expire=14d
 type=rpm-md
 gpgcheck=1
 repo_gpgcheck=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
+gpgkey=https://raw.githubusercontent.com/rpmfusion/rpmfusion-free-release/d8ab7bf37e9f060b82431b53857088accd5f9672/RPM-GPG-KEY-rpmfusion-free-fedora-2020
 
 [rpmfusion-free-debuginfo]
 name=RPM Fusion for Fedora $releasever - Free - Debug
@@ -18,7 +18,7 @@ metadata_expire=7d
 type=rpm-md
 gpgcheck=1
 repo_gpgcheck=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
+gpgkey=https://raw.githubusercontent.com/rpmfusion/rpmfusion-free-release/d8ab7bf37e9f060b82431b53857088accd5f9672/RPM-GPG-KEY-rpmfusion-free-fedora-2020
 
 [rpmfusion-free-source]
 name=RPM Fusion for Fedora $releasever - Free - Source
@@ -29,7 +29,7 @@ metadata_expire=7d
 type=rpm-md
 gpgcheck=1
 repo_gpgcheck=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
+gpgkey=https://raw.githubusercontent.com/rpmfusion/rpmfusion-free-release/d8ab7bf37e9f060b82431b53857088accd5f9672/RPM-GPG-KEY-rpmfusion-free-fedora-2020
 
 [rpmfusion-free-updates]
 name=RPM Fusion for Fedora $releasever - Free - Updates
@@ -40,7 +40,7 @@ enabled_metadata=1
 type=rpm-md
 gpgcheck=1
 repo_gpgcheck=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
+gpgkey=https://raw.githubusercontent.com/rpmfusion/rpmfusion-free-release/d8ab7bf37e9f060b82431b53857088accd5f9672/RPM-GPG-KEY-rpmfusion-free-fedora-2020
 
 [rpmfusion-free-updates-debuginfo]
 name=RPM Fusion for Fedora $releasever - Free - Updates Debug
@@ -50,7 +50,7 @@ enabled=0
 type=rpm-md
 gpgcheck=1
 repo_gpgcheck=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
+gpgkey=https://raw.githubusercontent.com/rpmfusion/rpmfusion-free-release/d8ab7bf37e9f060b82431b53857088accd5f9672/RPM-GPG-KEY-rpmfusion-free-fedora-2020
 
 [rpmfusion-free-updates-source]
 name=RPM Fusion for Fedora $releasever - Free - Updates Source
@@ -60,4 +60,4 @@ enabled=0
 type=rpm-md
 gpgcheck=1
 repo_gpgcheck=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
+gpgkey=https://raw.githubusercontent.com/rpmfusion/rpmfusion-free-release/d8ab7bf37e9f060b82431b53857088accd5f9672/RPM-GPG-KEY-rpmfusion-free-fedora-2020
