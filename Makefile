@@ -55,10 +55,11 @@ tmp/$(LATEST_DIGEST):
 	@touch $@
 
 .build-$(TAG): Containerfile overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l) $(shell find compose -type f -o -type l) tmp/$(LATEST_DIGEST)
+	rm -f tmp/out.ociarchive
 	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --build-arg=FEDORA_VERSION=$(FEDORA_VERSION) --from $(BASE) -f Containerfile.compose . -t $(IMAGE)-composed
 	$(RUNTIME) run --rm --replace --name $(TAG)-composed --detach --entrypoint /bin/sh $(IMAGE)-composed -c 'while sleep 10; do true; done'
 	$(RUNTIME) cp $(TAG)-composed:/buildcontext/out.ociarchive ./tmp/
-	$(RUNTIME) stop $(TAG)-detached
+	$(RUNTIME) stop $(TAG)-composed
 	$(RUNTIME) build . -t $(IMAGE)
 	@touch $@
 
