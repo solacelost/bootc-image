@@ -63,10 +63,7 @@ RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/umlaeute/v4l2loopback
 
 FROM composed as final
 
-# Install packages we couldn't compose in.
-# NOTE: Need to reference builder here to force ordering.
-RUN --mount=type=bind,from=builder,src=.,target=/var/tmp/host \
-    --mount=type=tmpfs,target=/var/cache \
+RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install \
     https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.rpm \
