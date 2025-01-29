@@ -1,36 +1,5 @@
-# hadolint global ignore=DL3040,DL3041,DL4006
-FROM registry.fedoraproject.org/fedora:41 as builder
-
-ARG FEDORA_VERSION=41
-
-RUN --mount=type=tmpfs,target=/var/cache \
-    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install rpm-ostree selinux-policy-targeted
-
-COPY compose /src
-WORKDIR /src
-
-# Ensure our repos and keys are available for composing
-COPY overlays/repos/ /
-
-RUN --mount=type=cache,id=ostree-cache,target=/cache \
-    --mount=type=bind,rw=true,src=./tmp,dst=/buildcontext,bind-propagation=shared \
-    cp /etc/yum.repos.d/*.repo ./ && \
-    rm -f /buildcontext/out.ociarchive && \
-    echo "releasever: ${FEDORA_VERSION}" >> fedora-bootc.yaml && \
-    rpm-ostree compose image --image-config fedora-bootc-config.json \
-    --cachedir=/cache --format=ociarchive --initialize fedora-bootc.yaml \
-    /buildcontext/out.ociarchive
-
 FROM oci-archive:./tmp/out.ociarchive as composed
 
-# Need to reference builder here to force ordering.
-RUN --mount=type=bind,from=builder,src=.,target=/var/tmp \
-    --mount=type=bind,rw=true,src=./tmp,dst=/buildcontext,bind-propagation=shared \
-      true
-
-# Ensure libostree configuration and other important base files are present
-COPY overlays/composed/ /
 # Ensure our repos and keys are available for use later maybe
 COPY overlays/repos/ /
 

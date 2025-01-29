@@ -1,0 +1,3 @@
+add-files:
+  - - prepare-root.conf
+    - /usr/lib/ostree/prepare-root.conf

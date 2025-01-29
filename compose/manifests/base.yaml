@@ -200,6 +200,7 @@ postprocess:
 # Ensure that our generated initrd has the modules we want.
 include:
   - initrd/dracut.yaml
+  - ostree/prepare-root.yaml
 
 # Things we don't expect to ship on the host.  We currently
 # have recommends: false so these could only come in via

@@ -55,19 +55,12 @@ tmp/$(LATEST_DIGEST):
 	@touch $@
 
 .build-$(TAG): Containerfile overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l) $(shell find compose -type f -o -type l) tmp/$(LATEST_DIGEST)
-	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --build-arg=FEDORA_VERSION=$(FEDORA_VERSION) --from $(BASE) . -t $(IMAGE)
+	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --build-arg=FEDORA_VERSION=$(FEDORA_VERSION) --from $(BASE) -f Containerfile.compose . -t $(IMAGE)-composed
+	$(RUNTIME) run --rm --replace --name $(TAG)-composed --detach --entrypoint /bin/sh $(IMAGE)-composed -c 'while sleep 10; do true; done'
+	$(RUNTIME) cp $(TAG)-composed:/buildcontext/out.ociarchive ./tmp/
+	$(RUNTIME) stop $(TAG)-detached
+	$(RUNTIME) build . -t $(IMAGE)
 	@touch $@
-
-.PHONY: manual-build
-manual-build:  overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l) $(shell find compose -type f -o -type l) tmp/$(LATEST_DIGEST)
-	cp /etc/yum.repos.d/*.repo compose/
-	echo "releasever: $(FEDORA_VERSION)" >> compose/fedora-bootc.yaml
-	cd compose && sudo rpm-ostree compose image --image-config fedora-bootc-config.json --format ociarchive --initialize fedora-bootc.yaml ../tmp/out.ociarchive
-	git checkout compose/fedora-bootc.yaml
-	rm -rf compose/*.repo
-	awk '/FROM oci-archive/{A=1} A{print}' Containerfile > tmp/back-half.containerfile
-	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse -f tmp/back-half.containerfile . -t $(IMAGE)
-	touch .build-$(TAG)
 
 .PHONY: build
 build: .build-$(TAG)
