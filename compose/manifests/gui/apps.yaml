@@ -7,3 +7,4 @@ packages:
   - piper
   - yubikey-personalization-gui
   - flatpak
+  - zathura zathura-djvu zathura-pdf-mupdf zathura-ps zathura-bash-completion
