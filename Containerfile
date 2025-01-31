@@ -3,6 +3,21 @@ FROM oci-archive:./tmp/out.ociarchive as composed
 # Ensure our repos and keys are available for use later maybe
 COPY overlays/repos/ /
 
+FROM composed as xdg-terminal-exec-build
+
+ENV COMMIT=0def84a3ffa70831c3c63d93cf79eb1090346004
+
+WORKDIR /build
+
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install scdoc
+
+RUN curl -sLo /tmp/xdg-terminal-exec.tar.gz "https://github.com/Vladimir-csp/xdg-terminal-exec/archive/${COMMIT}.tar.gz" && \
+    tar xvzf /tmp/xdg-terminal-exec.tar.gz && \
+    cd xdg-terminal-exec-${COMMIT} && \
+    make install prefix=/built/usr/local
+
 FROM composed as module-build
 
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -29,8 +44,7 @@ RUN curl -sLo /tmp/xow_dongle.cab \
 
 # Download and build xone
 # hadolint ignore=DL3003
-RUN SHORT_COMMIT="$(echo "${COMMIT}" | cut -c1-7)" && \
-    curl -sLo /tmp/xone.tar.gz "https://github.com/medusalix/xone/archive/${COMMIT}/xone-${SHORT_COMMIT}.tar.gz" && \
+RUN curl -sLo /tmp/xone.tar.gz "https://github.com/medusalix/xone/archive/${COMMIT}.tar.gz" && \
     tar xvzf /tmp/xone.tar.gz && \
     cd "xone-${COMMIT}" && \
     curl -sLo kernel-6.12.patch https://patch-diff.githubusercontent.com/raw/medusalix/xone/pull/53.patch && \
@@ -83,6 +97,8 @@ RUN --mount=type=tmpfs,target=/var/cache \
     chmod +x /usr/local/bin/{kubectl,oc} && \
     authselect enable-feature with-fingerprint
 
+# Copy xdg-terminal-exec
+COPY --from=xdg-terminal-exec-build /built/ /
 # Copy our built modules
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
