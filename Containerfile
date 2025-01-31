@@ -103,8 +103,9 @@ COPY overlays/redhat/ /
 # Ensure our Sway image is configured correctly (configs, flatpaks, etc.)
 COPY overlays/gui-sway/ /
 
-# Ensure our certificates have been compiled into a trusted bundle
-RUN update-ca-trust
+# Ensure our certificates have been compiled into a trusted bundle, our desktop shortcuts are available, etc.
+RUN update-ca-trust && \
+    update-desktop-database
 
 # Make sure we're gucci
 RUN bootc container lint
