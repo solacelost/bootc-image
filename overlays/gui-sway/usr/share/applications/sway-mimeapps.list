@@ -1,3 +1,8 @@
+[Added Associations]
+text/html=nvim.desktop
+application/xhtml+xml=nvim.desktop
+image/tiff=org.pwmt.zathura.desktop
+
 [Default Applications]
 # Browser-related things
 text/html=google-chrome.desktop
@@ -58,7 +63,6 @@ application/x-ext-dvi=org.pwmt.zathura.desktop
 image/vnd.djvu+multipage=org.pwmt.zathura.desktop
 application/x-ext-djv=org.pwmt.zathura.desktop
 application/x-ext-djvu=org.pwmt.zathura.desktop
-image/tiff=org.pwmt.zathura.desktop
 application/x-cbr=org.pwmt.zathura.desktop
 application/x-cbz=org.pwmt.zathura.desktop
 application/x-cb7=org.pwmt.zathura.desktop
