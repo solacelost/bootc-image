@@ -36,6 +36,7 @@ image/svg+xml=imv.desktop
 image/svg+xml-compressed=imv.desktop
 image/vnd.wap.wbmp=imv.desktop
 image/x-icns=imv.desktop
+image/webp=imv.desktop
 # Documents
 application/pdf=org.pwmt.zathura.desktop
 application/x-bzpdf=org.pwmt.zathura.desktop
