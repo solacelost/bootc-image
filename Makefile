@@ -105,6 +105,7 @@ burn: boot-image/bootc-install$(ISO_SUFFIX).iso
 .PHONY: clean
 clean:
 	rm -rf .build* .push* boot-image/*.iso boot-image/*.ks boot-image/container* tmp/*
-	buildah prune -af
+	buildah rm --all
+	podman image prune --all --force
 
 endif # __mk_ready
