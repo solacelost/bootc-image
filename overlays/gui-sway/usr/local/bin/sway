@@ -24,4 +24,4 @@ export GTK_THEME
 ICON_THEME=Paper
 export ICON_THEME
 
-exec /usr/bin/sway
+exec /usr/bin/dbus-run-session -- /usr/bin/sway
