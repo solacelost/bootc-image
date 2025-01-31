@@ -68,8 +68,6 @@ packages:
   - zram-generator-defaults
   # Ensure happy muilticore support
   - irqbalance
-  # Ensure pretty booting
-  - plymouth
   # crun recommends but doesn't require criu and criu-libs. We want them for
   # checkpoint/restore. https://github.com/coreos/fedora-coreos-tracker/issues/1370
   - crun criu criu-libs

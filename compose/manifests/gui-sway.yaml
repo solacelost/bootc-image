@@ -33,7 +33,6 @@ packages:
   - xdg-desktop-portal-wlr
   - xdg-desktop-portal-gtk
   - fprintd-pam
-  - plymouth-system-theme
   - mate-polkit
   - wev
   - wlr-randr
