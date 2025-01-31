@@ -6,6 +6,11 @@ packages:
   - mako
   - materia-gtk-theme
   - nautilus
+  - nautilus-extensions
+  - nautilus-python
+  - blueman-nautilus
+  - file-roller-nautilus
+  - sushi
   - network-manager-applet
   - nm-connection-editor-desktop
   - paper-icon-theme

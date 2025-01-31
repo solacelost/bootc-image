@@ -105,6 +105,10 @@ COPY overlays/redhat/ /
 # Ensure our Sway image is configured correctly (configs, flatpaks, .bash_profile, etc.)
 COPY overlays/gui-sway/ /
 
+# Enable Nautilus integration with other terminals
+RUN python3 -m pip --no-cache-dir install nautilus-open-any-terminal && \
+    glib-compile-schemas /usr/share/glib-2.0/schemas
+
 # Ensure our certificates have been compiled into a trusted bundle
 RUN update-ca-trust
 
