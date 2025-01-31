@@ -7,7 +7,9 @@ FROM composed as module-build
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install kernel-devel cabextract
+    kver=$(dnf list --installed | awk '/kernel\.x86_64/{print $2}' | cut -d- -f1) && \
+    dnf -y install kernel-devel-$kver cabextract && \
+    find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1 > /moddir
 
 WORKDIR /build
 
@@ -33,7 +35,7 @@ RUN SHORT_COMMIT="$(echo "${COMMIT}" | cut -c1-7)" && \
     cd "xone-${COMMIT}" && \
     curl -sLo kernel-6.12.patch https://patch-diff.githubusercontent.com/raw/medusalix/xone/pull/53.patch && \
     git apply kernel-6.12.patch && \
-    moddir="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
+    moddir="$(cat /moddir)" && \
     make -C "$moddir/build" "M=$PWD" && \
     mkdir -p "/built$moddir/extra/xone" && \
     cp -r xone-*.ko "/built$moddir/extra/xone/"
@@ -50,7 +52,7 @@ COPY overlays/v4l2loopback/ /
 
 # hadolint ignore=DL3003
 RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/umlaeute/v4l2loopback/archive/v${VERSION}/v4l2loopback-${VERSION}.tar.gz" && \
-    moddir="$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)" && \
+    moddir="$(cat /moddir)" && \
     tar xvzf /tmp/v4l2loopback.tar.gz && \
     cd "v4l2loopback-${VERSION}" && \
     make V=1 install-utils DESTDIR=/built PREFIX=/usr && \
