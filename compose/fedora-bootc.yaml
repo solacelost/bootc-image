@@ -5,6 +5,7 @@ metadata:
 repos:
   - fedora
   - updates
+  - kernel-blu
   - rpmfusion-free
   - rpmfusion-free-updates
   - rpmfusion-nonfree

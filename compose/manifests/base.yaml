@@ -28,8 +28,16 @@ check-groups:
   type: "file"
   filename: "base/group"
 
+repo-packages:
+  - repo: kernel-blu
+    packages:
+      - kernel
+      - kernel-core
+      - kernel-modules
+      - kernel-modules-core
+      - kernel-modules-extra
+
 packages:
-  - kernel
   - coreutils
   - dnf5
   - systemd
