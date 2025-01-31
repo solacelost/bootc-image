@@ -74,7 +74,7 @@ RUN --mount=type=tmpfs,target=/var/cache \
     python3 -m pip --no-cache-dir install \
     git+https://github.com/AUNaseef/protonup.git@4ff9d5474eeb868d375f53a144177ba44f3b77cc \
     nautilus-open-any-terminal && \
-    glib-compile-schemas /usr/share/glib-2.0/schemas && \
+    glib-compile-schemas /usr/local/share/glib-2.0/schemas && \
     mkdir -p /usr/share/fonts/inconsolata && \
     curl -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
     chown -R root:root /usr/share/fonts/inconsolata && \
