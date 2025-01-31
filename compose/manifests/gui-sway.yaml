@@ -46,6 +46,8 @@ packages:
   - xdg-user-dirs
   - clipman
   - tuigreet
+  - qt5-wayland
+  - qt6-wayland
 
 include:
   - gui/apps.yaml
