@@ -3,8 +3,8 @@
     font-family: "Source Code Pro", "Font Awesome 6 Brands", "Font Awesome 6 Free";
     font-size: 13px;
     min-height: 0;
-    margin-left: 2;
-    margin-right: 2;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 window#waybar {
@@ -185,12 +185,12 @@ label:focus {
 }
 
 #temperature {
-    padding: 0 5 px;
+    padding: 0 5px;
     background-color: #f0932b;
 }
 
 #temperature.critical {
-    padding: 0 5 px;
+    padding: 0 5px;
     background-color: #eb4d4b;
 }
 
