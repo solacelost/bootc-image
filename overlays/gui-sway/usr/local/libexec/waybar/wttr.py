@@ -5,54 +5,54 @@ import requests
 from datetime import datetime
 
 WEATHER_CODES = {
-    '113': '☀️',
-    '116': '⛅️',
-    '119': '☁️',
-    '122': '☁️',
-    '143': '🌫',
-    '176': '🌦',
-    '179': '🌧',
-    '182': '🌧',
-    '185': '🌧',
-    '200': '⛈',
-    '227': '🌨',
-    '230': '❄️',
-    '248': '🌫',
-    '260': '🌫',
-    '263': '🌦',
-    '266': '🌦',
-    '281': '🌧',
-    '284': '🌧',
-    '293': '🌦',
-    '296': '🌦',
-    '299': '🌧',
-    '302': '🌧',
-    '305': '🌧',
-    '308': '🌧',
-    '311': '🌧',
-    '314': '🌧',
-    '317': '🌧',
-    '320': '🌨',
-    '323': '🌨',
-    '326': '🌨',
-    '329': '❄️',
-    '332': '❄️',
-    '335': '❄️',
-    '338': '❄️',
-    '350': '🌧',
-    '353': '🌦',
-    '356': '🌧',
-    '359': '🌧',
-    '362': '🌧',
-    '365': '🌧',
-    '368': '🌨',
-    '371': '❄️',
-    '374': '🌧',
-    '377': '🌧',
-    '386': '⛈',
-    '389': '🌩',
-    '392': '⛈',
-    '395': '❄️'
+    "113": "☀️",  # Clear, Sunny
+    "116": "⛅️",  # Partly cloudy
+    "119": "☁️",  # Cloudy
+    "122": "☁️",  # Overcast
+    "143": "🌫",  # Mist
+    "176": "🌦",  # Patchy rain possible
+    "179": "🌧",  # Patchy snow possible
+    "182": "🌧",  # Patchy sleet possible
+    "185": "🌧",  # Patchy freezing drizzle possible
+    "200": "⛈",  # Thundery outbreaks possible
+    "227": "🌨",  # Blowing snow
+    "230": "❄️",  # Blizzard
+    "248": "🌫",  # Fog
+    "260": "🌫",  # Freezing fog
+    "263": "🌦",  # Patchy light drizzle
+    "266": "🌦",  # Light drizzle
+    "281": "🌧",  # Freezing drizzle
+    "284": "🌧",  # Heavy freezing drizzle
+    "293": "🌦",  # Patchy light rain
+    "296": "🌦",  # Light rain
+    "299": "🌧",  # Light freezing rain
+    "302": "🌧",  # Moderate rain
+    "305": "🌧",  # Heavy rain at times
+    "308": "🌧",  # Heavy rain
+    "311": "🌧",  # Light freezing rain
+    "314": "🌧",  # Moderate or heavy freezing rain
+    "317": "🌧",  # Light sleet
+    "320": "🌨️",  # Moderate or heavy sleet
+    "323": "🌨",  # Patchy light snow
+    "326": "🌨",  # Light snow
+    "329": "❄️",  # Patchy moderate snow
+    "332": "❄️",  # Moderate snow
+    "335": "❄️",  # Patchy heavy snow
+    "338": "❄️",  # Heavy snow
+    "350": "🌧",  # Ice pellets
+    "353": "🌦",  # Light rain shower
+    "356": "🌧",  # Moderate or heavy rain shower
+    "359": "🌧",  # Torrential rain shower
+    "362": "🌧",  # Light sleet showers
+    "365": "🌧",  # Moderate or heavy sleet showers
+    "368": "🌨",  # Light snow showers
+    "371": "❄️",  # Moderate or heavy snow showers
+    "374": "🌧",  # Light sleet showers
+    "377": "🌧",  # Light sleet
+    "386": "⛈",  # Patchy light rain with thunder
+    "389": "🌩",  # Moderate or heavy rain with thunder
+    "392": "⛈",  # Patchy light snow with thunder
+    "395": "❄️",  # Moderate or heavy snow with thunder
 }
 
 data = {}
@@ -66,7 +66,7 @@ def format_time(time):
 
 
 def format_temp(temp):
-    return (hour['FeelsLikeF']+"°").ljust(3)
+    return (hour["FeelsLikeF"] + "°").ljust(3)
 
 
 def format_chances(hour):
@@ -78,37 +78,47 @@ def format_chances(hour):
         "chanceofsnow": "Snow",
         "chanceofsunshine": "Sunshine",
         "chanceofthunder": "Thunder",
-        "chanceofwindy": "Wind"
+        "chanceofwindy": "Wind",
     }
 
     conditions = []
     for event in chances.keys():
         if int(hour[event]) > 0:
-            conditions.append(chances[event]+" "+hour[event]+"%")
+            conditions.append(chances[event] + " " + hour[event] + "%")
     return ", ".join(conditions)
 
 
-data['text'] = WEATHER_CODES[weather['current_condition'][0]['weatherCode']] + \
-    " "+weather['current_condition'][0]['FeelsLikeF']+"°"
+data["text"] = (
+    WEATHER_CODES[weather["current_condition"][0]["weatherCode"]]
+    + " "
+    + weather["current_condition"][0]["FeelsLikeF"]
+    + "°"
+)
 
-data['tooltip'] = f"<b>{weather['current_condition'][0]['weatherDesc'][0]['value']} {weather['current_condition'][0]['temp_F']}°</b>\n"
-data['tooltip'] += f"Feels like: {weather['current_condition'][0]['FeelsLikeF']}°\n"
-data['tooltip'] += f"Wind: {weather['current_condition'][0]['windspeedMiles']}Km/h\n"
-data['tooltip'] += f"Humidity: {weather['current_condition'][0]['humidity']}%\n"
-for i, day in enumerate(weather['weather']):
-    data['tooltip'] += f"\n<b>"
+data["tooltip"] = (
+    f"<b>{weather['current_condition'][0]['weatherDesc'][0]['value']} {weather['current_condition'][0]['temp_F']}°</b>\n"
+)
+data["tooltip"] += f"Feels like: {weather['current_condition'][0]['FeelsLikeF']}°\n"
+data["tooltip"] += f"Wind: {weather['current_condition'][0]['windspeedMiles']}Km/h\n"
+data["tooltip"] += f"Humidity: {weather['current_condition'][0]['humidity']}%\n"
+for i, day in enumerate(weather["weather"]):
+    data["tooltip"] += "\n<b>"
     if i == 0:
-        data['tooltip'] += "Today, "
+        data["tooltip"] += "Today, "
     if i == 1:
-        data['tooltip'] += "Tomorrow, "
-    data['tooltip'] += f"{day['date']}</b>\n"
-    data['tooltip'] += f"⬆️ {day['maxtempF']}° ⬇️ {day['mintempF']}° "
-    data['tooltip'] += f"🌅 {day['astronomy'][0]['sunrise']} 🌇 {day['astronomy'][0]['sunset']}\n"
-    for hour in day['hourly']:
+        data["tooltip"] += "Tomorrow, "
+    data["tooltip"] += f"{day['date']}</b>\n"
+    data["tooltip"] += f"⬆️ {day['maxtempF']}° ⬇️ {day['mintempF']}° "
+    data["tooltip"] += (
+        f"🌅 {day['astronomy'][0]['sunrise']} 🌇 {day['astronomy'][0]['sunset']}\n"
+    )
+    for hour in day["hourly"]:
         if i == 0:
-            if int(format_time(hour['time'])) < datetime.now().hour-2:
+            if int(format_time(hour["time"])) < datetime.now().hour - 2:
                 continue
-        data['tooltip'] += f"{format_time(hour['time'])} {WEATHER_CODES[hour['weatherCode']]} {format_temp(hour['FeelsLikeF'])} {hour['weatherDesc'][0]['value']}, {format_chances(hour)}\n"
+        data["tooltip"] += (
+            f"{format_time(hour['time'])} {WEATHER_CODES[hour['weatherCode']]} {format_temp(hour['FeelsLikeF'])} {hour['weatherDesc'][0]['value']}, {format_chances(hour)}\n"
+        )
 
 
 print(json.dumps(data))
