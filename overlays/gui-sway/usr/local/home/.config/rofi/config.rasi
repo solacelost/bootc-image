@@ -1,5 +1,6 @@
 configuration {
     modi: "window,drun,run,ssh,combi,keys";
+    font: "Source Code Pro 11";
     show-icons: true;
     icon-theme: "Paper";
     sidebar-mode: false;
