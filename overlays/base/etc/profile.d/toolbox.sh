@@ -107,8 +107,6 @@ if [ -f /run/.containerenv ] &&
             if [ -e "$dest" ]; then
                 if sudo rmdir "$dest" 2>/dev/null; then
                     sudo ln -s "$src" "$dest"
-                else
-                    echo "Refusing to replace non-empty $dest from $src" >&2
                 fi
             else
                 sudo ln -s "$src" "$dest"
