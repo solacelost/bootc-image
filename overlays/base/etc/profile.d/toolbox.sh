@@ -103,9 +103,13 @@ if [ -f /run/.containerenv ] &&
     for localdir in home bin libexec share/nvim-config share/xdg-terminal-exec; do
         src="/run/host/usr/local/$localdir"
         dest="/usr/local/$localdir"
-        if [ -d "$src" ]; then
-            if [ -d "$dest" ]; then
-                sudo rmdir "$dest" 2>/dev/null && sudo ln -s "$src" "$dest" || :
+        if [ -e "$src" ]; then
+            if [ -e "$dest" ]; then
+                if sudo rmdir "$dest" 2>/dev/null; then
+                    sudo ln -s "$src" "$dest"
+                else
+                    echo "Refusing to replace non-empty $dest from $src" >&2
+                fi
             else
                 sudo ln -s "$src" "$dest"
             fi
