@@ -102,7 +102,7 @@ if [ -f /run/.containerenv ] &&
 
     if [ -d /run/host/usr/local/home ]; then
         echo "Linking /usr/local/home into toolbox..."
-        ln -s /run/host/usr/local/home /usr/local/home
+        sudo ln -s /run/host/usr/local/home /usr/local/home
     fi
 fi
 
