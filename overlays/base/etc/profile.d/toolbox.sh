@@ -101,9 +101,14 @@ if [ -f /run/.containerenv ] &&
     fi
 
     for localdir in home bin libexec share/nvim-config share/xdg-terminal-exec; do
-        if [ -d "/run/host/usr/local/$localdir" ]; then
-            sudo rm -f "/usr/local/$localdir"
-            sudo ln -s "/run/host/usr/local/$localdir" "/usr/local/$localdir"
+        src="/run/host/usr/local/$localdir"
+        dest="/usr/local/$localdir"
+        if [ -d "$src" ]; then
+            if [ -d "$dest" ]; then
+                sudo rmdir "$dest" 2>/dev/null && sudo ln -s "$src" "$dest" || :
+            else
+                sudo ln -s "$src" "$dest"
+            fi
         fi
     done
 fi
