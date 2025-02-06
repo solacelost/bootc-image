@@ -100,10 +100,12 @@ if [ -f /run/.containerenv ] &&
         fi
     fi
 
-    if [ -d /run/host/usr/local/home ]; then
-        echo "Linking /usr/local/home into toolbox..."
-        sudo ln -s /run/host/usr/local/home /usr/local/home
-    fi
+    for localdir in home bin libexec share/nvim-config share/xdg-terminal-exec; do
+        if [ -d "/run/host/usr/local/$localdir" ]; then
+            sudo rm -f "/usr/local/$localdir"
+            sudo ln -s "/run/host/usr/local/$localdir" "/usr/local/$localdir"
+        fi
+    done
 fi
 
 unset ID
