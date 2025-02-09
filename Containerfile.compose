@@ -14,6 +14,7 @@ WORKDIR /src
 COPY overlays/repos/ /
 
 RUN --mount=type=cache,id=ostree-cache,target=/cache \
+    mkdir -p /buildcontext && \
     cp /etc/yum.repos.d/*.repo ./ && \
     echo "releasever: ${FEDORA_VERSION}" >> fedora-bootc.yaml && \
     jq '.Labels["redhat.version-id"] = "'${FEDORA_VERSION}'"' fedora-bootc-config-rawhide.json > fedora-bootc-config.json && \
