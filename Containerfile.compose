@@ -1,5 +1,5 @@
 # hadolint global ignore=DL3040,DL3041,DL4006
-FROM registry.fedoraproject.org/fedora:rawhide as builder
+FROM registry.fedoraproject.org/fedora:rawhide
 
 ARG FEDORA_VERSION=41
 
