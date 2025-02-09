@@ -93,7 +93,7 @@ packages:
   - exfatprogs
   # Integration with https://github.com/coreos/bootupd and bootloader logic
   # xref https://github.com/coreos/fedora-coreos-tracker/issues/510
-  - bootupd
+  - bootupd-0:0.2.24-1.fc41.x86_64
   - grub2 grub2-efi-x64 efibootmgr shim
   - microcode_ctl
   # Explicit dep for RHEL >= 10
