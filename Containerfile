@@ -18,6 +18,27 @@ RUN curl -sLo /tmp/xdg-terminal-exec.tar.gz "https://github.com/Vladimir-csp/xdg
     cd xdg-terminal-exec-${COMMIT} && \
     make install prefix=/built/usr/local
 
+FROM composed as lan-mouse-build
+
+ENV COMMIT=3e1c3e95b73a26554154b0bf7387912e258ac74a
+ENV HOME=/var/roothome
+
+WORKDIR /build
+
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install libXtst-devel
+
+RUN curl -sLo /tmp/lan-mouse.tar.gz "https://github.com/feschber/lan-mouse/archive/${COMMIT}.tar.gz" && \
+    tar xvzf /tmp/lan-mouse.tar.gz
+
+RUN cd lan-mouse-${COMMIT} && \
+    cargo build --release --no-default-features --features layer_shell_capture,wlroots_emulation
+
+RUN mkdir -p /built/usr/local/bin /built/etc/systemd/user && \
+    mv lan-mouse-${COMMIT}/target/release/lan-mouse /built/usr/local/bin/ && \
+    sed 's/\/usr\/bin\/lan-mouse/\/usr\/local\/bin\/lan-mouse/' lan-mouse-${COMMIT}/service/lan-mouse.service > /built/etc/systemd/user/lan-mouse.service
+
 FROM composed as module-build
 
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -99,6 +120,8 @@ RUN --mount=type=tmpfs,target=/var/cache \
 
 # Copy xdg-terminal-exec
 COPY --from=xdg-terminal-exec-build /built/ /
+# Copy lan-mouse
+COPY --from=lan-mouse-build /built/ /
 # Copy our built modules
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
