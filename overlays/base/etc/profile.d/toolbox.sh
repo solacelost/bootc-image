@@ -100,19 +100,11 @@ if [ -f /run/.containerenv ] &&
         fi
     fi
 
-    for localdir in home bin libexec share/nvim-config share/xdg-terminal-exec; do
-        src="/run/host/usr/local/$localdir"
-        dest="/usr/local/$localdir"
-        if [ -e "$src" ]; then
-            if [ -e "$dest" ]; then
-                if sudo rmdir "$dest" 2>/dev/null; then
-                    sudo ln -s "$src" "$dest"
-                fi
-            else
-                sudo ln -s "$src" "$dest"
-            fi
-        fi
-    done
+    if [ -e /run/host/etc/toolbox.sh.d ]; then
+        sudo ln -s /run/host/etc/toolbox.sh.d /etc/toolbox.sh.d
+        for stub in /etc/toolbox.sh.d/*.sh; do
+            source "$stub"
+        done
 fi
 
 unset ID
