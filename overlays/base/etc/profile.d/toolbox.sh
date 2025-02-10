@@ -101,7 +101,10 @@ if [ -f /run/.containerenv ] &&
     fi
 
     if [ -e /run/host/etc/toolbox.sh.d ]; then
-        sudo ln -s /run/host/etc/toolbox.sh.d /etc/toolbox.sh.d
+        if [ ! -L /etc/toolbox.sh.d ] || [ "$(readlink -- /etc/toolbox.sh.d)" != /run/host/etc/toolbox.sh.d ]; then
+            rm -rf /etc/toolbox.sh.d
+            sudo ln -s /run/host/etc/toolbox.sh.d /etc/toolbox.sh.d
+        fi
         for stub in /etc/toolbox.sh.d/*.sh; do
             source "$stub"
         done
