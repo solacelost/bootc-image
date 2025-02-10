@@ -35,9 +35,10 @@ RUN curl -sLo /tmp/lan-mouse.tar.gz "https://github.com/feschber/lan-mouse/archi
 RUN cd lan-mouse-${COMMIT} && \
     cargo build --release --no-default-features --features layer_shell_capture,wlroots_emulation
 
-RUN mkdir -p /built/usr/local/bin /built/etc/systemd/user && \
-    mv lan-mouse-${COMMIT}/target/release/lan-mouse /built/usr/local/bin/ && \
-    sed 's/\/usr\/bin\/lan-mouse/\/usr\/local\/bin\/lan-mouse/' lan-mouse-${COMMIT}/service/lan-mouse.service > /built/etc/systemd/user/lan-mouse.service
+RUN mkdir -p /built/usr/local/bin /built/etc/systemd/user /built/etc/firewalld/services && \
+    cp lan-mouse-${COMMIT}/target/release/lan-mouse /built/usr/local/bin/ && \
+    sed 's/\/usr\/bin\/lan-mouse/\/usr\/local\/bin\/lan-mouse/' lan-mouse-${COMMIT}/service/lan-mouse.service > /built/etc/systemd/user/lan-mouse.service && \
+    cp lan-mouse-${COMMIT}/firewall/lan-mouse.xml /built/etc/firewalld/services/
 
 FROM composed as module-build
 
