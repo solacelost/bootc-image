@@ -105,6 +105,7 @@ if [ -f /run/.containerenv ] &&
         for stub in /etc/toolbox.sh.d/*.sh; do
             source "$stub"
         done
+    fi
 fi
 
 unset ID
