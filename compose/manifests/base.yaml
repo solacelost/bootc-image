@@ -87,6 +87,7 @@ packages:
   # firmware updates
   # If you're using linux-firmware, you probably also want fwupd
   - fwupd
+  - fwupd-efi
   # Required by bootc install, sgdisk has been replaced by Rust crate
   # in bootc https://github.com/containers/bootc/pull/775
   - xfsprogs e2fsprogs dosfstools
