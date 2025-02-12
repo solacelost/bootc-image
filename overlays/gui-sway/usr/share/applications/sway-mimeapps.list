@@ -1,12 +1,12 @@
 [Default Applications]
 # Browser-related things
-text/html=google-chrome.desktop
-x-scheme-handler/http=google-chrome.desktop
-x-scheme-handler/https=google-chrome.desktop
-x-scheme-handler/about=google-chrome.desktop
-x-scheme-handler/unknown=google-chrome.desktop
-application/xhtml+xml=google-chrome.desktop
-x-scheme-handler/webcal=google-chrome.desktop
+text/html=google-chrome-wayland.desktop
+x-scheme-handler/http=google-chrome-wayland.desktop
+x-scheme-handler/https=google-chrome-wayland.desktop
+x-scheme-handler/about=google-chrome-wayland.desktop
+x-scheme-handler/unknown=google-chrome-wayland.desktop
+application/xhtml+xml=google-chrome-wayland.desktop
+x-scheme-handler/webcal=google-chrome-wayland.desktop
 # Text files
 text/plain=nvim.desktop
 text/markdown=nvim.desktop
