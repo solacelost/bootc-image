@@ -93,7 +93,7 @@ rootpw --lock
 sshkey --username root "${SSH_KEY}"
 
 # Configure our user
-user --name=${USERNAME} --homedir /var/home/${USERNAME} --groups=wheel,dialout,video,audio,input,render,gamemode,libvirt --password="${PASSWORD}" --plaintext
+user --name=${USERNAME} --homedir /var/home/${USERNAME} --groups=wheel --password="${PASSWORD}" --plaintext
 
 %post --log=/var/roothome/ks-post.log
 #!/bin/bash
@@ -115,16 +115,36 @@ EOF
 
 # Ensure users and their homes are created
 { set +x ; } 2>/dev/null
+function noisy {
+    set -x
+    "${@}"
+    { set +x; } 2>/dev/null
+}
+
 for passwd in /usr/lib/passwd /etc/passwd; do
     while IFS=: read -r user x uid gid gecos home shell; do
         if (( uid >= 1000 )) && [[ $user != nfsnobody ]]; then
-            set -x
-            mkdir -p "$home"
-            chown -R "$uid":"$gid" "$home"
-            { set +x ; } 2>/dev/null
+            noisy mkdir -p "$home"
+            noisy chown -R "$uid":"$gid" "$home"
         fi
     done <$passwd
 done
+
+# Ensure groups are set for our GUI user properly
+for group in dialout:x:18 video:x:39 audio:x:63 input:x:104 render:x:105 gamemode:x:971 libvirt:x:977; do
+    if grep -qF "$group" /etc/group; then
+        existing_users=($(grep -F "$group" /etc/group | cut -d: -f4 | tr ',' ' '))
+        new_users=("${existing_users[@]}")
+        if [[ ! " ${existing_users[*]} " =~ [[:space:]]${USERNAME}[[:space:]] ]]; then
+            new_users+=("${USERNAME}")
+        fi
+        users="$(printf '%s,' "${new_users[@]}" | head -c-1)"
+        noisy sed -i "s/^$group.*\$/$group:$users/" /etc/group
+    else
+        noisy echo "$group:${USERNAME}" >> /etc/group
+    fi
+done
+cat /etc/group
 
 %end
 
