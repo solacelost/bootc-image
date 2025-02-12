@@ -94,7 +94,7 @@ packages:
   - exfatprogs
   # Integration with https://github.com/coreos/bootupd and bootloader logic
   # xref https://github.com/coreos/fedora-coreos-tracker/issues/510
-  - bootupd-0:0.2.24-1.fc41.x86_64
+  - bootupd
   - grub2 grub2-efi-x64 efibootmgr shim
   - microcode_ctl
   # Explicit dep for RHEL >= 10
@@ -175,6 +175,8 @@ postprocess:
   - |
     #!/bin/bash
     set -xeuo pipefail
+    # See discussion on: https://github.com/coreos/bootupd/pull/764
+    rm -f /usr/lib/sysimage/rpm/{rpmdb*,.rpm*}
     # Transforms /usr/lib/ostree-boot into a bootupd-compatible update payload
     /usr/bin/bootupctl backend generate-update-metadata
   # See also https://github.com/openshift/os/blob/f6cde963ee140c02364674db378b2bc4ac42675b/common.yaml#L156
