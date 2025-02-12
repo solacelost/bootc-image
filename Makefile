@@ -51,6 +51,9 @@ overlays/users/usr/local/ssh/$(USERNAME).keys:
 	@echo Please put the authorized_keys file you would like for the $(USERNAME) user in $@ >&2
 	@exit 1
 
+overlays/gui-sway/usr/lib/sysusers.d/99-gui-user.conf: overlays/gui-sway/usr/lib/sysusers.d/99-gui-user.conf.tpl
+	USERNAME=$(USERNAME) envsubst '$$USERNAME' < $< > $@
+
 tmp/$(LATEST_DIGEST):
 	@touch $@
 
@@ -61,7 +64,7 @@ tmp/out.ociarchive: Containerfile.compose $(shell find compose -type f -o -type 
 	$(RUNTIME) cp $(TAG)-composed:/buildcontext/out.ociarchive ./tmp/
 	$(RUNTIME) rm $(TAG)-composed
 
-.build-$(TAG): Containerfile tmp/out.ociarchive overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l)
+.build-$(TAG): Containerfile tmp/out.ociarchive overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l) overlays/gui-sway/usr/lib/sysusers.d/99-gui-user.conf
 	$(RUNTIME) build . -t $(IMAGE)
 	@touch $@
 
