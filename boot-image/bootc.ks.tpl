@@ -93,7 +93,7 @@ rootpw --lock
 sshkey --username root "${SSH_KEY}"
 
 # Configure our user
-user --name=${USERNAME} --homedir /var/home/${USERNAME} --groups=wheel --password="${PASSWORD}" --plaintext
+user --name=${USERNAME} --homedir /var/home/${USERNAME} --groups=wheel,dialout,video,audio,input,render,gamemode,libvirt --password="${PASSWORD}" --plaintext
 
 %post --log=/var/roothome/ks-post.log
 #!/bin/bash
