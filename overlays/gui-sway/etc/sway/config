@@ -330,8 +330,9 @@ for_window {
 exec protonup -y
 
 # clipboard
-exec wl-paste -t text --watch clipman store --notify
-exec wl-paste -p -t text --watch clipman store --notify --primary --histpath="~/.local/share/clipman-primary.json"
+exec wl-paste --watch clipman store -P --notify
+exec wl-paste -p --watch clipman store -P --notify --primary --histpath="~/.local/share/clipman-primary.json"
+exec clipman restore
 bindsym $mod+Shift+p exec clipman pick --notify -t rofi
 
 # includes
