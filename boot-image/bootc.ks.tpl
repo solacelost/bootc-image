@@ -64,7 +64,7 @@ for disk in ${otherdisks[@]}; do
     for part in ${otherdiskparts[$disk]}; do
         fstype=$(lsblk /dev/$part -oFSTYPE -nr 2>/dev/null ||:)
         if [ -n "$fstype" ] && ! (echo "$fstype" | grep -qF LVM); then
-            echo "/dev/$part /mnt/$part $fstype defaults,noatime 0 0" >> /tmp/fstab-include
+            echo "/dev/$part /mnt/$part $fstype defaults,noatime,nofail 0 0" >> /tmp/fstab-include
         fi
     done
 done
