@@ -12,6 +12,9 @@ exec /usr/libexec/polkit-mate-authentication-agent-1
 # nm-applet support for better VPN behavior
 exec nm-applet
 
+# Ensure gpg-agent is running on the system
+exec gpgconf --launch gpg-agent
+
 # bluetooth control
 exec blueman-applet
 

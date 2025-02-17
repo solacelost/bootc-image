@@ -17,10 +17,4 @@ if [ -f /run/.toolboxenv ]; then # we are in a toolbox
 	if [ -n "$RELEASE_VERSION" ]; then
 		export RELEASE_VERSION
 	fi
-
-	# Try to fix weird TTY behavior (gpg/pinentry problems)
-	my_tty=$(tty)
-	if [ "$(stat "$my_tty" -c %U)" != "$(whoami)" ]; then
-		sudo chown "$(whoami):tty" "$my_tty"
-	fi
 fi
