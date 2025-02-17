@@ -327,7 +327,7 @@ for_window {
 }
 
 # keep proton up to date
-exec protonup -y
+exec /bin/sh -c 'while ! ping -c 1 github.com; do sleep 5; done; protonup -y'
 
 # clipboard
 exec wl-paste --watch clipman store -P --notify
