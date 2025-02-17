@@ -159,6 +159,8 @@ packages:
   - gnupg2
   - words
   - mcelog
+  # Let's try greenboot
+  - greenboot greenboot-default-health-checks
 
 postprocess:
   # Undo RPM scripts enabling units; we want the presets to be canonical
