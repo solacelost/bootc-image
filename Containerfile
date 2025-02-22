@@ -44,8 +44,8 @@ FROM composed as module-build
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    kver=$(dnf list --installed | awk '/kernel\.x86_64/{print $2}' | cut -d- -f1) && \
-    dnf -y install kernel-devel-$kver cabextract && \
+    kver=$(dnf list --installed | awk '/kernel\.x86_64/{print $2}') && \
+    dnf -y install kernel-devel-matched-$kver cabextract && \
     find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1 > /moddir
 
 WORKDIR /build
