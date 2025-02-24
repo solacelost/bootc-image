@@ -32,7 +32,7 @@ while IFS= read -r -d '' proton; do
         src="/usr/lib/wine/$dll"
         dest="$proton/lib/wine/$dll"
         if [ -e "$src" ]; then
-            cp -uv "$src" "$dest"
+            noisy cp -uv "$src" "$dest"
         fi
     done
 done < <(
