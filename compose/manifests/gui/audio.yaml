@@ -5,9 +5,10 @@ packages:
   - pipewire
   - pipewire-alsa
   - pipewire-gstreamer
-  - pipewire-jack-audio-connection-kit
-  - pipewire-jack-audio-connection-kit-libs
-  - pipewire-jack-audio-connection-kit-devel
+  - pipewire-jack-audio-connection-kit.x86_64
+  - pipewire-jack-audio-connection-kit.i686
+  - pipewire-jack-audio-connection-kit-libs.x86_64
+  - pipewire-jack-audio-connection-kit-libs.i686
   - pipewire-pulseaudio
   - pipewire-utils
   - pulseaudio-utils

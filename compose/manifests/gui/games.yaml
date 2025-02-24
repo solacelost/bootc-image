@@ -4,7 +4,3 @@ packages:
   - mangohud
   - protontricks
   - steam
-  # akmod-xone.post: Building /usr/src/akmods/xone-kmod-0.3.0-6.fc41.src.rpm for kernel 6.11.5-300.fc41.x86_64
-  # akmod-xone.post: ERROR: Can't find SRPM /usr/src/akmods/xone-kmod-0.3.0-6.fc41.src.rpm
-  # error: compose tree failed: ExitStatus(unix_wait_status(256))
-  #- xone

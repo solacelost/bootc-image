@@ -131,7 +131,7 @@ for passwd in /usr/lib/passwd /etc/passwd; do
 done
 
 # Ensure groups are set for our GUI user properly
-for group in dialout:x:18 video:x:39 audio:x:63 input:x:104 render:x:105 gamemode:x:971 libvirt:x:977; do
+for group in dialout:x:18 video:x:39 audio:x:63 realtime:x:71 input:x:104 render:x:105 gamemode:x:971 libvirt:x:977; do
     if grep -qF "$group" /etc/group; then
         existing_users=($(grep -F "$group" /etc/group | cut -d: -f4 | tr ',' ' '))
         new_users=("${existing_users[@]}")

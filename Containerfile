@@ -40,6 +40,33 @@ RUN mkdir -p /built/usr/local/bin /built/etc/systemd/user /built/etc/firewalld/s
     sed 's/\/usr\/bin\/lan-mouse/\/usr\/local\/bin\/lan-mouse/' lan-mouse-${COMMIT}/service/lan-mouse.service > /built/etc/systemd/user/lan-mouse.service && \
     cp lan-mouse-${COMMIT}/firewall/lan-mouse.xml /built/etc/firewalld/services/
 
+FROM composed as wineasio-build
+
+WORKDIR /build
+
+ENV VERSION=1.2.0
+
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install wine pipewire-jack*-devel.* wine-devel.* glibc-devel.*
+
+RUN curl -sLo /tmp/wineasio.tar.gz \
+    https://github.com/wineasio/wineasio/releases/download/v${VERSION}/wineasio-${VERSION}.tar.gz && \
+    tar xvzf /tmp/wineasio.tar.gz
+
+WORKDIR /build/wineasio-${VERSION}
+
+RUN make build ARCH=i386 M=32 LIBRARIES="-L/usr/lib/pipewire-0.3/jack -ljack" && \
+    make build ARCH=x86_64 M=64 LIBRARIES="-L/usr/lib/pipewire-0.3/jack -L/usr/lib64/pipewire-0.3/jack -ljack" && \
+    mkdir -p /built/usr/lib/wine/{i386-windows,i386-unix} /built/usr/lib64/wine/{x86_64-windows,x86_64-unix} /built/usr/local/bin && \
+    cp build32/wineasio32.dll /built/usr/lib/wine/i386-windows/ && \
+    cp build32/wineasio32.dll.so /built/usr/lib/wine/i386-unix/ && \
+    cp build64/wineasio64.dll /built/usr/lib64/wine/x86_64-windows/ && \
+    cp build64/wineasio64.dll.so /built/usr/lib64/wine/x86_64-unix/ && \
+    cp wineasio-register /built/usr/local/bin/
+
+COPY overlays/wineasio/ /
+
 FROM composed as module-build
 
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -123,6 +150,8 @@ RUN --mount=type=tmpfs,target=/var/cache \
 COPY --from=xdg-terminal-exec-build /built/ /
 # Copy lan-mouse
 COPY --from=lan-mouse-build /built/ /
+# Copy wineasio
+COPY --from=wineasio-build /built/ /
 # Copy our built modules
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
