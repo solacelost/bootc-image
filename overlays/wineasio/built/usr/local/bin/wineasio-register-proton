@@ -45,7 +45,7 @@ desired_prefixes=(
     [221680]="Rocksmith® 2014 Edition - Remastered"
 )
 
-for game_id in "${!desired_prefixes}"; do
+for game_id in "${!desired_prefixes[@]}"; do
     prefix="$(/usr/local/bin/prefix-for-game.py --id "$game_id")"
     if [[ " ${!desired_prefixes[*]} " =~ [[:space:]]${game_id}[[:space:]] ]]; then
         proton_dist="$(/usr/local/bin/proton-for-game.py --id "$game_id")"
