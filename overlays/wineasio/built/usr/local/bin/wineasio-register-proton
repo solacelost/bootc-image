@@ -13,7 +13,7 @@ function register {
     dest_pfx="$2"
     if [ ! -e "$dest_pfx" ]; then
         echo "No prefix exists - has game been launched yet?" >&2
-        exit 1
+        false
     fi
     dest="$dest_pfx/drive_c/windows/system32"
     cp -uv /usr/lib/wine/i386-windows/wineasio32.dll "$dest/"
