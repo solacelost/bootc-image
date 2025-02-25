@@ -1,11 +1,6 @@
 #!/bin/bash
 
-set -e
-
-if [ ! -e ~/.steam/steam/config/libraryfolders.vdf ]; then
-    echo "No Steam library folder info" >&2
-    exit 0
-fi
+trap 'echo -e "Failed, exit code: $?\nExiting early"; exit 0' ERR
 
 function noisy {
     set -x
@@ -13,7 +8,19 @@ function noisy {
     { set +x; } 2>/dev/null
 }
 
-readarray -d $'\0' -t library_folders < <(awk -F'"' 'BEGIN {ORS = "\0"}; /"path"/{print $4}' ~/.steam/steam/config/libraryfolders.vdf)
+function register {
+    proton_dist="$1"
+    dest_pfx="$2"
+    if [ ! -e "$dest_pfx" ]; then
+        echo "No prefix exists - has game been launched yet?" >&2
+        exit 1
+    fi
+    dest="$dest_pfx/drive_c/windows/system32"
+    cp -uv /usr/lib/wine/i386-windows/wineasio32.dll "$dest/"
+    cp -uv /usr/lib64/wine/x86_64-windows/wineasio64.dll "$dest/"
+    noisy env WINEPREFIX="$dest_pfx" "$proton_dist/bin/wine" regsvr32 /s /usr/lib/wine/i386-unix/wineasio32.dll.so
+    noisy env WINEPREFIX="$dest_pfx" "$proton_dist/bin/wine64" regsvr32 /s /usr/lib64/wine/x86_64-unix/wineasio64.dll.so
+}
 
 wineasio_dlls=(
     i386-unix/wineasio32.dll.so
@@ -22,31 +29,26 @@ wineasio_dlls=(
     x86_64-windows/wineasio64.dll
 )
 
-desired_prefixes=(
-    221680
-)
-
 while IFS= read -r -d '' proton; do
-    echo "Found Proton '$proton' - updating wineasio"
     for dll in "${wineasio_dlls[@]}"; do
         src="/usr/lib/wine/$dll"
         dest="$proton/lib/wine/$dll"
         if [ -e "$src" ]; then
-            noisy mkdir -p "$(dirname "$dest")"
-            noisy cp -uv "$src" "$dest"
+            mkdir -p "$(dirname "$dest")"
+            cp -uv "$src" "$dest"
         fi
     done
-done < <(
-    for folder in "${library_folders[@]}"; do find "$folder/steamapps/common" -type d -name 'Proton*' ! -name 'Proton EasyAntiCheat*' -print0; done
-    find ~/.steam/steam/compatibilitytools.d -mindepth 1 -maxdepth 1 -type d -iname '*proton*' -print0
+done < <(/usr/local/bin/list-protons.py)
+
+declare -A desired_prefixes
+desired_prefixes=(
+    [221680]="Rocksmith® 2014 Edition - Remastered"
 )
 
-while IFS= read -r -d '' prefix; do
-    game_id="$(basename "$(dirname "$prefix")")"
-    if [[ " ${desired_prefixes[*]} " =~ [[:space:]]${game_id}[[:space:]] ]]; then
-        echo "Found prefix '$prefix' - registering wineasio"
-        noisy env WINEPREFIX="$prefix" /usr/local/bin/wineasio-register
+for game_id in "${!desired_prefixes}"; do
+    prefix="$(/usr/local/bin/prefix-for-game.py --id "$game_id")"
+    if [[ " ${!desired_prefixes[*]} " =~ [[:space:]]${game_id}[[:space:]] ]]; then
+        proton_dist="$(/usr/local/bin/proton-for-game.py --id "$game_id")"
+        register "$proton_dist" "$prefix"
     fi
-done < <(
-    for folder in "${library_folders[@]}"; do find "$folder/steamapps/compatdata" -mindepth 2 -maxdepth 2 -type d -name 'pfx' -print0; done
-)
+done

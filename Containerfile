@@ -62,8 +62,7 @@ RUN make build ARCH=i386 M=32 LIBRARIES="-L/usr/lib/pipewire-0.3/jack -ljack" &&
     cp build32/wineasio32.dll /built/usr/lib/wine/i386-windows/ && \
     cp build32/wineasio32.dll.so /built/usr/lib/wine/i386-unix/ && \
     cp build64/wineasio64.dll /built/usr/lib64/wine/x86_64-windows/ && \
-    cp build64/wineasio64.dll.so /built/usr/lib64/wine/x86_64-unix/ && \
-    cp wineasio-register /built/usr/local/bin/
+    cp build64/wineasio64.dll.so /built/usr/lib64/wine/x86_64-unix/
 
 COPY overlays/wineasio/ /
 
