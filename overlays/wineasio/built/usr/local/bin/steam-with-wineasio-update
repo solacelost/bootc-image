@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+trap 'rm -f "$log"' EXIT
+log=$(mktemp)
+
+if pgrep -f 'steam\.sh' >/dev/null 2>&1; then
+    exec yad --error --text="Steam is already running, please exit it before updating wineasio registration." --title="Wineasio Update Error"
+fi
+
+{
+    /usr/local/bin/wineasio-register-proton 2>&1
+    echo "Finished."
+} >"$log" &
+
+tail -f "$log" | yad --text-info --text="Updating wineasio registration..." --height=600 --width=800 --on-top --button=Cancel:1 --button="Start Steam:0"
+
+exec steam "${@}"

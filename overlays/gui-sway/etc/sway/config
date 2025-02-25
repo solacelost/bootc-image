@@ -323,8 +323,8 @@ for_window {
     # To list windows: swaymsg -t get_tree
     [window_role="task_dialog|bubble|page-info|Preferences|pop-up|dialog|Save As|menu|Open Files"] floating enable
     [window_role="File Operation Progress"] floating enable sticky
-    [instance="file_progress"] floading enable sticky
-    [app_id="zenity|nmtui|vpn"] floating enable
+    [instance="file_progress"] floating enable sticky
+    [app_id="zenity|yad|nmtui|vpn"] floating enable
     [class="Steam|steam"] floating enable
     [class="info|Mate-color-select|gcolor2|timesup|QtPass|GtkFileChooserDialog"] sticky enable
 }
