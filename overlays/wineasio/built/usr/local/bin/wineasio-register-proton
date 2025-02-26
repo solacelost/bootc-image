@@ -11,34 +11,44 @@ function noisy {
 function register {
     proton_dist="$1"
     dest_pfx="$2"
+
+    # Ensure the .so file and DLLs are loaded in Proton
+    for dll in i386-unix/wineasio32.dll.so i386-windows/wineasio32.dll x86_64-unix/wineasio64.dll.so x86_64-windows/wineasio64.dll; do
+        libtype="$(echo "$dll" | cut -d- -f1)"
+        case "$libtype" in
+        i386)
+            libtype=lib
+            ;;
+        x86_64)
+            libtype=lib64
+            ;;
+        esac
+        src="/usr/$libtype/wine/$dll"
+        dest="$proton_dist/$libtype/wine/$dll"
+        if [ -e "$src" ]; then
+            mkdir -p "$(dirname "$dest")"
+            noisy cp -uv "$src" "$dest"
+        else
+            echo "Unable to find $src" >&2
+        fi
+    done
+
     if [ ! -e "$dest_pfx" ]; then
         echo "No prefix exists - has game been launched yet?" >&2
         false
     fi
+
+    # Ensure the library has been registered with the Wine prefix
     dest="$dest_pfx/drive_c/windows/system32"
-    cp -uv /usr/lib/wine/i386-windows/wineasio32.dll "$dest/"
-    cp -uv /usr/lib64/wine/x86_64-windows/wineasio64.dll "$dest/"
-    noisy env WINEPREFIX="$dest_pfx" "$proton_dist/bin/wine" regsvr32 /s /usr/lib/wine/i386-unix/wineasio32.dll.so
-    noisy env WINEPREFIX="$dest_pfx" "$proton_dist/bin/wine64" regsvr32 /s /usr/lib64/wine/x86_64-unix/wineasio64.dll.so
+    noisy cp -uv /usr/lib/wine/i386-windows/wineasio32.dll "$dest/"
+    noisy cp -uv /usr/lib64/wine/x86_64-windows/wineasio64.dll "$dest/"
+    export WINEPREFIX="$dest_pfx"
+    export LD_LIBRARY_PATH="/usr/lib/pipewire-0.3/jack:/usr/lib64/pipewire-0.3/jack:$LD_LIBRARY_PATH"
+    noisy "$proton_dist/bin/wine" regsvr32 /s "$proton_dist/lib/wine/i386-unix/wineasio32.dll.so"
+    noisy "$proton_dist/bin/wine" regsvr32 /s "$proton_dist/lib/wine/i386-windows/wineasio32.dll"
+    noisy "$proton_dist/bin/wine64" regsvr32 /s "$proton_dist/lib64/wine/x86_64-unix/wineasio64.dll.so"
+    noisy "$proton_dist/bin/wine64" regsvr32 /s "$proton_dist/lib64/wine/x86_64-windows/wineasio64.dll"
 }
-
-wineasio_dlls=(
-    i386-unix/wineasio32.dll.so
-    i386-windows/wineasio32.dll
-    x86_64-unix/wineasio64.dll.so
-    x86_64-windows/wineasio64.dll
-)
-
-while IFS= read -r -d '' proton; do
-    for dll in "${wineasio_dlls[@]}"; do
-        src="/usr/lib/wine/$dll"
-        dest="$proton/lib/wine/$dll"
-        if [ -e "$src" ]; then
-            mkdir -p "$(dirname "$dest")"
-            cp -uv "$src" "$dest"
-        fi
-    done
-done < <(/usr/local/bin/list-protons.py)
 
 declare -A desired_prefixes
 desired_prefixes=(

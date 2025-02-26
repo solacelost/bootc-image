@@ -48,7 +48,7 @@ ENV VERSION=1.2.0
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install wine pipewire-jack*-devel.* wine-devel.* glibc-devel.*
+    dnf -y install wine wine-devel.* pipewire-jack*.* glibc-devel.*
 
 RUN curl -sLo /tmp/wineasio.tar.gz \
     https://github.com/wineasio/wineasio/releases/download/v${VERSION}/wineasio-${VERSION}.tar.gz && \
