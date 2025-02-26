@@ -39,15 +39,13 @@ function register {
     fi
 
     # Ensure the library has been registered with the Wine prefix
-    dest="$dest_pfx/drive_c/windows/system32"
-    noisy cp -uv /usr/lib/wine/i386-windows/wineasio32.dll "$dest/"
-    noisy cp -uv /usr/lib64/wine/x86_64-windows/wineasio64.dll "$dest/"
+    dest="$dest_pfx/drive_c/windows"
+    noisy cp -uv /usr/lib/wine/i386-windows/wineasio32.dll "$dest/syswow64/"
+    noisy cp -uv /usr/lib64/wine/x86_64-windows/wineasio64.dll "$dest/system32/"
     export WINEPREFIX="$dest_pfx"
     export LD_LIBRARY_PATH="/usr/lib/pipewire-0.3/jack:/usr/lib64/pipewire-0.3/jack:$LD_LIBRARY_PATH"
-    noisy "$proton_dist/bin/wine" regsvr32 /s "$proton_dist/lib/wine/i386-unix/wineasio32.dll.so"
-    noisy "$proton_dist/bin/wine" regsvr32 /s "$proton_dist/lib/wine/i386-windows/wineasio32.dll"
-    noisy "$proton_dist/bin/wine64" regsvr32 /s "$proton_dist/lib64/wine/x86_64-unix/wineasio64.dll.so"
-    noisy "$proton_dist/bin/wine64" regsvr32 /s "$proton_dist/lib64/wine/x86_64-windows/wineasio64.dll"
+    noisy "$proton_dist/bin/wine" regsvr32 /s wineasio32
+    noisy "$proton_dist/bin/wine64" regsvr32 /s wineasio64
 }
 
 declare -A desired_prefixes
