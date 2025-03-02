@@ -48,6 +48,7 @@ packages:
   - qt5-qtwayland
   - qt6-qtwayland
   - yad
+  - wdisplays
 
 include:
   - gui/apps.yaml
