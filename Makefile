@@ -54,15 +54,8 @@ overlays/users/usr/local/ssh/$(USERNAME).keys:
 tmp/$(LATEST_DIGEST):
 	@touch $@
 
-tmp/out.ociarchive: Containerfile.compose $(shell find compose -type f -o -type l) tmp/$(LATEST_DIGEST)
-	rm -f tmp/out.ociarchive
-	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --build-arg=FEDORA_VERSION=$(FEDORA_VERSION) --from $(BASE) -f $< . -t $(IMAGE)-composed
-	$(RUNTIME) create --replace --name $(TAG)-composed $(IMAGE)-composed
-	$(RUNTIME) cp $(TAG)-composed:/buildcontext/out.ociarchive ./tmp/
-	$(RUNTIME) rm $(TAG)-composed
-
-.build-$(TAG): Containerfile tmp/out.ociarchive overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l)
-	$(RUNTIME) build . -t $(IMAGE)
+.build-$(TAG): Containerfile $(shell find compose -type f -o -type l) tmp/$(LATEST_DIGEST) overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l)
+	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --build-arg=FEDORA_VERSION=$(FEDORA_VERSION) --from $(BASE) -f $< . -t $(IMAGE)
 	@touch $@
 
 .PHONY: build

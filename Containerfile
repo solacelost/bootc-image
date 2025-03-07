@@ -1,7 +1,36 @@
-FROM oci-archive:./tmp/out.ociarchive as composed
-
-# Ensure our repos and keys are available for use later maybe
+# hadolint global ignore=DL3040,DL3041,DL4006
+FROM registry.fedoraproject.org/fedora:41 as repos
 COPY overlays/repos/ /
+
+FROM repos as builder
+
+ARG FEDORA_VERSION=41
+
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    curl -L --fail -o /etc/yum.repos.d/continuous.repo https://copr.fedorainfracloud.org/coprs/g/CoreOS/continuous/repo/fedora-41/group_CoreOS-continuous-fedora-41.repo && \
+    dnf -y install --allowerasing rpm-ostree selinux-policy-targeted jq
+
+COPY compose /src
+WORKDIR /src
+
+RUN --mount=type=bind,rw,from=repos,src=/,dst=/repos \
+    ./install-manifests && \
+    /usr/libexec/bootc-base-imagectl list >/dev/null && \
+    echo "releasever: ${FEDORA_VERSION}" >> fedora-bootc.yaml && \
+    jq '.Labels["redhat.version-id"] = "'${FEDORA_VERSION}'"' fedora-bootc-config-rawhide.json > fedora-bootc-config.json && \
+    /usr/libexec/bootc-base-imagectl build-rootfs \
+    --reinject --manifest=fedora-bootc /repos /target-rootfs
+
+FROM scratch as composed
+COPY --from=builder /target-rootfs/ /
+# Ensure our repos and keys are available for use later maybe
+LABEL containers.bootc 1
+LABEL bootc.diskimage-builder quay.io/centos-bootc/bootc-image-builder
+ENV container=oci
+# Make systemd the default
+STOPSIGNAL SIGRTMIN+3
+CMD ["/sbin/init"]
 
 FROM composed as xdg-terminal-exec-build
 
