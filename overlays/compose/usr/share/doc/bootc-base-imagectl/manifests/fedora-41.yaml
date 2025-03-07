@@ -16,13 +16,13 @@ repos:
   - google-chrome
 
 include:
-  - base.yaml
-  - cli.yaml
-  - cloud.yaml
-  - containers.yaml
-  - development.yaml
-  - gui-sway.yaml
-  - network.yaml
-  - redhat.yaml
-  - webcam.yaml
-  - yubikey.yaml
+  - stubs/base.yaml
+  - stubs/cli.yaml
+  - stubs/cloud.yaml
+  - stubs/containers.yaml
+  - stubs/development.yaml
+  - stubs/gui-sway.yaml
+  - stubs/network.yaml
+  - stubs/redhat.yaml
+  - stubs/webcam.yaml
+  - stubs/yubikey.yaml
