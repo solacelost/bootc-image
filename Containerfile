@@ -187,6 +187,19 @@ COPY --from=wineasio-build /built/ /
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
 
+# TEMPORARY: Install Dell VPN stuff
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install java-latest-openjdk && \
+    wkdir=$(mktemp -d) && \
+    cd $wkdir && \
+    curl -Lo sonicwall-connect.tar https://software.sonicwall.com/CT-NX-VPNClients/CT-12.4.3/ConnectTunnel_Linux64-12.43.00283.tar && \
+    tar xvf sonicwall-connect.tar && \
+    sed -i '/^xg_check_tun/d' install.sh && \
+    ./install.sh --auto && \
+    cd - && \
+    rm -rf $wkdir
+
 # Ensure module dependencies are calculated
 RUN kver="$(basename "$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)")" && \
     depmod -a -b /usr "$kver"
