@@ -89,7 +89,7 @@ def run_list(args):
             continue
         o = subprocess.check_output(['rpm-ostree', 'compose', 'tree', '--print-only', fullpath])
         manifest = json.loads(o)
-        description = manifest['metadata']['summary']
+        description = manifest.get('metadata', {}).get('summary', '<unprovided>')
         print(f"{name}: {description}")
         print("---")
 

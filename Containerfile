@@ -3,12 +3,11 @@ ARG FEDORA_VERSION=41
 
 FROM registry.fedoraproject.org/fedora:${FEDORA_VERSION} as repos
 
-ARG FEDORA_VERSION
-
 COPY overlays/repos/ /
 
 FROM repos as builder
 
+ARG FEDORA_VERSION
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
@@ -19,6 +18,7 @@ COPY overlays/compose/ /
 WORKDIR /src
 
 RUN --mount=type=bind,rw,from=repos,src=/,dst=/repos \
+    set -xeuo pipefail && \
     /usr/libexec/bootc-base-imagectl list >/dev/null && \
     jq '.Labels["redhat.version-id"] = "'${FEDORA_VERSION}'"' fedora-bootc-config-rawhide.json > fedora-bootc-config.json && \
     /usr/libexec/bootc-base-imagectl build-rootfs \
