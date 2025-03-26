@@ -20,5 +20,6 @@ packages:
   - patch
   - python3-pip
   - python3-virtualenv
+  - uv
   - ripgrep
   - pigz
