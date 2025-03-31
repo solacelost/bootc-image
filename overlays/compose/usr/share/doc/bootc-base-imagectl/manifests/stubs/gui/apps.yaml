@@ -4,7 +4,7 @@ packages:
   - google-chrome-stable
   - guitarix
   - lv2-guitarix-plugins
-  - drawing
+  - gimp
   - piper
   - yubikey-personalization-gui
   - flatpak
