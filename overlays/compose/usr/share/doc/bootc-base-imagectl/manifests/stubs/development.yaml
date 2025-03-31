@@ -23,3 +23,4 @@ packages:
   - uv
   - ripgrep
   - pigz
+  - rocm-smi
