@@ -1,7 +1,5 @@
 packages:
-  - adobe-source-code-pro-fonts
   - alacritty
-  - fontawesome-fonts-all
   - grim
   - mako
   - materia-gtk-theme
@@ -15,7 +13,6 @@ packages:
   - nm-connection-editor-desktop
   - paper-icon-theme
   - playerctl
-  - powerline-fonts
   - python3-requests
   - rofi
   - slurp
@@ -53,6 +50,7 @@ packages:
 include:
   - gui/apps.yaml
   - gui/audio.yaml
+  - gui/fonts.yaml
   - gui/games.yaml
   - gui/media.yaml
 
