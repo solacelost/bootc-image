@@ -13,29 +13,29 @@ else
     current_mode=default
 fi
 
-status () {
+status() {
     echo '{"text": "'$current_mode'", "alt": "'$current_mode'", "class": "'$current_mode'"}'
 }
 update_statefile() {
-    echo -n $current_mode > $statefile
+    echo -n $current_mode >$statefile
 }
 
 if [ "$1" = "toggle" ]; then
     case $current_mode in
-        default)
-            makoctl set-mode dnd
-            current_mode=dnd
-            update_statefile
-            status
-            pkill -RTMIN+3 waybar
-            ;;
-        dnd)
-            makoctl set-mode default
-            current_mode=default
-            update_statefile
-            status
-            pkill -RTMIN+3 waybar
-            ;;
+    default)
+        makoctl mode -a dnd
+        current_mode=dnd
+        update_statefile
+        status
+        pkill -RTMIN+3 waybar
+        ;;
+    dnd)
+        makoctl mode -r dnd
+        current_mode=default
+        update_statefile
+        status
+        pkill -RTMIN+3 waybar
+        ;;
     esac
 else
     status
