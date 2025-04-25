@@ -1,1 +1,28 @@
-fedora-41.yaml
+metadata:
+  name: feedora-bootc-jharmison
+  summary: Fedora Bootable Desktop for James Harmison
+
+releasever: 42
+
+repos:
+  - fedora
+  - updates
+  - kernel-blu
+  - rpmfusion-free
+  - rpmfusion-free-updates
+  - rpmfusion-nonfree
+  - rpmfusion-nonfree-updates
+  - lazygit
+  - google-chrome
+
+include:
+  - stubs/base.yaml
+  - stubs/cli.yaml
+  - stubs/cloud.yaml
+  - stubs/containers.yaml
+  - stubs/development.yaml
+  - stubs/gui-sway.yaml
+  - stubs/network.yaml
+  - stubs/redhat.yaml
+  - stubs/webcam.yaml
+  - stubs/yubikey.yaml

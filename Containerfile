@@ -22,7 +22,7 @@ RUN --mount=type=bind,rw,from=repos,src=/,dst=/repos \
     /usr/libexec/bootc-base-imagectl list && \
     jq '.Labels["redhat.version-id"] = "'${FEDORA_VERSION}'"' fedora-bootc-config-rawhide.json > fedora-bootc-config.json && \
     /usr/libexec/bootc-base-imagectl build-rootfs \
-    --reinject --manifest=fedora-${FEDORA_VERSION} /repos /target-rootfs
+    --reinject /repos /target-rootfs
 
 FROM scratch as composed
 COPY --from=builder /target-rootfs/ /
