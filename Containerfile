@@ -11,7 +11,7 @@ ARG FEDORA_VERSION
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    curl -L --fail -o /etc/yum.repos.d/continuous.repo https://copr.fedorainfracloud.org/coprs/g/CoreOS/continuous/repo/fedora-41/group_CoreOS-continuous-fedora-41.repo && \
+    curl -L --fail -o /etc/yum.repos.d/continuous.repo https://copr.fedorainfracloud.org/coprs/g/CoreOS/continuous/repo/fedora-${FEDORA_VERSION}/group_CoreOS-continuous-fedora-${FEDORA_VERSION}.repo && \
     dnf -y install --allowerasing rpm-ostree selinux-policy-targeted jq
 
 COPY overlays/compose/ /
