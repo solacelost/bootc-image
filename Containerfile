@@ -19,7 +19,7 @@ WORKDIR /src
 
 RUN --mount=type=bind,rw,from=repos,src=/,dst=/repos \
     set -xeuo pipefail && \
-    /usr/libexec/bootc-base-imagectl list >/dev/null && \
+    /usr/libexec/bootc-base-imagectl list && \
     jq '.Labels["redhat.version-id"] = "'${FEDORA_VERSION}'"' fedora-bootc-config-rawhide.json > fedora-bootc-config.json && \
     /usr/libexec/bootc-base-imagectl build-rootfs \
     --reinject --manifest=fedora-${FEDORA_VERSION} /repos /target-rootfs
