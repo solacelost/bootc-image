@@ -1,5 +1,5 @@
 # hadolint global ignore=DL3040,DL3041,DL4006
-ARG FEDORA_VERSION=41
+ARG FEDORA_VERSION=42
 
 FROM registry.fedoraproject.org/fedora:${FEDORA_VERSION} as repos
 
