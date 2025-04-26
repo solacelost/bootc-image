@@ -1,6 +1,27 @@
 # hadolint global ignore=DL3040,DL3041,DL4006
 ARG FEDORA_VERSION=42
 
+# https://github.com/Vladimir-csp/xdg-terminal-exec
+ARG XDG_TERMINAL_EXEC_COMMIT=0f92ff0a6cfb72ea1e9effbfafc11d65874e5d57
+# https://github.com/feschber/lan-mouse
+ARG LAN_MOUSE_COMMIT=b8063a813884b7444fe567deee8f61ff7931d351
+# https://github.com/wineasio/wineasio
+ARG WINE_ASIO_VERSION=1.2.0
+# https://github.com/dlundqvist/xone
+ARG XONE_COMMIT=c682b0cd4fd56d2d9639b64787034a375535eb4b
+# https://github.com/v4l2loopback/v4l2loopback
+ARG V4L2LOOPBACK_VERSION=0.14.0
+# https://github.com/derailed/k9s
+ARG K9S_VERSION=0.50.4
+# https://github.com/getsops/sops
+ARG SOPS_VERSION=3.10.2
+# https://github.com/AUNaseef/protonup
+ARG PROTONUP_COMMIT=4ff9d5474eeb868d375f53a144177ba44f3b77cc
+# https://pypi.org/project/nautilus-open-any-terminal/
+ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION=0.6.0
+# https://github.com/ryanoasis/nerd-fonts
+ARG NERD_FONTS_VERSION=3.4.0
+
 FROM registry.fedoraproject.org/fedora:${FEDORA_VERSION} as repos
 
 COPY overlays/repos/ /
@@ -37,7 +58,8 @@ CMD ["/sbin/init"]
 
 FROM composed as xdg-terminal-exec-build
 
-ENV COMMIT=0def84a3ffa70831c3c63d93cf79eb1090346004
+ARG XDG_TERMINAL_EXEC_COMMIT
+ENV COMMIT=${XDG_TERMINAL_EXEC_COMMIT}
 
 WORKDIR /build
 
@@ -52,7 +74,8 @@ RUN curl -sLo /tmp/xdg-terminal-exec.tar.gz "https://github.com/Vladimir-csp/xdg
 
 FROM composed as lan-mouse-build
 
-ENV COMMIT=3e1c3e95b73a26554154b0bf7387912e258ac74a
+ARG LAN_MOUSE_COMMIT
+ENV COMMIT=${LAN_MOUSE_COMMIT}
 ENV HOME=/var/roothome
 
 WORKDIR /build
@@ -76,7 +99,8 @@ FROM composed as wineasio-build
 
 WORKDIR /build
 
-ENV VERSION=1.2.0
+ARG WINE_ASIO_VERSION
+ENV VERSION=${WINE_ASIO_VERSION}
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
@@ -110,25 +134,31 @@ WORKDIR /build
 
 FROM module-build as xone-build
 
-ENV COMMIT=29ec3577e52a50f876440c81267f609575c5161e
+ARG XONE_COMMIT
+ENV COMMIT=${XONE_COMMIT}
 
 COPY overlays/xone/ /
 
 # Download and unpack the firmware
 RUN curl -sLo /tmp/xow_dongle.cab \
-    http://download.windowsupdate.com/c/msdownload/update/driver/drvs/2017/07/1cd6a87c-623f-4407-a52d-c31be49e925c_e19f60808bdcbfbd3c3df6be3e71ffc52e43261e.cab && \
+    https://catalog.s.download.windowsupdate.com/c/msdownload/update/driver/drvs/2017/07/1cd6a87c-623f-4407-a52d-c31be49e925c_e19f60808bdcbfbd3c3df6be3e71ffc52e43261e.cab && \
     cabextract /tmp/xow_dongle.cab -F FW_ACC_00U.bin && \
+    echo "48084d9fa53b9bb04358f3bb127b7495dc8f7bb0b3ca1437bd24ef2b6eabdf66 FW_ACC_00U.bin" | sha256sum -c && \
     mkdir -p /built/usr/lib/firmware && \
     mv FW_ACC_00U.bin /built/usr/lib/firmware/xow_dongle.bin && \
+    rm -f /tmp/xow_dongle.cab && \
+    curl -sLo /tmp/xow_dongle.cab \
+    https://catalog.s.download.windowsupdate.com/d/msdownload/update/driver/drvs/2015/12/20810869_8ce2975a7fbaa06bcfb0d8762a6275a1cf7c1dd3.cab && \
+    cabextract /tmp/xow_dongle.cab -F FW_ACC_00U.bin && \
+    echo "080ce4091e53a4ef3e5fe29939f51fd91f46d6a88be6d67eb6e99a5723b3a223 FW_ACC_00U.bin" | sha256sum -c && \
+    mv FW_ACC_00U.bin /built/usr/lib/firmware/xow_dongle_045e_02e6.bin && \
     rm -f /tmp/xow_dongle.cab
 
 # Download and build xone
 # hadolint ignore=DL3003
-RUN curl -sLo /tmp/xone.tar.gz "https://github.com/medusalix/xone/archive/${COMMIT}.tar.gz" && \
+RUN curl -sLo /tmp/xone.tar.gz "https://github.com/dlundqvist/xone/archive/${COMMIT}.tar.gz" && \
     tar xvzf /tmp/xone.tar.gz && \
     cd "xone-${COMMIT}" && \
-    curl -sLo kernel-6.12.patch https://patch-diff.githubusercontent.com/raw/medusalix/xone/pull/53.patch && \
-    git apply kernel-6.12.patch && \
     moddir="$(cat /moddir)" && \
     make -C "$moddir/build" "M=$PWD" && \
     mkdir -p "/built$moddir/extra/xone" && \
@@ -136,7 +166,8 @@ RUN curl -sLo /tmp/xone.tar.gz "https://github.com/medusalix/xone/archive/${COMM
 
 FROM module-build as v4l2loopback-build
 
-ENV VERSION=0.13.2
+ARG V4L2LOOPBACK_VERSION
+ENV VERSION=${V4L2LOOPBACK_VERSION}
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
@@ -145,7 +176,7 @@ RUN --mount=type=tmpfs,target=/var/cache \
 COPY overlays/v4l2loopback/ /
 
 # hadolint ignore=DL3003
-RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/umlaeute/v4l2loopback/archive/v${VERSION}/v4l2loopback-${VERSION}.tar.gz" && \
+RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/v4l2loopback/v4l2loopback/archive/v${VERSION}/v4l2loopback-${VERSION}.tar.gz" && \
     moddir="$(cat /moddir)" && \
     tar xvzf /tmp/v4l2loopback.tar.gz && \
     cd "v4l2loopback-${VERSION}" && \
@@ -159,18 +190,24 @@ RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/umlaeute/v4l2loopback
 
 FROM composed as final
 
+ARG K9S_VERSION
+ARG SOPS_VERSION
+ARG PROTONUP_COMMIT
+ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION
+ARG NERD_FONTS_VERSION
+
 # Some uncomposable changes
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install \
-    https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.rpm \
-    https://github.com/getsops/sops/releases/download/v3.9.4/sops-3.9.4-1.x86_64.rpm && \
+    https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_linux_amd64.rpm \
+    https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-${SOPS_VERSION}-1.x86_64.rpm && \
     python3 -m pip --no-cache-dir install \
-    git+https://github.com/AUNaseef/protonup.git@4ff9d5474eeb868d375f53a144177ba44f3b77cc \
-    nautilus-open-any-terminal && \
+    git+https://github.com/AUNaseef/protonup.git@${PROTONUP_COMMIT} \
+    nautilus-open-any-terminal==${NAUTILUS_OPEN_ANY_TERMINAL_VERSION} && \
     glib-compile-schemas /usr/local/share/glib-2.0/schemas && \
     mkdir -p /usr/share/fonts/inconsolata && \
-    curl -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
+    curl -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v${NERD_FONTS_VERSION}/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
     chown -R root:root /usr/share/fonts/inconsolata && \
     fc-cache -f -v && \
     curl -sLo- "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz" | tar xvz -C /usr/local/bin && \
