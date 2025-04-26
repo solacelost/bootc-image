@@ -200,7 +200,7 @@ ARG NERD_FONTS_VERSION
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install \
-    https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_linux_amd64.rpm \
+    https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_linux_amd64.rpm \
     https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-${SOPS_VERSION}-1.x86_64.rpm && \
     python3 -m pip --no-cache-dir install \
     git+https://github.com/AUNaseef/protonup.git@${PROTONUP_COMMIT} \
