@@ -1,3 +1,4 @@
 packages:
   - awscli2
   - opentofu
+  - azure-cli
