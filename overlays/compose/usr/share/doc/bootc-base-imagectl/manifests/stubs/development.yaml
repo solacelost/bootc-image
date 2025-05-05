@@ -24,3 +24,6 @@ packages:
   - ripgrep
   - pigz
   - rocm-smi
+  - amdsmi
+  - omlmd
+  - oras
