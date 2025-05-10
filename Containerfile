@@ -72,6 +72,8 @@ RUN curl -sLo /tmp/xdg-terminal-exec.tar.gz "https://github.com/Vladimir-csp/xdg
     cd xdg-terminal-exec-${COMMIT} && \
     make install prefix=/built/usr/local
 
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
+
 FROM composed as lan-mouse-build
 
 ARG LAN_MOUSE_COMMIT
@@ -94,6 +96,8 @@ RUN mkdir -p /built/usr/local/bin /built/etc/systemd/user /built/etc/firewalld/s
     cp lan-mouse-${COMMIT}/target/release/lan-mouse /built/usr/local/bin/ && \
     sed 's/\/usr\/bin\/lan-mouse/\/usr\/local\/bin\/lan-mouse/' lan-mouse-${COMMIT}/service/lan-mouse.service > /built/etc/systemd/user/lan-mouse.service && \
     cp lan-mouse-${COMMIT}/firewall/lan-mouse.xml /built/etc/firewalld/services/
+
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 FROM composed as wineasio-build
 
@@ -121,6 +125,8 @@ RUN make build ARCH=i386 M=32 LIBRARIES="-L/usr/lib/pipewire-0.3/jack -ljack" &&
     cp build64/wineasio64.dll.so /built/usr/lib64/wine/x86_64-unix/
 
 COPY overlays/wineasio/ /
+
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 FROM composed as module-build
 
@@ -164,6 +170,8 @@ RUN curl -sLo /tmp/xone.tar.gz "https://github.com/dlundqvist/xone/archive/${COM
     mkdir -p "/built$moddir/extra/xone" && \
     cp -r xone-*.ko "/built$moddir/extra/xone/"
 
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
+
 FROM module-build as v4l2loopback-build
 
 ARG V4L2LOOPBACK_VERSION
@@ -185,6 +193,8 @@ RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/v4l2loopback/v4l2loop
     make V=1 -C "$moddir/build" "M=${PWD}" && \
     mkdir -p "/built$moddir/extra/v4l2loopback" && \
     cp -r v4l2loopback.ko "/built$moddir/extra/v4l2loopback/"
+
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 # TODO: Shikane: https://gitlab.com/w0lff/shikane
 
