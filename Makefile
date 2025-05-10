@@ -55,14 +55,34 @@ tmp/$(LATEST_DIGEST):
 	@touch $@
 
 .build-$(TAG): Containerfile tmp/$(LATEST_DIGEST) overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l)
-	$(RUNTIME) build --security-opt=label=disable --arch $(ARCH) --pull=newer --cap-add=all --device=/dev/fuse --build-arg=FEDORA_VERSION=$(FEDORA_VERSION) --from $(BASE) -f $< . -t $(IMAGE)
+	sudo $(RUNTIME) build \
+		--arch $(ARCH) \
+		--pull=newer \
+		--security-opt=label=disable \
+		--cap-add=all \
+		--device=/dev/fuse \
+		--build-arg=FEDORA_VERSION=$(FEDORA_VERSION) \
+		--from $(BASE) \
+		-f $< \
+		. \
+		-t $(IMAGE)-unchunked
+	sudo $(RUNTIME) run \
+		--rm \
+		--arch $(ARCH) \
+		--privileged \
+		--pull=never \
+		--security-opt=label=disable \
+		-v /var/lib/containers:/var/lib/containers \
+		--entrypoint=/usr/libexec/bootc-base-imagectl \
+		$(IMAGE)-unchunked \
+		rechunk $(IMAGE)-unchunked $(IMAGE)
 	@touch $@
 
 .PHONY: build
 build: .build-$(TAG)
 
 .push-$(TAG): .build-$(TAG)
-	$(RUNTIME) push $(IMAGE)
+	sudo $(RUNTIME) push $(IMAGE)
 	@touch $@
 
 .PHONY: push
@@ -70,7 +90,7 @@ push: .push-$(TAG)
 
 .PHONY: debug
 debug:
-	$(RUNTIME) run --rm -it --arch $(ARCH) --pull=never --entrypoint /bin/bash -v /var/tmp/buildah-cache-$$UID/8a2a6a29aeebc33c:/var/cache/libdnf5:z $(IMAGE) -li
+	sudo $(RUNTIME) run --rm -it --arch $(ARCH) --pull=never --entrypoint /bin/bash -v /var/tmp/buildah-cache-$$UID/8a2a6a29aeebc33c:/var/cache/libdnf5:z $(IMAGE) -li
 
 boot-image/fedora-live.x86_64.iso:
 	curl -Lo $@ https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/Fedora-Everything-netinst-x86_64-${BOOT_VERSION}-${BOOT_IMAGE_VERSION}.iso
