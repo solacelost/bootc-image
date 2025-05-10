@@ -25,5 +25,5 @@ packages:
   - pigz
   - rocm-smi
   - amdsmi
-  - omlmd
-  - oras
+  - python3-omlmd
+  - golang-oras
