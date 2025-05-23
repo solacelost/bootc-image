@@ -3,7 +3,7 @@
 REGISTRY_LOGIN="${REGISTRY_LOGIN:-registry.jharmison.com}"
 
 if ! oc whoami >/dev/null 2>&1; then
-    echo "Not logged into any cluster" 2>dev/null
+    echo "Not logged into any cluster" >&2
     exit 1
 fi
 
