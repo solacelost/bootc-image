@@ -82,6 +82,7 @@ tmp/$(LATEST_DIGEST):
 build: .build-$(TAG)
 
 .push-$(TAG): .build-$(TAG)
+	export KUBECONFIG="$${KUBECONFIG:-~/.kube/config}" ; sudo --preserve-env=KUBECONFIG registry-login
 	sudo $(RUNTIME) push $(IMAGE)
 	@touch $@
 
