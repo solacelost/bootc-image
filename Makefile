@@ -14,6 +14,7 @@ RUNTIME ?= podman
 USERNAME ?= james
 PASSWORD ?= password
 PRIVATE_KEY ?= $$HOME/.ssh/id_ed25519
+KUBECONFIG ?= $$HOME/.kube/config
 BASE ?= registry.fedoraproject.org/fedora:$(FEDORA_VERSION)
 REGISTRY ?= registry.jharmison.com
 REPOSITORY ?= library/fedora-bootc
@@ -82,7 +83,7 @@ tmp/$(LATEST_DIGEST):
 build: .build-$(TAG)
 
 .push-$(TAG): .build-$(TAG)
-	export KUBECONFIG="$${KUBECONFIG:-~/.kube/config}" ; sudo --preserve-env=KUBECONFIG registry-login
+	export KUBECONFIG="$(KUBECONFIG)" ; sudo --preserve-env=KUBECONFIG registry-login
 	sudo $(RUNTIME) push $(IMAGE)
 	@touch $@
 
