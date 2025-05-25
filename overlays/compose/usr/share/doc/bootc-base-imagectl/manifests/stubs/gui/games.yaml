@@ -12,3 +12,4 @@ packages:
   - dotnet-sdk-9.0
   - webkit2gtk4.1
   - xsel
+  - glib-networking
