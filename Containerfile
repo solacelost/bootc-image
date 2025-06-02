@@ -1,5 +1,6 @@
 # hadolint global ignore=DL3040,DL3041,DL4006
 ARG FEDORA_VERSION=42
+ARG IMAGE_REF=registry.jharmison.com/library/fedora-bootc:desktop
 
 # https://github.com/Vladimir-csp/xdg-terminal-exec
 ARG XDG_TERMINAL_EXEC_COMMIT=0f92ff0a6cfb72ea1e9effbfafc11d65874e5d57
@@ -205,6 +206,7 @@ ARG SOPS_VERSION
 ARG PROTONUP_COMMIT
 ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION
 ARG NERD_FONTS_VERSION
+ARG IMAGE_REF
 
 # Some uncomposable changes
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -222,7 +224,8 @@ RUN --mount=type=tmpfs,target=/var/cache \
     fc-cache -f -v && \
     curl -sLo- "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz" | tar xvz -C /usr/local/bin && \
     chmod +x /usr/local/bin/{kubectl,oc} && \
-    authselect enable-feature with-fingerprint
+    authselect enable-feature with-fingerprint && \
+    echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf
 
 # Copy xdg-terminal-exec
 COPY --from=xdg-terminal-exec-build /built/ /

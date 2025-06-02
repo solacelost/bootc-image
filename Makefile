@@ -63,6 +63,7 @@ tmp/$(LATEST_DIGEST):
 		--cap-add=all \
 		--device=/dev/fuse \
 		--build-arg=FEDORA_VERSION=$(FEDORA_VERSION) \
+		--build-arg=IMAGE_REF=$(IMAGE) \
 		--from $(BASE) \
 		-f $< \
 		. \
