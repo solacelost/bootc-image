@@ -131,6 +131,8 @@ packages:
   - qemu-kvm
   - libvirt-daemon
   - libvirt-client
+  - libvirt-daemon-driver-network
+  - libvirt-daemon-config-network
   - virt-install
   - guestfs-tools
   # A ton of firmware
