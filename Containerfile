@@ -11,7 +11,7 @@ ARG WINE_ASIO_VERSION=1.2.0
 # https://github.com/dlundqvist/xone
 ARG XONE_COMMIT=c682b0cd4fd56d2d9639b64787034a375535eb4b
 # https://github.com/v4l2loopback/v4l2loopback
-ARG V4L2LOOPBACK_VERSION=0.14.0
+ARG V4L2LOOPBACK_VERSION=0.15.0
 # https://github.com/derailed/k9s
 ARG K9S_VERSION=0.50.4
 # https://github.com/getsops/sops
