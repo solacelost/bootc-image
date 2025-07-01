@@ -225,7 +225,9 @@ RUN --mount=type=tmpfs,target=/var/cache \
     curl -sLo- "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz" | tar xvz -C /usr/local/bin && \
     chmod +x /usr/local/bin/{kubectl,oc} && \
     authselect enable-feature with-fingerprint && \
-    echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf
+    echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf && \
+    waydroid init -c https://ota.waydro.id/system -v https://ota.waydro.id/vendor && \
+    waydroid upgrade
 
 # Copy xdg-terminal-exec
 COPY --from=xdg-terminal-exec-build /built/ /
