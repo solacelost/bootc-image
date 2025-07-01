@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [[ $EUID -ne 0 ]]; then
     exec sudo "$0" "${@}"
 fi
@@ -14,8 +16,15 @@ function regex_escape {
     sed 's/\./\\./g' <<< "$*"
 }
 
+if systemctl is-enabled waydroid-container.server >/dev/null 2>&1; then
+    noisy systemctl stop waydroid-container.service
+fi
+
+# Clear out any old configuration
+noisy rm -rf /var/lib/waydroid /var/home/waydroid /var/home/.waydroid $(find /var/home -type d -name waydroid 2>/dev/null)
+
 # Basic setup
-noisy waydroid init --force --system_channel https://ota.waydro.id/system --vendor_channel https://ota.waydro.id/vendor
+noisy waydroid init --system_channel https://ota.waydro.id/system --vendor_channel https://ota.waydro.id/vendor
 noisy waydroid upgrade
 
 # Ensure props
@@ -46,3 +55,5 @@ if systemctl is-enabled waydroid-container.server >/dev/null 2>&1; then
 else
     noisy systemctl enable --now waydroid-container.service
 fi
+
+touch /var/lib/waydroid/one-time-setup-complete
