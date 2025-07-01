@@ -16,7 +16,7 @@ function regex_escape {
     sed 's/\./\\./g' <<< "$*"
 }
 
-if systemctl is-enabled waydroid-container.server >/dev/null 2>&1; then
+if systemctl is-active waydroid-container.server >/dev/null 2>&1; then
     noisy systemctl stop waydroid-container.service
 fi
 
