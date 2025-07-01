@@ -25,7 +25,7 @@ ARG NERD_FONTS_VERSION=3.4.0
 # https://github.com/ublue-os/waydroid_script
 ARG WAYDROID_SCRIPT_COMMIT=ba9b5a8dc98faa5e56e31a05b0cd3c3a2c3f3078
 
-FROM registry.fedoraproject.org/fedora:${FEDORA_VERSION} as repos
+FROM registry.jharmison.com/library/fedora:${FEDORA_VERSION} as repos
 
 COPY overlays/repos/ /
 
