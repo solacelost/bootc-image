@@ -1,0 +1,48 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+    exec sudo "$0" "${@}"
+fi
+
+function noisy {
+    set -x
+    "${@}"
+    { set +x; } 2>/dev/null
+}
+
+function regex_escape {
+    sed 's/\./\\./g' <<< "$*"
+}
+
+# Basic setup
+noisy waydroid init --force --system_channel https://ota.waydro.id/system --vendor_channel https://ota.waydro.id/vendor
+noisy waydroid upgrade
+
+# Ensure props
+prop_file=/var/lib/waydroid/waydroid_base.prop
+declare -A props
+props[persist.waydroid.udev]=true
+props[persist.waydroid.uevent]=true
+props[ro.hardware.gralloc]="${WAYDROID_GRALLOC:-minigbm_gbm_mesa}"
+if [ -n "$WAYDROID_DENSITY" ]; then
+    props[ro.sf.lcd_density]="${WAYDROID_DENSITY}"
+fi
+props[persist.waydroid.multi_windows]=true
+
+for prop in "${!props[@]}"; do
+    if ! grep -q "^$(regex_escape $prop)=${props[$prop]}" $prop_file; then
+        if grep -q "^$(regex_escape $prop)=" $prop_file; then
+            noisy sed -i "s/^$(regex_escape $prop)=.*\$/$prop=${props[$prop]}" $prop_file
+        else
+            noisy echo "$prop=${props[$prop]}" >> $prop_file
+        fi
+    fi
+fi
+
+# Start service
+noisy restorecon -Riv /var/lib/waydroid
+if systemctl is-enabled waydroid-container.server >/dev/null 2>&1; then
+    noisy systemctl restart waydroid-container.service
+else
+    noisy systemctl enable --now waydroid-container.service
+fi

@@ -10,3 +10,4 @@ packages:
   - flatpak
   - zathura zathura-djvu zathura-pdf-mupdf zathura-ps zathura-bash-completion
   - waydroid
+  - lzip # needed for waydroid setup
