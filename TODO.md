@@ -6,5 +6,6 @@
 - [ ] Encrypt /var partition by default
 - [ ] Enable fprintd to detect fingerprint reader and prompt to set if unset
 - [ ] Investigate RaySession?
-- [ ] Re-implement DSLR webcam setup
-- [ ] Red Hat VPN and certificates
+- [x] Re-implement DSLR webcam setup
+- [x] Red Hat VPN and certificates
+- [ ] Find a universal way to cache intermediate build stages in Containerfile (e.g. cargo build cache)
