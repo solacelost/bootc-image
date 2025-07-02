@@ -13,7 +13,7 @@ function noisy {
 }
 
 function regex_escape {
-    sed 's/\./\\./g' <<< "$*"
+    sed 's/\./\\./g' <<<"$*"
 }
 
 if systemctl is-active waydroid-container.server >/dev/null 2>&1; then
@@ -41,12 +41,12 @@ props[persist.waydroid.multi_windows]=true
 for prop in "${!props[@]}"; do
     if ! grep -q "^$(regex_escape $prop)=${props[$prop]}" $prop_file; then
         if grep -q "^$(regex_escape $prop)=" $prop_file; then
-            noisy sed -i "s/^$(regex_escape $prop)=.*\$/$prop=${props[$prop]}" $prop_file
+            noisy sed -i "s/^$(regex_escape $prop)=.*\$/$prop=${props[$prop]}/" $prop_file
         else
-            noisy echo "$prop=${props[$prop]}" >> $prop_file
+            noisy echo "$prop=${props[$prop]}" >>$prop_file
         fi
     fi
-fi
+done
 
 # Start service
 noisy restorecon -Riv /var/lib/waydroid
