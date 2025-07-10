@@ -55,7 +55,7 @@ overlays/users/usr/local/ssh/$(USERNAME).keys:
 tmp/$(LATEST_DIGEST):
 	@touch $@
 
-.build-$(TAG): Containerfile tmp/$(LATEST_DIGEST) overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l)
+.build-$(TAG)-unchunked: Containerfile tmp/$(LATEST_DIGEST) overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l)
 	sudo $(RUNTIME) build \
 		--arch $(ARCH) \
 		--pull=newer \
@@ -68,6 +68,9 @@ tmp/$(LATEST_DIGEST):
 		-f $< \
 		. \
 		-t $(IMAGE)-unchunked
+	@touch $@
+
+.build-$(TAG): .build-$(TAG)-unchunked
 	sudo $(RUNTIME) run \
 		--rm \
 		--arch $(ARCH) \
