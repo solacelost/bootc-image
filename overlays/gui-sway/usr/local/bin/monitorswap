@@ -19,7 +19,8 @@ entries="
 Sideways,
 Wide,
 Single,
-Alternate"
+Alternate,
+AlternatePortrait"
 
 default=Wide
 
@@ -60,6 +61,13 @@ function _alternate_monitor {
     echo alternate >$statefile
 }
 
+function _alternate_portrait_monitor {
+    set -x
+    swaymsg output $main_monitor disable
+    swaymsg output $small_monitor enable pos 0 0 adaptive_sync on transform 270 mode 1920x1080@60.000Hz
+    echo alternateportrait >$statefile
+}
+
 function _sideways_monitor {
     set -x
     swaymsg output $main_monitor enable pos 1080 240 adaptive_sync on mode 3440x1440@120.000Hz
@@ -86,6 +94,9 @@ sideways)
     ;;
 wide)
     _wide_monitor
+    ;;
+alternateportrait)
+    _alternate_portrait_monitor
     ;;
 *)
     echo "Unknown option: $selected. Options:" >&2
