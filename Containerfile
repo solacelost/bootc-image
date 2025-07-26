@@ -171,7 +171,7 @@ RUN curl -sLo /tmp/xone.tar.gz "https://github.com/dlundqvist/xone/archive/${COM
     moddir="$(cat /moddir)" && \
     make -C "$moddir/build" "M=$PWD" && \
     mkdir -p "/built$moddir/extra/xone" && \
-    cp -r xone-*.ko "/built$moddir/extra/xone/"
+    cp -r xone_*.ko "/built$moddir/extra/xone/"
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
