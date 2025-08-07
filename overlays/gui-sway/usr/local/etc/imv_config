@@ -1,0 +1,2 @@
+[binds]
+y = exec wl-copy "[[""$imv_current_file""]]"
