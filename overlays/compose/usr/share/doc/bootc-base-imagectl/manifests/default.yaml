@@ -25,4 +25,3 @@ include:
   - stubs/network.yaml
   - stubs/redhat.yaml
   - stubs/webcam.yaml
-  - stubs/yubikey.yaml

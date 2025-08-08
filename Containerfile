@@ -22,8 +22,6 @@ ARG PROTONUP_COMMIT=4ff9d5474eeb868d375f53a144177ba44f3b77cc
 ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION=0.6.1
 # https://github.com/ryanoasis/nerd-fonts
 ARG NERD_FONTS_VERSION=3.4.0
-# https://github.com/ublue-os/waydroid_script
-ARG WAYDROID_SCRIPT_COMMIT=ba9b5a8dc98faa5e56e31a05b0cd3c3a2c3f3078
 
 FROM registry.jharmison.com/library/fedora:${FEDORA_VERSION} as repos
 
@@ -209,7 +207,6 @@ ARG PROTONUP_COMMIT
 ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION
 ARG NERD_FONTS_VERSION
 ARG IMAGE_REF
-ARG WAYDROID_SCRIPT_COMMIT
 
 # Some uncomposable changes
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -221,12 +218,6 @@ RUN --mount=type=tmpfs,target=/var/cache \
     git+https://github.com/AUNaseef/protonup.git@${PROTONUP_COMMIT} \
     nautilus-open-any-terminal==${NAUTILUS_OPEN_ANY_TERMINAL_VERSION} && \
     glib-compile-schemas /usr/local/share/glib-2.0/schemas && \
-    python3 -m venv /usr/local/libexec/waydroid-script && \
-    /usr/local/libexec/waydroid-script/bin/pip install -r https://raw.githubusercontent.com/ublue-os/waydroid_script/${WAYDROID_SCRIPT_COMMIT}/requirements.txt && \
-    git clone https://github.com/ublue-os/waydroid_script.git /usr/local/libexec/waydroid-script/clone && \
-    cd /usr/local/libexec/waydroid-script/clone && \
-    git reset --hard ${WAYDROID_SCRIPT_COMMIT} && \
-    cd - && \
     mkdir -p /usr/share/fonts/inconsolata && \
     curl -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v${NERD_FONTS_VERSION}/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
     chown -R root:root /usr/share/fonts/inconsolata && \

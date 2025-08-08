@@ -5,7 +5,6 @@ packages:
   - jq
   - light
   - lm_sensors
-  - lorax
   - p7zip
   - pbzip2
   - tmux
