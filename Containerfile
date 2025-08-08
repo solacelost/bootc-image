@@ -214,7 +214,7 @@ RUN --mount=type=tmpfs,target=/var/cache \
     dnf -y install \
     https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_linux_amd64.rpm \
     https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-${SOPS_VERSION}-1.x86_64.rpm && \
-    python3 -m pip install --no-cache-dir \
+    uv pip install --no-cache \
     git+https://github.com/AUNaseef/protonup.git@${PROTONUP_COMMIT} \
     nautilus-open-any-terminal==${NAUTILUS_OPEN_ANY_TERMINAL_VERSION} && \
     glib-compile-schemas /usr/local/share/glib-2.0/schemas && \
