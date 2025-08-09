@@ -1,7 +1,7 @@
 -- mini.nvim
 local path_package = vim.fn.stdpath('data') .. '/site'
 local mini_path = path_package .. '/pack/deps/start/mini.nvim'
-if not vim.loop.fs_stat(mini_path) then
+if not vim.uv_fs_stat(mini_path) then
     vim.cmd('echo "Installing `mini.nvim`" | redraw')
     local clone_cmd = {
         'git', 'clone', '--filter=blob:none',
@@ -56,8 +56,9 @@ map('n', '<leader>r', source_config, { desc = 're-source config' })
 --
 
 -- plugin installation
-require 'mini.deps'.setup({ path = { package = path_package } })
-local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
+local minideps = require 'mini.deps'
+minideps.setup({ path = { package = path_package } })
+local add, now, later = minideps.add, minideps.now, minideps.later
 add({ source = 'ellisonleao/gruvbox.nvim' })
 add({
     source = 'neovim/nvim-lspconfig',
