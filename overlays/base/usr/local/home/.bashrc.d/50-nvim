@@ -1,0 +1,8 @@
+nvimflag="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/nvim-setup"
+if ! [ -e "$nvimflag" ]; then
+    rm -rf ~/.config/nvim
+    mkdir -p ~/.config/nvim
+    rsync -rltpD /usr/local/share/nvim-config/ ~/.config/nvim/
+    touch "$nvimflag"
+fi
+unset nvimflag
