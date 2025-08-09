@@ -36,12 +36,20 @@ vim.o.incsearch = true
 vim.o.undofile = true
 vim.o.scrolloff = 10
 vim.o.sidescrolloff = 8
+vim.o.clipboard = 'unnamedplus'
 
--- builtin shortcuts
+-- builtin configs
 local map = vim.keymap.set
 map('n', '<leader>w', ':write<CR>', { desc = 'write' })
-map({ 'n', 'v', 'x' }, '<leader>y', '"+y<CR>', { desc = 'system copy' })
-map({ 'n', 'v', 'x' }, '<leader>d', '"+d<CR>', { desc = 'system cut' })
+vim.api.nvim_create_autocmd("TextYankPost", {
+    callback = function()
+        vim.highlight.on_yank({ higroup = "YankedText", timeout = 200 })
+    end
+})
+local function source_config()
+    vim.cmd.source('~/.config/nvim/init.lua')
+end
+map('n', '<leader>r', source_config, { desc = 're-source config' })
 
 --
 -- pugin configuration
@@ -82,21 +90,27 @@ later(function() require 'mini.git'.setup() end)
 later(function() require 'mini.diff'.setup() end)
 later(function() require 'mini.statusline'.setup() end)
 later(function() require 'mini.notify'.setup() end)
-later(function() require 'mini.trailspace'.setup() end)
-later(function() vim.api.nvim_create_autocmd('BufWritePre', { callback = function() MiniTrailspace.trim() end }) end)
+later(function()
+    local trailspace = require 'mini.trailspace'
+    trailspace.setup()
+    vim.api.nvim_create_autocmd('BufWritePre', { callback = function() trailspace.trim() end })
+end)
 later(function() require 'mini.surround'.setup() end)
 later(function() require 'mini.pairs'.setup() end)
-later(function() require 'mini.pick'.setup() end)
-later(function() map('n', '<leader>f', ':Pick files<CR>', { desc = 'find' }) end)
 later(function()
-    require 'mini.files'.setup({
+    require 'mini.pick'.setup()
+    map('n', '<leader>f', ':Pick files<CR>', { desc = 'find' })
+end)
+later(function()
+    local minifiles = require 'mini.files'
+    minifiles.setup({
         windows = {
             preview = true,
             width_preview = 80,
         },
     })
+    map('n', '<leader>e', minifiles.open, { desc = 'explore' })
 end)
-later(function() map('n', '<leader>e', MiniFiles.open, { desc = 'explore' }) end)
 later(function()
     require 'treewalker'.setup()
     map({ 'n', 'v', 'x' }, '<leader>j', '<cmd>Treewalker Down<CR>', { silent = true, desc = 'walk down' })
@@ -104,8 +118,8 @@ later(function()
     map({ 'n', 'v', 'x' }, '<leader>l', '<cmd>Treewalker Right<CR>', { silent = true, desc = 'walk right' })
     map({ 'n', 'v', 'x' }, '<leader>h', '<cmd>Treewalker Left<CR>', { silent = true, desc = 'walk left' })
 end)
-local miniclue = require 'mini.clue'
 later(function()
+    local miniclue = require 'mini.clue'
     miniclue.setup({
         triggers = {
             { mode = 'n', keys = '<leader>' },
@@ -122,8 +136,6 @@ later(function()
         },
 
         clues = {
-            { mode = 'n', keys = '<leader>w', desc = 'write' },
-            { mode = 'n', keys = '<leader>L', desc = '+lsp' },
             { mode = 'n', keys = '<leader>b', desc = '+buffer' },
             miniclue.gen_clues.builtin_completion(),
             miniclue.gen_clues.g(),
@@ -215,7 +227,7 @@ later(function()
         'vale_ls',
     })
 end)
-later(function() map('n', '<leader>Lf', vim.lsp.buf.format, { desc = 'format' }) end)
+later(function() map('n', '<leader>F', vim.lsp.buf.format, { desc = 'format' }) end)
 later(function()
     require 'lint'.linters_by_ft = {
         markdown = { 'vale' },
@@ -236,8 +248,6 @@ later(function()
             end
         end,
     })
-end)
-later(function()
     vim.cmd('set completeopt+=noselect')
 end)
 later(function()
@@ -250,4 +260,5 @@ now(function()
     vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
     vim.api.nvim_set_hl(0, 'NormalNC', { bg = 'none' })
     vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'none' })
+    vim.api.nvim_set_hl(0, "YankedText", { bg = "#527252" })
 end)
