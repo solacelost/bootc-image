@@ -22,3 +22,10 @@ packages:
   - pigz
   - rocm-smi
   - amdsmi
+  - nodejs-bash-language-server
+  - rust-analyzer
+  - gopls
+  - rpm-spec-language-server
+  - hadolint
+  - tree-sitter-cli
+  - python3-neovim
