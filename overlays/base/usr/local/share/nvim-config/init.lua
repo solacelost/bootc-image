@@ -1,7 +1,7 @@
 -- mini.nvim
 local path_package = vim.fn.stdpath('data') .. '/site'
 local mini_path = path_package .. '/pack/deps/start/mini.nvim'
-if not vim.uv_fs_stat(mini_path) then
+if not vim.uv.fs_stat(mini_path) then
     vim.cmd('echo "Installing `mini.nvim`" | redraw')
     local clone_cmd = {
         'git', 'clone', '--filter=blob:none',
@@ -48,8 +48,13 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 local function source_config()
     vim.cmd.source('~/.config/nvim/init.lua')
+    vim.api.nvim_command([[echo "Config re-sourced..."]])
 end
 map('n', '<leader>r', source_config, { desc = 're-source config' })
+map('n', '<leader>bn', ':bnext<CR>', { desc = 'next' })
+map('n', '<leader>bp', ':bprev<CR>', { desc = 'previous' })
+map('n', '<M-l>', ':bnext<CR>', { desc = 'next buf' })
+map('n', '<M-h>', ':bprev<CR>', { desc = 'previous buf' })
 
 --
 -- pugin configuration
@@ -196,6 +201,7 @@ now(function()
             'helm_ls',
             'vale',
             'vale_ls',
+            'biome',
         },
         auto_update = true,
         integrations = {
@@ -215,6 +221,10 @@ now(function()
     })
 end)
 later(function()
+    vim.lsp.config('biome', {
+        single_file_support = true,
+        workspace_required = false,
+    })
     vim.lsp.enable({
         'bashls',
         'rust_analyzer',
@@ -226,6 +236,7 @@ later(function()
         'yamlls',
         'helm_ls',
         'vale_ls',
+        'biome',
     })
 end)
 later(function() map('n', '<leader>F', vim.lsp.buf.format, { desc = 'format' }) end)
