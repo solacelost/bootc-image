@@ -123,7 +123,7 @@ later(function()
 
         clues = {
             { mode = 'n', keys = '<leader>w', desc = 'write' },
-            { mode = 'n', keys = '<leader>l', desc = '+lsp' },
+            { mode = 'n', keys = '<leader>L', desc = '+lsp' },
             { mode = 'n', keys = '<leader>b', desc = '+buffer' },
             miniclue.gen_clues.builtin_completion(),
             miniclue.gen_clues.g(),
@@ -215,7 +215,7 @@ later(function()
         'vale_ls',
     })
 end)
-later(function() map('n', '<leader>lf', vim.lsp.buf.format, { desc = 'format' }) end)
+later(function() map('n', '<leader>Lf', vim.lsp.buf.format, { desc = 'format' }) end)
 later(function()
     require 'lint'.linters_by_ft = {
         markdown = { 'vale' },
