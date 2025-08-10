@@ -113,6 +113,10 @@ end)
 later(function()
     local minifiles = require 'mini.files'
     minifiles.setup({
+        mappings = {
+            go_in = 'L',
+            go_in_plus = 'l',
+        },
         windows = {
             preview = true,
             width_preview = 80,
@@ -144,10 +148,10 @@ later(function()
       pattern = "MiniFilesBufferCreate",
       callback = function(args)
         local buf_id = args.data.buf_id
-        map_split(buf_id, "<C-w>s", "horizontal", false)
-        map_split(buf_id, "<C-w>v", "vertical", false)
-        map_split(buf_id, "<C-w>S", "horizontal", true)
-        map_split(buf_id, "<C-w>V", "vertical", true)
+        -- map_split(buf_id, "<C-k>", "horizontal", false)
+        -- map_split(buf_id, "<C-l>", "vertical", false)
+        map_split(buf_id, "<C-k>", "horizontal", true)
+        map_split(buf_id, "<C-l>", "vertical", true)
       end,
     })
 end)
