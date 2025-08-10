@@ -88,6 +88,9 @@ add({
 add({
     source = 'aaronik/treewalker.nvim'
 })
+add({
+    source = 'qvalentin/helm-ls.nvim'
+})
 
 -- workflow
 now(function() require 'mini.icons'.setup() end)
@@ -264,6 +267,9 @@ later(function()
 end)
 later(function()
     require 'mini.cursorword'.setup()
+end)
+later(function()
+    require("helm-ls").setup()
 end)
 
 -- theme
