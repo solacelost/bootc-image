@@ -17,3 +17,7 @@ HISTSIZE=10000
 export HISTSIZE
 HISTFILESIZE=10000
 export HISTFILESIZE
+
+# Stuff for biome as LSP
+BIOME_CONFIG_PATH=~/.config/nvim/biome.json
+export BIOME_CONFIG_PATH
