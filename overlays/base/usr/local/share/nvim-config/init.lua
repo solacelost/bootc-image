@@ -55,6 +55,10 @@ map('n', '<leader>bn', ':bnext<CR>', { desc = 'next' })
 map('n', '<leader>bp', ':bprev<CR>', { desc = 'previous' })
 map('n', '<M-l>', ':bnext<CR>', { desc = 'next buf' })
 map('n', '<M-h>', ':bprev<CR>', { desc = 'previous buf' })
+map('n', '<C-h>', '<C-w>h', { desc = 'left window'})
+map('n', '<C-j>', '<C-w>j', { desc = 'down window'})
+map('n', '<C-k>', '<C-w>k', { desc = 'up window'})
+map('n', '<C-l>', '<C-w>l', { desc = 'right window'})
 
 --
 -- pugin configuration
