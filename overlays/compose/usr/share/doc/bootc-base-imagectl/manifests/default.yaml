@@ -12,7 +12,6 @@ repos:
   - rpmfusion-free-updates
   - rpmfusion-nonfree
   - rpmfusion-nonfree-updates
-  - lazygit
   - google-chrome
 
 include:
