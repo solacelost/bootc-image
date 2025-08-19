@@ -51,8 +51,8 @@ local function source_config()
   vim.api.nvim_command([[echo "Config re-sourced..."]])
 end
 map('n', '<leader>r', source_config, { desc = 're-source config' })
-map('n', '<leader>bn', ':bnext<CR>', { desc = 'next' })
-map('n', '<leader>bp', ':bprev<CR>', { desc = 'previous' })
+map('n', '<leader>bl', ':bnext<CR>', { desc = 'next' })
+map('n', '<leader>bh', ':bprev<CR>', { desc = 'previous' })
 map('n', '<M-l>', ':bnext<CR>', { desc = 'next buf' })
 map('n', '<M-h>', ':bprev<CR>', { desc = 'previous buf' })
 map('n', '<C-h>', '<C-w>h', { desc = 'left window' })
@@ -112,7 +112,13 @@ later(function() require 'mini.surround'.setup() end)
 later(function() require 'mini.pairs'.setup() end)
 later(function()
   require 'mini.pick'.setup()
-  map('n', '<leader>f', ':Pick files<CR>', { desc = 'find' })
+  map('n', '<leader>f', function()
+    MiniPick.builtin.cli(
+      { command = { 'rg', '--files', '--no-follow', '--color=never', '--no-ignore-vcs' } },
+      { source = { name = "File Find" } }
+    )
+  end, { desc = 'find' })
+  map('n', '<leader>bp', ':Pick buffers<CR>', { desc = 'pick' })
 end)
 later(function()
   local minifiles = require 'mini.files'
