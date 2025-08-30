@@ -99,6 +99,8 @@ add({
 -- workflow
 now(function() require 'mini.icons'.setup() end)
 now(function() require 'mini.tabline'.setup() end)
+later(function() require 'mini.snippets'.setup() end)
+later(function() require 'mini.completion'.setup() end)
 later(function() require 'mini.git'.setup() end)
 later(function() require 'mini.diff'.setup() end)
 later(function() require 'mini.statusline'.setup() end)
