@@ -1,3 +1,0 @@
-#!/bin/bash
-
-exec /usr/local/libexec/waydroid-script/bin/python3 /usr/local/libexec/waydroid-script/clone/main.py "${@}"
