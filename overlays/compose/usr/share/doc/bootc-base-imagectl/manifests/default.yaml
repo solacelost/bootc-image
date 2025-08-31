@@ -13,6 +13,7 @@ repos:
   - rpmfusion-nonfree
   - rpmfusion-nonfree-updates
   - google-chrome
+  - LACT
 
 include:
   - stubs/base.yaml
