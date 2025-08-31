@@ -1,1 +1,1 @@
-kargs = ["amdgpu.ppfeaturemask=0xffffffff"]
+kargs = ["amdgpu.ppfeaturemask=0xfff7bfff"]
