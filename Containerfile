@@ -3,13 +3,13 @@ ARG FEDORA_VERSION=42
 ARG IMAGE_REF=registry.jharmison.com/library/fedora-bootc:desktop
 
 # https://github.com/Vladimir-csp/xdg-terminal-exec
-ARG XDG_TERMINAL_EXEC_COMMIT=0f92ff0a6cfb72ea1e9effbfafc11d65874e5d57
+ARG XDG_TERMINAL_EXEC_COMMIT=b0dcbf7ef663d5079d8b75e74393307d153dc3d6
 # https://github.com/feschber/lan-mouse
 ARG LAN_MOUSE_COMMIT=e46fe60b3e24be83de38701faa99a4fbd9186f08
 # https://github.com/wineasio/wineasio
 ARG WINE_ASIO_VERSION=1.3.0
 # https://github.com/dlundqvist/xone
-ARG XONE_COMMIT=778dbc953b1987d259ea6d802fd6967b6a0d2097
+ARG XONE_COMMIT=f9ae36467874ee1b7efb0bc7521a3e769aaf1ce6
 # https://github.com/v4l2loopback/v4l2loopback
 ARG V4L2LOOPBACK_VERSION=0.15.1
 # https://github.com/derailed/k9s
@@ -19,7 +19,7 @@ ARG SOPS_VERSION=3.10.2
 # https://github.com/AUNaseef/protonup
 ARG PROTONUP_COMMIT=4ff9d5474eeb868d375f53a144177ba44f3b77cc
 # https://pypi.org/project/nautilus-open-any-terminal/
-ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION=0.6.1
+ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION=0.6.3
 # https://github.com/ryanoasis/nerd-fonts
 ARG NERD_FONTS_VERSION=3.4.0
 
