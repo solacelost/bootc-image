@@ -237,7 +237,7 @@ COPY overlays/gui-sway/ /
 # Ensure our certificates have been compiled into a trusted bundle, our desktop shortcuts are available, etc.
 RUN update-ca-trust && \
     update-desktop-database && \
-    rm -rf /var/roothome /var/log /boot/*
+    rm -rf /var/roothome /var/log /boot/* /.nvimlog
 
 # Make sure we're gucci
 RUN bootc container lint
