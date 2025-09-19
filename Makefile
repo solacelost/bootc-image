@@ -131,7 +131,7 @@ clean:
 	sudo rm -rf .build* .push* boot-image/*.iso boot-image/*.ks boot-image/container* tmp/*
 	sudo podman image rm $(IMAGE) ||:
 	sudo podman image rm $(IMAGE)-unchunked ||:
-	sudo podman image prune
 	sudo buildah rm --all
+	sudo podman image prune
 
 endif # __mk_ready
