@@ -15,7 +15,7 @@ USERNAME ?= james
 PASSWORD ?= password
 PRIVATE_KEY ?= $$HOME/.ssh/id_ed25519
 KUBECONFIG ?= $$HOME/.kube/config
-BASE ?= registry.fedoraproject.org/fedora:$(FEDORA_VERSION)
+BASE ?= quay.io/fedora/fedora-bootc:$(FEDORA_VERSION)
 REGISTRY ?= registry.jharmison.com
 REPOSITORY ?= library/fedora-bootc
 REG_REPO := $(REGISTRY)/$(REPOSITORY)
@@ -28,7 +28,7 @@ LATEST_DIGEST := $(shell hack/latest_base.sh $(BASE) $(ARCH))
 # Vars only for building the kickstart-based installer
 DEFAULT_INSTALL_DISK ?= vda
 BOOT_VERSION ?= $(FEDORA_VERSION)
-BOOT_IMAGE_VERSION ?= 1.4
+BOOT_IMAGE_VERSION ?= 1.1
 ISO_SUFFIX ?=
 # ISO_DEST is the device to burn the iso to (such as a USB flash drive for live booting the installer on metal)
 ISO_DEST ?= /dev/sda
@@ -55,7 +55,7 @@ overlays/users/usr/local/ssh/$(USERNAME).keys:
 tmp/$(LATEST_DIGEST):
 	@touch $@
 
-.build-$(TAG)-unchunked: Containerfile tmp/$(LATEST_DIGEST) overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l)
+.build-$(TAG)-unchunked: Containerfile tmp/$(LATEST_DIGEST) overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l) $(shell find packages -type f)
 	sudo $(RUNTIME) build \
 		--arch $(ARCH) \
 		--pull=newer \
@@ -83,6 +83,9 @@ tmp/$(LATEST_DIGEST):
 		rechunk $(IMAGE)-unchunked $(IMAGE)
 	@touch $@
 
+.PHONY: build-unchunked
+build-unchunked: .build-$(TAG)-unchunked
+
 .PHONY: build
 build: .build-$(TAG)
 
@@ -96,7 +99,7 @@ push: .push-$(TAG)
 
 .PHONY: debug
 debug:
-	sudo $(RUNTIME) run --rm -it --arch $(ARCH) --pull=never --entrypoint /bin/bash -v /var/tmp/buildah-cache-$$UID/8a2a6a29aeebc33c:/var/cache/libdnf5:z $(IMAGE) -li
+	sudo $(RUNTIME) run --rm -it --arch $(ARCH) --pull=never --entrypoint /bin/bash $(IMAGE) -li
 
 boot-image/fedora-live.x86_64.iso:
 	curl -Lo $@ https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/Fedora-Everything-netinst-x86_64-${BOOT_VERSION}-${BOOT_IMAGE_VERSION}.iso
@@ -106,7 +109,7 @@ boot-image/bootc$(ISO_SUFFIX).ks: boot-image/bootc.ks.tpl
 
 boot-image/container$(ISO_SUFFIX)/index.json: .build-$(TAG)
 	rm -rf boot-image/container$(ISO_SUFFIX)
-	skopeo copy containers-storage:$(IMAGE) oci:boot-image/container$(ISO_SUFFIX)
+	sudo skopeo copy containers-storage:$(IMAGE) oci:boot-image/container$(ISO_SUFFIX)
 
 boot-image/bootc-install$(ISO_SUFFIX).iso: boot-image/bootc$(ISO_SUFFIX).ks boot-image/fedora-live.x86_64.iso boot-image/container$(ISO_SUFFIX)/index.json
 	@if [ -e $@ ]; then rm -f $@; fi
@@ -125,7 +128,7 @@ burn: boot-image/bootc-install$(ISO_SUFFIX).iso
 
 .PHONY: clean
 clean:
-	rm -rf .build* .push* boot-image/*.iso boot-image/*.ks boot-image/container* tmp/*
+	sudo rm -rf .build* .push* boot-image/*.iso boot-image/*.ks boot-image/container* tmp/*
 	sudo podman image rm $(IMAGE) ||:
 	sudo podman image rm $(IMAGE)-unchunked ||:
 	sudo podman image prune

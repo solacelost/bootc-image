@@ -1,9 +1,0 @@
-packages:
-  - ImageMagick
-  - ffmpeg
-  - gphoto2
-  - v4l-utils
-  - mesa-va-drivers-freeworld
-  - mesa-vdpau-drivers-freeworld
-  - mesa-va-drivers-freeworld.i686
-  - mesa-vdpau-drivers-freeworld.i686

@@ -23,41 +23,22 @@ ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION=0.6.3
 # https://github.com/ryanoasis/nerd-fonts
 ARG NERD_FONTS_VERSION=3.4.0
 
-FROM registry.jharmison.com/library/fedora:${FEDORA_VERSION} as repos
+FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 
 COPY overlays/repos/ /
 
-FROM repos as builder
-
-ARG FEDORA_VERSION
-
+# Swap to kernel-blu
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    curl -L --fail -o /etc/yum.repos.d/continuous.repo https://copr.fedorainfracloud.org/coprs/g/CoreOS/continuous/repo/fedora-${FEDORA_VERSION}/group_CoreOS-continuous-fedora-${FEDORA_VERSION}.repo && \
-    dnf -y install --allowerasing rpm-ostree selinux-policy-targeted jq
+    dnf -y install --allowerasing --from-repo=kernel-blu kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
-COPY overlays/compose/ /
-WORKDIR /src
+# Install defined packages
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    --mount=type=bind,src=./packages,dst=/packages \
+    python3 /packages/install.py
 
-RUN --mount=type=bind,rw,from=repos,src=/,dst=/repos \
-    set -xeuo pipefail && \
-    /usr/libexec/bootc-base-imagectl list && \
-    jq '.Labels["redhat.version-id"] = "'${FEDORA_VERSION}'"' fedora-bootc-config-rawhide.json > fedora-bootc-config.json && \
-    /usr/libexec/bootc-base-imagectl build-rootfs \
-    --reinject /repos /target-rootfs
-
-FROM scratch as composed
-COPY --from=builder /target-rootfs/ /
-# Ensure our repos and keys are available for use later maybe
-COPY overlays/repos/ /
-LABEL containers.bootc 1
-LABEL bootc.diskimage-builder quay.io/centos-bootc/bootc-image-builder
-ENV container=oci
-# Make systemd the default
-STOPSIGNAL SIGRTMIN+3
-CMD ["/sbin/init"]
-
-FROM composed as xdg-terminal-exec-build
+FROM base as xdg-terminal-exec-build
 
 ARG XDG_TERMINAL_EXEC_COMMIT
 ENV COMMIT=${XDG_TERMINAL_EXEC_COMMIT}
@@ -68,14 +49,14 @@ RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install scdoc
 
-RUN curl -sLo /tmp/xdg-terminal-exec.tar.gz "https://github.com/Vladimir-csp/xdg-terminal-exec/archive/${COMMIT}.tar.gz" && \
+RUN curl --retry 10 --retry-all-errors -Lo /tmp/xdg-terminal-exec.tar.gz "https://github.com/Vladimir-csp/xdg-terminal-exec/archive/${COMMIT}.tar.gz" && \
     tar xvzf /tmp/xdg-terminal-exec.tar.gz && \
     cd xdg-terminal-exec-${COMMIT} && \
     make install prefix=/built/usr/local
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
-FROM composed as lan-mouse-build
+FROM base as lan-mouse-build
 
 ARG LAN_MOUSE_COMMIT
 ENV COMMIT=${LAN_MOUSE_COMMIT}
@@ -87,7 +68,7 @@ RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install libXtst-devel
 
-RUN curl -sLo /tmp/lan-mouse.tar.gz "https://github.com/feschber/lan-mouse/archive/${COMMIT}.tar.gz" && \
+RUN curl --retry 10 --retry-all-errors -Lo /tmp/lan-mouse.tar.gz "https://github.com/feschber/lan-mouse/archive/${COMMIT}.tar.gz" && \
     tar xvzf /tmp/lan-mouse.tar.gz
 
 RUN cd lan-mouse-${COMMIT} && \
@@ -100,7 +81,7 @@ RUN mkdir -p /built/usr/local/bin /built/etc/systemd/user /built/etc/firewalld/s
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
-FROM composed as wineasio-build
+FROM base as wineasio-build
 
 WORKDIR /build
 
@@ -111,7 +92,7 @@ RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install wine wine-devel.* pipewire-jack*.* glibc-devel.*
 
-RUN curl -sLo /tmp/wineasio.tar.gz \
+RUN curl --retry 10 --retry-all-errors -Lo /tmp/wineasio.tar.gz \
     https://github.com/wineasio/wineasio/releases/download/v${VERSION}/wineasio-${VERSION}.tar.gz && \
     tar xvzf /tmp/wineasio.tar.gz
 
@@ -129,7 +110,7 @@ COPY overlays/wineasio/ /
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
-FROM composed as module-build
+FROM base as module-build
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
@@ -147,14 +128,14 @@ ENV COMMIT=${XONE_COMMIT}
 COPY overlays/xone/ /
 
 # Download and unpack the firmware
-RUN curl -sLo /tmp/xow_dongle.cab \
+RUN curl --retry 10 --retry-all-errors -Lo /tmp/xow_dongle.cab \
     https://catalog.s.download.windowsupdate.com/c/msdownload/update/driver/drvs/2017/07/1cd6a87c-623f-4407-a52d-c31be49e925c_e19f60808bdcbfbd3c3df6be3e71ffc52e43261e.cab && \
     cabextract /tmp/xow_dongle.cab -F FW_ACC_00U.bin && \
     echo "48084d9fa53b9bb04358f3bb127b7495dc8f7bb0b3ca1437bd24ef2b6eabdf66 FW_ACC_00U.bin" | sha256sum -c && \
     mkdir -p /built/usr/lib/firmware && \
     mv FW_ACC_00U.bin /built/usr/lib/firmware/xow_dongle.bin && \
     rm -f /tmp/xow_dongle.cab && \
-    curl -sLo /tmp/xow_dongle.cab \
+    curl --retry 10 --retry-all-errors -Lo /tmp/xow_dongle.cab \
     https://catalog.s.download.windowsupdate.com/d/msdownload/update/driver/drvs/2015/12/20810869_8ce2975a7fbaa06bcfb0d8762a6275a1cf7c1dd3.cab && \
     cabextract /tmp/xow_dongle.cab -F FW_ACC_00U.bin && \
     echo "080ce4091e53a4ef3e5fe29939f51fd91f46d6a88be6d67eb6e99a5723b3a223 FW_ACC_00U.bin" | sha256sum -c && \
@@ -163,7 +144,7 @@ RUN curl -sLo /tmp/xow_dongle.cab \
 
 # Download and build xone
 # hadolint ignore=DL3003
-RUN curl -sLo /tmp/xone.tar.gz "https://github.com/dlundqvist/xone/archive/${COMMIT}.tar.gz" && \
+RUN curl --retry 10 --retry-all-errors -Lo /tmp/xone.tar.gz "https://github.com/dlundqvist/xone/archive/${COMMIT}.tar.gz" && \
     tar xvzf /tmp/xone.tar.gz && \
     cd "xone-${COMMIT}" && \
     moddir="$(cat /moddir)" && \
@@ -185,7 +166,7 @@ RUN --mount=type=tmpfs,target=/var/cache \
 COPY overlays/v4l2loopback/ /
 
 # hadolint ignore=DL3003
-RUN curl -sLo /tmp/v4l2loopback.tar.gz "https://github.com/v4l2loopback/v4l2loopback/archive/v${VERSION}/v4l2loopback-${VERSION}.tar.gz" && \
+RUN curl --retry 10 --retry-all-errors -Lo /tmp/v4l2loopback.tar.gz "https://github.com/v4l2loopback/v4l2loopback/archive/v${VERSION}/v4l2loopback-${VERSION}.tar.gz" && \
     moddir="$(cat /moddir)" && \
     tar xvzf /tmp/v4l2loopback.tar.gz && \
     cd "v4l2loopback-${VERSION}" && \
@@ -199,7 +180,7 @@ RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 # TODO: Shikane: https://gitlab.com/w0lff/shikane
 
-FROM composed as final
+FROM base as final
 
 ARG K9S_VERSION
 ARG SOPS_VERSION
@@ -219,10 +200,10 @@ RUN --mount=type=tmpfs,target=/var/cache \
     nautilus-open-any-terminal==${NAUTILUS_OPEN_ANY_TERMINAL_VERSION} && \
     glib-compile-schemas /usr/local/share/glib-2.0/schemas && \
     mkdir -p /usr/share/fonts/inconsolata && \
-    curl -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v${NERD_FONTS_VERSION}/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
+    curl --retry 10 --retry-all-errors -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v${NERD_FONTS_VERSION}/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
     chown -R root:root /usr/share/fonts/inconsolata && \
     fc-cache -f -v && \
-    curl -sLo- "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz" | tar xvz -C /usr/local/bin && \
+    curl --retry 10 --retry-all-errors -Lo- "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz" | tar xvz -C /usr/local/bin && \
     chmod +x /usr/local/bin/{kubectl,oc} && \
     authselect enable-feature with-fingerprint && \
     echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf
@@ -256,7 +237,7 @@ COPY overlays/gui-sway/ /
 # Ensure our certificates have been compiled into a trusted bundle, our desktop shortcuts are available, etc.
 RUN update-ca-trust && \
     update-desktop-database && \
-    rm -rf /var/roothome /var/log
+    rm -rf /var/roothome /var/log /boot/*
 
 # Make sure we're gucci
 RUN bootc container lint

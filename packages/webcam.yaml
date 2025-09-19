@@ -1,0 +1,5 @@
+packages:
+- ImageMagick
+- ffmpeg
+- gphoto2
+- v4l-utils

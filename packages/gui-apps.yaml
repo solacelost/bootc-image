@@ -1,0 +1,8 @@
+packages:
+- gnome-calculator
+- google-chrome-stable
+- guitarix
+- lv2-guitarix-plugins
+- gimp
+- flatpak
+- zathura zathura-djvu zathura-pdf-mupdf zathura-ps zathura-bash-completion
