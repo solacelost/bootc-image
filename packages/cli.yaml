@@ -37,3 +37,5 @@ packages:
 - usbutils
 - which
 - zip
+- man
+- lorax
