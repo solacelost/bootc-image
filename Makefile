@@ -108,7 +108,7 @@ boot-image/bootc$(ISO_SUFFIX).ks: boot-image/bootc.ks.tpl
 	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$SSH_KEY,$$DEFAULT_DISK,$$ISO_SUFFIX,$$PASSWORD,$$NETWORK,$$TZ' < $< >$@
 
 boot-image/container$(ISO_SUFFIX)/index.json: .build-$(TAG)
-	rm -rf boot-image/container$(ISO_SUFFIX)
+	sudo rm -rf boot-image/container$(ISO_SUFFIX)
 	sudo skopeo copy containers-storage:$(IMAGE) oci:boot-image/container$(ISO_SUFFIX)
 
 boot-image/bootc-install$(ISO_SUFFIX).iso: boot-image/bootc$(ISO_SUFFIX).ks boot-image/fedora-live.x86_64.iso boot-image/container$(ISO_SUFFIX)/index.json
