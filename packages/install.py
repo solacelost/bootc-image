@@ -9,10 +9,18 @@ import yaml
 @click.command(context_settings=dict(help_option_names=["-h", "--help"]))
 @click.option(
     '-l',
-    '--level',
-    help='The level between 0 and 100 to install to, inclusively, starting from 0',
+    '--max-level',
+    help='The level between 0 and 100 to install to, inclusively, starting from the  min-level',
     type=click.IntRange(0, 100),
     default=50,
+    show_default=True
+)
+@click.option(
+    '-m',
+    '--min-level',
+    help='The level between 0 and 100 to install starting at, inclusively, continuing to max-level',
+    type=click.IntRange(0, 100),
+    default=0,
     show_default=True
 )
 @click.option(
@@ -21,7 +29,7 @@ import yaml
     count=True,
     help="Increase verbosity (specify multiple times for more)",
 )
-def cli(level, verbose):
+def cli(max_level, min_level, verbose):
     """Template and run dnf install commands using levels of packages"""
     logging.basicConfig(stream=sys.stderr, level=40 - (min(3, verbose+2) * 10))
 
@@ -30,7 +38,7 @@ def cli(level, verbose):
     _, pardirs, _ = next(os.walk('/packages'))
     for leveldir in pardirs:
         try:
-            if int(leveldir) <= level:
+            if int(leveldir) >= min_level and int(leveldir) <= max_level:
                 for _, _, files in os.walk(f'/packages/{leveldir}'):
                     for file in files:
                         if file.endswith('.yaml') or file.endswith('.yml'):

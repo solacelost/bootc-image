@@ -37,7 +37,7 @@ RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     --mount=type=bind,src=./packages,dst=/packages \
     dnf -y install python3-click && \
-    python3 /packages/install.py -l 50
+    python3 /packages/install.py --min-level=0 --max-level=50
 
 # Ensure our basic user configuration is present
 COPY overlays/users/ /
@@ -200,8 +200,7 @@ ARG IMAGE_REF
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     --mount=type=bind,src=./packages,dst=/packages \
-    dnf -y install python3-click && \
-    python3 /packages/install.py -l 100
+    python3 /packages/install.py --min-level=51 --max-level=100
 
 # Some uncomposable changes
 RUN --mount=type=tmpfs,target=/var/cache \
