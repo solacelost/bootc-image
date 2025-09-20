@@ -28,7 +28,6 @@ LATEST_DIGEST := $(shell hack/latest_base.sh $(BASE) $(ARCH))
 # Vars only for building the kickstart-based installer
 DEFAULT_INSTALL_DISK ?= vda
 BOOT_VERSION ?= $(FEDORA_VERSION)
-BOOT_IMAGE_VERSION ?= 1.1
 ISO_SUFFIX ?=
 # ISO_DEST is the device to burn the iso to (such as a USB flash drive for live booting the installer on metal)
 ISO_DEST ?= /dev/sda
@@ -102,7 +101,7 @@ debug:
 	sudo $(RUNTIME) run --rm -it --arch $(ARCH) --pull=never --entrypoint /bin/bash $(IMAGE) -li
 
 boot-image/fedora-live.x86_64.iso:
-	curl -Lo $@ https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/Fedora-Everything-netinst-x86_64-${BOOT_VERSION}-${BOOT_IMAGE_VERSION}.iso
+	curl --retry 10 --retry-all-errors -Lo $@ https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/$(shell curl -s --retry 10 --retry-all-errors -L https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/ | grep 'href="' | grep '\.iso</a>' | grep -o '>Fedora-Everything-netinst.*\.iso<' | head -c-2 | tail -c+2)
 
 boot-image/bootc$(ISO_SUFFIX).ks: boot-image/bootc.ks.tpl
 	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$SSH_KEY,$$DEFAULT_DISK,$$ISO_SUFFIX,$$PASSWORD,$$NETWORK,$$TZ' < $< >$@
