@@ -32,11 +32,18 @@ RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install --allowerasing --from-repo=kernel-blu kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
-# Install defined packages
+# Install defined packages for the lower targets
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     --mount=type=bind,src=./packages,dst=/packages \
-    python3 /packages/install.py
+    dnf -y install python3-click && \
+    python3 /packages/install.py -l 50
+
+# Ensure our basic user configuration is present
+COPY overlays/users/ /
+
+# Ensure our generic system configuration is represented
+COPY overlays/base/ /
 
 FROM base as xdg-terminal-exec-build
 
@@ -189,6 +196,13 @@ ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION
 ARG NERD_FONTS_VERSION
 ARG IMAGE_REF
 
+# Install defined packages for the higher targets (GUI etc.)
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    --mount=type=bind,src=./packages,dst=/packages \
+    dnf -y install python3-click && \
+    python3 /packages/install.py -l 100
+
 # Some uncomposable changes
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
@@ -221,12 +235,6 @@ COPY --from=v4l2loopback-build /built/ /
 # Ensure module dependencies are calculated
 RUN kver="$(basename "$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)")" && \
     depmod -a -b /usr "$kver"
-
-# Ensure our basic user configuration is present
-COPY overlays/users/ /
-
-# Ensure our generic system configuration is represented
-COPY overlays/base/ /
 
 # Ensure Red Hat configuration (keys, git configs, VPN, etc) are staged
 COPY overlays/redhat/ /
