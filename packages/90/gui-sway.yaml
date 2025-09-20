@@ -46,5 +46,6 @@ packages:
 - qt6-qtwayland
 - yad
 - wdisplays
+- gnome-settings-daemon
 exclude:
 - gdm
