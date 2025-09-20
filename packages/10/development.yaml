@@ -28,3 +28,4 @@ packages:
 - hadolint
 - tree-sitter-cli
 - python3-neovim
+- words
