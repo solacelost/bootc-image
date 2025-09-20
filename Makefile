@@ -70,6 +70,7 @@ tmp/$(LATEST_DIGEST):
 	@touch $@
 
 .build-$(TAG): .build-$(TAG)-unchunked
+	sudo podman image rm $(IMAGE) ||:
 	sudo $(RUNTIME) run \
 		--rm \
 		--arch $(ARCH) \
