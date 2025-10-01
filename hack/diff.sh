@@ -2,7 +2,7 @@
 
 _old="${1}"
 _new="${2}"
-repo="${3:-registry.jharmison.com/library/fedora-bootc}"
+repo="${3:-quay.io/solacelost/bootc-image}"
 if [[ -z "$_old" ]] || [[ -z "$_new" ]]; then
     echo "usage: $0 OLD_TAG_OR_MANIFEST_HASH NEW_TAG_OR_MANIFEST_HASH [IMAGE_REPOSITORY]" >&2
     exit 1

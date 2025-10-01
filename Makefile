@@ -16,10 +16,10 @@ PASSWORD ?= password
 PRIVATE_KEY ?= $$HOME/.ssh/id_ed25519
 KUBECONFIG ?= $$HOME/.kube/config
 BASE ?= quay.io/fedora/fedora-bootc:$(FEDORA_VERSION)
-REGISTRY ?= registry.jharmison.com
-REPOSITORY ?= library/fedora-bootc
+REGISTRY ?= quay.io
+REPOSITORY ?= solacelost/bootc-image
 REG_REPO := $(REGISTRY)/$(REPOSITORY)
-TAG ?= desktop
+TAG ?= latest
 IMAGE = $(REG_REPO):$(TAG)
 # Help find out if our base image has updated
 ARCH := amd64
@@ -49,6 +49,10 @@ all: push
 
 overlays/users/usr/local/ssh/$(USERNAME).keys:
 	@echo Please put the authorized_keys file you would like for the $(USERNAME) user in $@ >&2
+	@exit 1
+
+tmp/auth.json:
+	@echo Please put a valid auth.json for $(REGISTRY) to push $(IMAGE) in $@ >&2
 	@exit 1
 
 tmp/$(LATEST_DIGEST):
@@ -89,9 +93,8 @@ build-unchunked: .build-$(TAG)-unchunked
 .PHONY: build
 build: .build-$(TAG)
 
-.push-$(TAG): .build-$(TAG)
-	export KUBECONFIG="$(KUBECONFIG)" ; sudo --preserve-env=KUBECONFIG registry-login
-	sudo $(RUNTIME) push $(IMAGE)
+.push-$(TAG): tmp/auth.json .build-$(TAG)
+	sudo $(RUNTIME) --authfile $< push $(IMAGE)
 	@touch $@
 
 .PHONY: push

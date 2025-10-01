@@ -1,6 +1,6 @@
 # hadolint global ignore=DL3040,DL3041,DL4006
 ARG FEDORA_VERSION=42
-ARG IMAGE_REF=registry.jharmison.com/library/fedora-bootc:desktop
+ARG IMAGE_REF=quay.io/solacelost/bootc-image:latest
 
 # https://github.com/Vladimir-csp/xdg-terminal-exec
 ARG XDG_TERMINAL_EXEC_COMMIT=b0dcbf7ef663d5079d8b75e74393307d153dc3d6
