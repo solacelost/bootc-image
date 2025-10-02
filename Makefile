@@ -94,7 +94,7 @@ build-unchunked: .build-$(TAG)-unchunked
 build: .build-$(TAG)
 
 .push-$(TAG): tmp/auth.json .build-$(TAG)
-	sudo $(RUNTIME) --authfile $< push $(IMAGE)
+	sudo $(RUNTIME) push --authfile $< $(IMAGE)
 	@touch $@
 
 .PHONY: push
