@@ -20,6 +20,12 @@ jobs:
           remove-codeql: 'true'
           remove-docker-images: 'true'
 
+      - name: Check system podman config
+        run: |
+          cat /etc/containers/storage.conf ||:
+          cat /etc/containers/containers.conf ||:
+          exit 1
+
       - name: Log in to quay
         uses: redhat-actions/podman-login@v1
         with:
