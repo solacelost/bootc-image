@@ -26,6 +26,7 @@ jobs:
           [storage.options.overlay]
           mountopt = "nodev,metacopy=on"
           EOF
+          df -h
 
       - name: Log in to quay
         uses: redhat-actions/podman-login@v1
