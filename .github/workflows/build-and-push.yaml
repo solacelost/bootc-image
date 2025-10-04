@@ -15,8 +15,7 @@ jobs:
           set -x
 
           storage="/mnt/containers-storage"
-          mkdir -p "$storage"
-          sudo chown root:root "$storage"
+          sudo mkdir -p "$storage"
           cat << EOF | sudo tee /etc/containers/storage.conf
           [storage]
           driver = "overlay"
