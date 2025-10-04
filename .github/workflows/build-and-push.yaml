@@ -29,7 +29,13 @@ jobs:
           sudo chown root:root "$storage"
           cat << EOF | sudo tee /etc/containers/storage.conf
           [storage]
-          graphroot="$storage"
+          driver = "overlay"
+          runroot = "/run/containers/storage"
+          graphroot = "$storage"
+          [storage.options]
+          pull_options = {enable_partial_images = "true", use_hard_links = "false", ostree_repos=""}
+          [storage.options.overlay]
+          mountopt = "nodev,metacopy=on"
           EOF
 
       - name: Log in to quay
