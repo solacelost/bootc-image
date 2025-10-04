@@ -9,13 +9,13 @@ ARG LAN_MOUSE_COMMIT=e46fe60b3e24be83de38701faa99a4fbd9186f08
 # https://github.com/wineasio/wineasio
 ARG WINE_ASIO_VERSION=1.3.0
 # https://github.com/dlundqvist/xone
-ARG XONE_COMMIT=f9ae36467874ee1b7efb0bc7521a3e769aaf1ce6
+ARG XONE_COMMIT=1f4599161c8454d7def030a0ee7716a386ff0aa8
 # https://github.com/v4l2loopback/v4l2loopback
 ARG V4L2LOOPBACK_VERSION=0.15.1
 # https://github.com/derailed/k9s
-ARG K9S_VERSION=0.50.9
+ARG K9S_VERSION=0.50.13
 # https://github.com/getsops/sops
-ARG SOPS_VERSION=3.10.2
+ARG SOPS_VERSION=3.11.0
 # https://github.com/AUNaseef/protonup
 ARG PROTONUP_COMMIT=4ff9d5474eeb868d375f53a144177ba44f3b77cc
 # https://pypi.org/project/nautilus-open-any-terminal/
