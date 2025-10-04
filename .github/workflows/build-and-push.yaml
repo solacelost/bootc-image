@@ -1,0 +1,27 @@
+name: Build, rechunk, and push image
+on:
+  schedule:
+    - cron: 45 21 */2 * * # every other day, at 21:45 UTC
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log in to quay
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          auth_file_path: auth.json
+
+      - uses: actions/checkout@v5
+      - uses: jharmison-redhat/action-bootc-build@main
+        with:
+          push: 'true'
+          tag: quay.io/solacelost/bootc-image:latest
+          cache-repo: quay.io/solacelost/bootc-image/cache
+          authfile: auth.json
