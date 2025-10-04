@@ -39,9 +39,6 @@ RUN --mount=type=tmpfs,target=/var/cache \
     dnf -y install python3-click && \
     python3 /packages/install.py --min-level=0 --max-level=50
 
-# Ensure our basic user configuration is present
-COPY overlays/users/ /
-
 # Ensure our generic system configuration is represented
 COPY overlays/base/ /
 

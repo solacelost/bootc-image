@@ -39,17 +39,12 @@ KICKSTART_VARS = IMAGE=$(IMAGE) \
 	DEFAULT_DISK=$(DEFAULT_INSTALL_DISK) \
 	ISO_SUFFIX=$(ISO_SUFFIX) \
 	USERNAME=$(USERNAME) \
-	SSH_KEY="$(shell cat overlays/users/usr/local/ssh/$(USERNAME).keys 2>/dev/null)" \
 	PASSWORD="$(PASSWORD)" \
 	NETWORK="$(NETWORK)" \
 	TZ=$(TZ)
 
 .PHONY: all
 all: push
-
-overlays/users/usr/local/ssh/$(USERNAME).keys:
-	@echo Please put the authorized_keys file you would like for the $(USERNAME) user in $@ >&2
-	@exit 1
 
 tmp/auth.json:
 	@echo Please put a valid auth.json for $(REGISTRY) to push $(IMAGE) in $@ >&2
@@ -58,7 +53,7 @@ tmp/auth.json:
 tmp/$(LATEST_DIGEST):
 	@touch $@
 
-.build-$(TAG)-unchunked: Containerfile tmp/$(LATEST_DIGEST) overlays/users/usr/local/ssh/$(USERNAME).keys $(shell find overlays -type f -o -type l) $(shell find packages -type f)
+.build-$(TAG)-unchunked: Containerfile tmp/$(LATEST_DIGEST) $(shell find overlays -type f -o -type l) $(shell find packages -type f)
 	sudo $(RUNTIME) build \
 		--arch $(ARCH) \
 		--pull=newer \
@@ -108,7 +103,7 @@ boot-image/fedora-live.x86_64.iso:
 	curl --retry 10 --retry-all-errors -Lo $@ https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/$(shell curl -s --retry 10 --retry-all-errors -L https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/ | grep 'href="' | grep '\.iso</a>' | grep -o '>Fedora-Everything-netinst.*\.iso<' | head -c-2 | tail -c+2)
 
 boot-image/bootc$(ISO_SUFFIX).ks: boot-image/bootc.ks.tpl
-	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$SSH_KEY,$$DEFAULT_DISK,$$ISO_SUFFIX,$$PASSWORD,$$NETWORK,$$TZ' < $< >$@
+	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$DEFAULT_DISK,$$ISO_SUFFIX,$$PASSWORD,$$NETWORK,$$TZ' < $< >$@
 
 boot-image/container$(ISO_SUFFIX)/index.json: .build-$(TAG)
 	sudo rm -rf boot-image/container$(ISO_SUFFIX)
