@@ -95,6 +95,9 @@ add({
 add({
   source = 'qvalentin/helm-ls.nvim'
 })
+add({
+  source = 'stevearc/conform.nvim'
+})
 
 -- workflow
 now(function() require 'mini.icons'.setup() end)
@@ -252,6 +255,7 @@ now(function()
       'vale',
       'vale_ls',
       'biome',
+      'prettier',
     },
     auto_update = true,
     integrations = {
@@ -265,6 +269,7 @@ now(function()
       'lua',
       'vimdoc',
       'dockerfile',
+      'helm',
     },
     highlight = { enable = true },
     auto_install = true,
@@ -316,7 +321,20 @@ later(function()
   require 'mini.cursorword'.setup()
 end)
 later(function()
-  require("helm-ls").setup()
+  require "helm-ls".setup()
+end)
+later(function()
+  require "conform".setup({
+    formatters_by_ft = {
+      markdown = { "prettier" },
+    },
+  })
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.md",
+    callback = function(args)
+      require "conform".format({ bufnr = args.buf })
+    end,
+  })
 end)
 
 -- theme
