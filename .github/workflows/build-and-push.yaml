@@ -20,17 +20,9 @@ jobs:
 
           storage="/mnt/containers-storage"
           sudo mkdir -p "$storage"
-          cat << EOF | sudo tee /etc/containers/storage.conf
-          [storage]
-          driver = "overlay"
-          runroot = "/run/containers/storage"
-          graphroot = "$storage"
-          [storage.options]
-          pull_options = {enable_partial_images = "true", use_hard_links = "false", ostree_repos=""}
-          [storage.options.overlay]
-          mountopt = "nodev,metacopy=on"
-          EOF
-          df -h
+          sudo rm -rf /var/lib/containers/storage
+          sudo mkdir -p /var/lib/containers/storage
+          sudo mount --bind "$storage" /var/lib/containers/storage
 
       - name: Log in to quay
         uses: redhat-actions/podman-login@v1
@@ -45,4 +37,3 @@ jobs:
           push: 'true'
           tag: quay.io/solacelost/bootc-image:latest
           cache-repo: quay.io/solacelost/bootc-image/cache
-          graphroot: /mnt/containers-storage
