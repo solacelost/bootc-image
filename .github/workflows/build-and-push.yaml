@@ -14,16 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Modify podman storage config to use second disk
-        run: |
-          set -x
-
-          storage="/mnt/containers-storage"
-          sudo mkdir -p "$storage"
-          sudo rm -rf /var/lib/containers/storage
-          sudo mkdir -p /var/lib/containers/storage
-          sudo mount --bind "$storage" /var/lib/containers/storage
-
       - name: Log in to quay
         uses: redhat-actions/podman-login@v1
         with:
