@@ -37,9 +37,6 @@ RUN --mount=type=tmpfs,target=/var/cache \
     dnf -y install python3-click && \
     python3 /packages/install.py --min-level=0 --max-level=50
 
-# Ensure our generic system configuration is represented
-COPY overlays/base/ /
-
 FROM base as xdg-terminal-exec-build
 
 ARG XDG_TERMINAL_EXEC_COMMIT
@@ -187,6 +184,8 @@ RUN --mount=type=tmpfs,target=/var/cache \
     authselect enable-feature with-fingerprint && \
     echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf
 
+# Ensure our generic system configuration is represented
+COPY overlays/base/ /
 # Copy xdg-terminal-exec
 COPY --from=xdg-terminal-exec-build /built/ /
 # Copy lan-mouse
@@ -194,16 +193,14 @@ COPY --from=lan-mouse-build /built/ /
 # Copy our built modules
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
+# Ensure Red Hat configuration (keys, git configs, VPN, etc) are staged
+COPY overlays/redhat/ /
+# Ensure our Sway image is configured correctly (configs, flatpaks, etc.)
+COPY overlays/gui-sway/ /
 
 # Ensure module dependencies are calculated
 RUN kver="$(basename "$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)")" && \
     depmod -a -b /usr "$kver"
-
-# Ensure Red Hat configuration (keys, git configs, VPN, etc) are staged
-COPY overlays/redhat/ /
-
-# Ensure our Sway image is configured correctly (configs, flatpaks, etc.)
-COPY overlays/gui-sway/ /
 
 # Ensure our certificates have been compiled into a trusted bundle, our desktop shortcuts are available, etc.
 RUN update-ca-trust && \
