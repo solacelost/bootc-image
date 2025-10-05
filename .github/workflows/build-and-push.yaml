@@ -13,6 +13,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: Log in to quay
         uses: redhat-actions/podman-login@v1
@@ -20,10 +22,16 @@ jobs:
           registry: quay.io
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Log in to ghcr
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/checkout@v5
       - uses: jharmison-redhat/action-bootc-build@main
         with:
           push: 'true'
           tag: quay.io/solacelost/bootc-image:latest
-          cache-repo: quay.io/solacelost/bootc-image/cache
+          cache-repo: ghcr.io/solacelost/bootc-image/cache
