@@ -6,8 +6,6 @@ ARG IMAGE_REF=quay.io/solacelost/bootc-image:latest
 ARG XDG_TERMINAL_EXEC_COMMIT=b0dcbf7ef663d5079d8b75e74393307d153dc3d6
 # https://github.com/feschber/lan-mouse
 ARG LAN_MOUSE_COMMIT=e46fe60b3e24be83de38701faa99a4fbd9186f08
-# https://github.com/wineasio/wineasio
-ARG WINE_ASIO_VERSION=1.3.0
 # https://github.com/dlundqvist/xone
 ARG XONE_COMMIT=1f4599161c8454d7def030a0ee7716a386ff0aa8
 # https://github.com/v4l2loopback/v4l2loopback
@@ -82,35 +80,6 @@ RUN mkdir -p /built/usr/local/bin /built/etc/systemd/user /built/etc/firewalld/s
     cp lan-mouse-${COMMIT}/target/release/lan-mouse /built/usr/local/bin/ && \
     sed 's/\/usr\/bin\/lan-mouse/\/usr\/local\/bin\/lan-mouse/' lan-mouse-${COMMIT}/service/lan-mouse.service > /built/etc/systemd/user/lan-mouse.service && \
     cp lan-mouse-${COMMIT}/firewall/lan-mouse.xml /built/etc/firewalld/services/
-
-RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
-
-FROM base as wineasio-build
-
-WORKDIR /build
-
-ARG WINE_ASIO_VERSION
-ENV VERSION=${WINE_ASIO_VERSION}
-
-RUN --mount=type=tmpfs,target=/var/cache \
-    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install wine wine-devel.* pipewire-jack*.* glibc-devel.*
-
-RUN curl --retry 10 --retry-all-errors -Lo /tmp/wineasio.tar.gz \
-    https://github.com/wineasio/wineasio/releases/download/v${VERSION}/wineasio-${VERSION}.tar.gz && \
-    tar xvzf /tmp/wineasio.tar.gz
-
-WORKDIR /build/wineasio-${VERSION}
-
-RUN make build ARCH=i386 M=32 LIBRARIES="-L/usr/lib/pipewire-0.3/jack -ljack" && \
-    make build ARCH=x86_64 M=64 LIBRARIES="-L/usr/lib/pipewire-0.3/jack -L/usr/lib64/pipewire-0.3/jack -ljack" && \
-    mkdir -p /built/usr/lib/wine/{i386-windows,i386-unix} /built/usr/lib64/wine/{x86_64-windows,x86_64-unix} /built/usr/local/bin && \
-    cp build32/wineasio32.dll /built/usr/lib/wine/i386-windows/ && \
-    cp build32/wineasio32.dll.so /built/usr/lib/wine/i386-unix/ && \
-    cp build64/wineasio64.dll /built/usr/lib64/wine/x86_64-windows/ && \
-    cp build64/wineasio64.dll.so /built/usr/lib64/wine/x86_64-unix/
-
-COPY overlays/wineasio/ /
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
@@ -222,8 +191,6 @@ RUN --mount=type=tmpfs,target=/var/cache \
 COPY --from=xdg-terminal-exec-build /built/ /
 # Copy lan-mouse
 COPY --from=lan-mouse-build /built/ /
-# Copy wineasio
-COPY --from=wineasio-build /built/ /
 # Copy our built modules
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /

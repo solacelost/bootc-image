@@ -1,9 +1,0 @@
-[Unit]
-Description=Register wineasio for Proton versions and select games
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/wineasio-register-proton
-
-[Install]
-WantedBy=graphical-session.target
