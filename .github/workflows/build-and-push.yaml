@@ -45,3 +45,4 @@ jobs:
           push: 'true'
           tag: quay.io/solacelost/bootc-image:latest
           cache-repo: quay.io/solacelost/bootc-image/cache
+          graphroot: /mnt/containers-storage
