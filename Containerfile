@@ -20,6 +20,11 @@ ARG PROTONUP_COMMIT=4ff9d5474eeb868d375f53a144177ba44f3b77cc
 ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION=0.6.3
 # https://github.com/ryanoasis/nerd-fonts
 ARG NERD_FONTS_VERSION=3.4.0
+# https://www.synaptics.com/products/displaylink-graphics/downloads/ubuntu
+# have to download the latest and look at the download url for the publish dir after accepting agreement
+ARG DISPLAYLINK_PUBLISH_DIR=2025-09
+ARG DISPLAYLINK_VERSION=6.2
+ARG EVDI_VERSION=1.14.11
 
 FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 
@@ -150,6 +155,42 @@ RUN curl --retry 10 --retry-all-errors -Lo /tmp/v4l2loopback.tar.gz "https://git
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
+FROM module-build as displaylink-build
+
+ARG DISPLAYLINK_PUBLISH_DIR
+ARG DISPLAYLINK_VERSION
+ARG EVDI_VERSION
+
+WORKDIR /build
+
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install libdrm-devel
+
+RUN curl --retry-all-errors -Lo displaylink.zip "https://www.synaptics.com/sites/default/files/exe_files/${DISPLAYLINK_PUBLISH_DIR}/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu${DISPLAYLINK_VERSION}-EXE.zip" && \
+    curl --retry-all-errors -Lo evdi.tar.gz https://github.com/DisplayLink/evdi/archive/v${EVDI_VERSION}.tar.gz
+
+RUN moddir="$(cat /moddir)" && \
+    unzip displaylink.zip && \
+    chmod +x displaylink-driver-*.run && \
+    ./displaylink-driver-*.run --noexec --keep --target displaylink-driver-${DISPLAYLINK_VERSION} && \
+    mkdir -p /built/usr/libexec/displaylink && \
+    mv displaylink-driver-${DISPLAYLINK_VERSION}/x64-ubuntu-1604/DisplayLinkManager /built/usr/libexec/displaylink/ && \
+    mv displaylink-driver-${DISPLAYLINK_VERSION}/{ella-dock,firefly-monitor,navarro-dock,ridge-dock}-release.spkg /built/usr/libexec/displaylink/ && \
+    tar xvzf evdi.tar.gz && \
+    cd evdi-${EVDI_VERSION}/library && \
+    make && \
+    mv libevdi.so.{1,${EVDI_VERSION}} /built/usr/libexec/displaylink/ && \
+    ln -s /usr/libexec/displaylink/libevdi.so.${EVDI_VERSION} /built/usr/libexec/displaylink/libevdi.so && \
+    cd ../module && \
+    make V=1 -C "$moddir/build" "M=${PWD}" && \
+    mkdir -p "/built$moddir/extra/evdi" && \
+    mv evdi.ko "/built$moddir/extra/evdi"
+
+COPY overlays/displaylink/ /
+
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
+
 # TODO: Shikane: https://gitlab.com/w0lff/shikane
 
 FROM base as final
@@ -195,6 +236,7 @@ COPY --from=lan-mouse-build /built/ /
 # Copy our built modules
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
+COPY --from=displaylink-build /built/ /
 # Ensure Red Hat configuration (keys, git configs, VPN, etc) are staged
 COPY overlays/redhat/ /
 # Ensure our Sway image is configured correctly (configs, flatpaks, etc.)
