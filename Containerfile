@@ -23,6 +23,8 @@ ARG NERD_FONTS_VERSION=3.4.0
 
 FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 
+# Use only explicitly defined repositories
+RUN rm -rf /etc/yum.repos.d
 COPY overlays/repos/ /
 
 # Swap to kernel-blu
