@@ -180,8 +180,9 @@ RUN moddir="$(cat /moddir)" && \
     tar xvzf evdi.tar.gz && \
     cd evdi-${EVDI_VERSION}/library && \
     make && \
-    mv libevdi.so.{1,${EVDI_VERSION}} /built/usr/libexec/displaylink/ && \
+    mv libevdi.so.${EVDI_VERSION} /built/usr/libexec/displaylink/ && \
     ln -s /usr/libexec/displaylink/libevdi.so.${EVDI_VERSION} /built/usr/libexec/displaylink/libevdi.so && \
+    ln -s /usr/libexec/displaylink/libevdi.so.${EVDI_VERSION} /built/usr/libexec/displaylink/libevdi.so.1 && \
     cd ../module && \
     make V=1 -C "$moddir/build" "M=${PWD}" && \
     mkdir -p "/built$moddir/extra/evdi" && \
