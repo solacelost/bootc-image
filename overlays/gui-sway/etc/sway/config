@@ -1,3 +1,7 @@
+# Session information
+exec /usr/libexec/sway-systemd/session.sh
+exec /usr/libexec/sway-systemd/assign-cgroups.py
+
 set $mod Mod4
 
 # Set your terminal

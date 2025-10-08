@@ -247,8 +247,9 @@ COPY overlays/gui-apps/ /
 COPY overlays/gui-games/ /
 COPY overlays/gui-system/ /
 COPY overlays/gui-tiling/ /
-# Pick our GUI installation
+# Install our GUI configuration
 COPY overlays/gui-sway/ /
+COPY overlays/gui-niri/ /
 
 # Ensure module dependencies are calculated
 RUN kver="$(basename "$(find /usr/lib/modules -mindepth 1 -maxdepth 1 | sort -V | tail -1)")" && \
