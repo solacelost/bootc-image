@@ -29,3 +29,5 @@ packages:
 - tree-sitter-cli
 - python3-neovim
 - words
+- python3-requests
+- awscli2

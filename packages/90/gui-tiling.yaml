@@ -1,0 +1,13 @@
+packages:
+- waybar
+- swayidle
+- swaylock
+- mako
+- rofi
+- network-manager-applet
+- clipman
+- yad
+- wdisplays
+- gnome-settings-daemon
+exclude:
+- gdm

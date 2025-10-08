@@ -18,3 +18,5 @@ packages:
 - qpwgraph
 - wireplumber
 - realtime-setup
+- guitarix
+- lv2-guitarix-plugins

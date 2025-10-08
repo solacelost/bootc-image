@@ -242,7 +242,12 @@ COPY --from=v4l2loopback-build /built/ /
 # COPY --from=displaylink-build /built/ /
 # Ensure Red Hat configuration (keys, git configs, VPN, etc) are staged
 COPY overlays/redhat/ /
-# Ensure our Sway image is configured correctly (configs, flatpaks, etc.)
+# Ensure our GUI is configured correctly (configs, flatpaks, etc.)
+COPY overlays/gui-apps/ /
+COPY overlays/gui-games/ /
+COPY overlays/gui-system/ /
+COPY overlays/gui-tiling/ /
+# Pick our GUI installation
 COPY overlays/gui-sway/ /
 
 # Ensure module dependencies are calculated

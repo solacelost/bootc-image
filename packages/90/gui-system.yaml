@@ -1,0 +1,17 @@
+packages:
+- flatpak
+- blueman
+- gutenprint
+- bolt
+- colord
+- uresourced
+- dbus-daemon
+- fprintd-pam
+- mate-polkit
+- playerctl
+- wl-clipboard
+- wf-recorder
+- xdg-user-dirs
+- qt5-qtwayland
+- qt6-qtwayland
+- tuigreet
