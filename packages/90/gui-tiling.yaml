@@ -9,5 +9,3 @@ packages:
 - yad
 - wdisplays
 - gnome-settings-daemon
-exclude:
-- gdm
