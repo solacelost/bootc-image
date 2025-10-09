@@ -22,7 +22,7 @@ input {
 
     trackpoint {}
 
-    focus-follows-mouse max-scroll-amount="10%"
+    focus-follows-mouse max-scroll-amount="30%"
 }
 
 output "LG Electronics 27GL650F 0x0004DD95" {
