@@ -36,3 +36,4 @@ jobs:
           push: 'true'
           tag: quay.io/solacelost/bootc-image:latest
           cache-repo: ghcr.io/solacelost/bootc-image/cache
+          build-args: PACKAGES_HASH=${{ hashFiles('packages/**/*.yaml') }}

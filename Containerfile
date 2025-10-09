@@ -26,6 +26,8 @@ ARG DISPLAYLINK_PUBLISH_DIR=2025-09
 ARG DISPLAYLINK_VERSION=6.2
 ARG EVDI_VERSION=1.14.11
 
+ARG PACKAGES_HASH
+
 FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 
 # Use only explicitly defined repositories
@@ -36,6 +38,9 @@ COPY overlays/repos/ /
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install --allowerasing --from-repo=kernel-blu kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
+
+ARG PACKAGES_HASH
+ENV PACKAGES_HASH=${PACKAGES_HASH}
 
 # Install defined packages for the lower targets
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -202,6 +207,9 @@ ARG PROTONUP_COMMIT
 ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION
 ARG NERD_FONTS_VERSION
 ARG IMAGE_REF
+
+ARG PACKAGES_HASH
+ENV PACKAGES_HASH=${PACKAGES_HASH}
 
 # Install defined packages for the higher targets (GUI etc.)
 RUN --mount=type=tmpfs,target=/var/cache \
