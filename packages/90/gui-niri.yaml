@@ -1,3 +1,4 @@
 packages:
 - niri
 - xdg-desktop-portal-gtk
+- fuzzel
