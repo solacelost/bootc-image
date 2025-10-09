@@ -132,6 +132,9 @@ binds {
     Mod+Shift+U         { move-workspace-down; }
     Mod+Shift+I         { move-workspace-up; }
 
+    Mod+Shift+Y { move-workspace-to-monitor-previous; }
+    Mod+Shift+P { move-workspace-to-monitor-next; }
+
     Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
     Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
     Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
@@ -236,32 +239,38 @@ window-rule {
 spawn-at-startup "alacritty"
 window-rule {
     match app-id="^Alacritty$" at-startup=true
+    default-column-width { proportion 1.0; }
     open-on-workspace "terminal"
     open-focused false
 }
 spawn-at-startup "flatpak" "run" "com.discordapp.Discord"
 spawn-at-startup "flatpak" "run" "im.riot.Riot"
+spawn-at-startup "/usr/local/bin/niri-stack-chat.sh"
 window-rule {
     match app-id="^discord$" at-startup=true
     match app-id="^im.riot.Riot$" at-startup=true
+    default-column-width { proportion 1.0; }
     open-on-workspace "chat"
     open-focused false
 }
 spawn-at-startup "google-chrome-wayland" "--profile-directory=Default"
 window-rule {
     match app-id="^google-chrome$" at-startup=true
+    default-column-width { proportion 1.0; }
     open-on-workspace "browser"
     open-focused false
 }
 spawn-at-startup "flatpak" "run" "com.slack.Slack"
 window-rule {
     match app-id="^Slack$" at-startup=true
+    default-column-width { proportion 1.0; }
     open-on-workspace "slack"
     open-focused false
 }
 spawn-at-startup "flatpak" "run" "com.spotify.Client"
 window-rule {
     match app-id="^Spotify$" at-startup=true
+    default-column-width { proportion 1.0; }
     open-on-workspace "spotify"
     open-focused false
 }
