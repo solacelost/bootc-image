@@ -5,6 +5,20 @@
     "modules-center": ["custom/weather"],
     "modules-right": ["custom/media", "idle_inhibitor", "custom/makomode", "pulseaudio", "network", "custom/vpn", "group/hardware", "group/temperature", "backlight", "battery", "group/keyboard", "tray", "clock"],
 
+    "niri/workspaces": {
+        "format": "{index}: {icon}",
+        "format-icons": {
+            "browser": "",
+            "chat": "",
+            "redhat": "",
+            "slack": "",
+            "spotify": "",
+            "terminal": "",
+            "urgent": "",
+            "default": ""
+        }
+    },
+
     "group/hardware": {"modules": ["cpu", "memory"]},
 
     "custom/separator": {

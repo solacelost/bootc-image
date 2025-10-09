@@ -246,7 +246,7 @@ COPY overlays/gui-games/ /
 COPY overlays/gui-system/ /
 COPY overlays/gui-tiling/ /
 # Install our GUI configuration
-COPY overlays/gui-sway/ /
+# COPY overlays/gui-sway/ /
 COPY overlays/gui-niri/ /
 
 # Ensure module dependencies are calculated

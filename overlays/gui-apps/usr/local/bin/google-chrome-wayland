@@ -2,4 +2,8 @@
 
 export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.x86_64.json
 
-exec /opt/google/chrome/chrome --use-gl=angle --use-angle=vulkan --enable-features=Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,AcceleratedVideoDecodeLinuxZeroCopyGL,AcceleratedVideoEncoder,VaapiIgnoreDriverChecks,UseMultiPlaneFormatForHardwareVideo --ozone-platform-hint=auto "${@}"
+exec /opt/google/chrome/chrome \
+    --ignore-gpu-blocklist \
+    --enable-zero-copy \
+    --enable-features=AcceleratedVideoDecodeLinuxZeroCopyGL,UseMultiPlaneFormatForHardwareVideo \
+    --ozone-platform-hint=auto "${@}"
