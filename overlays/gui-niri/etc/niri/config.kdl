@@ -285,6 +285,14 @@ window-rule {
     open-floating true
 }
 
+// Games
+window-rule
+    match app-id="^steam_app_.*"
+    open-fullscreen true
+    open-on-output "LG Electronics 34GK950F 0x0005D90E"
+    variable-refresh-rate true
+}
+
 // Recorded
 window-rule {
     match is-window-cast-target=true
