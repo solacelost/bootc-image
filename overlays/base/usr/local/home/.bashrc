@@ -28,6 +28,7 @@ function tmux_worthy() {
 	[ "${EUID:--1}" -ne 0 ] || return 1         # we are root
 	[ "$TERM_PROGRAM" != "vscode" ] || return 1 # we are in VSCode
 	[ -z "$SWAYSOCK" ] || return 1              # we are in sway (tiling)
+	[ -z "$NIRI_SOCKET" ] || return 1           # we are in niri (tiling)
 	[ -f /run/.toolboxenv ] && return 1         # we are in a toolbox
 	return 0
 }

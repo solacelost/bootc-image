@@ -1,7 +1,10 @@
 packages:
 - waybar
+- grim
+- slurp
 - swayidle
 - swaylock
+- swaybg
 - mako
 - rofi
 - network-manager-applet

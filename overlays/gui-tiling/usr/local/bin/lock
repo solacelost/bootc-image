@@ -24,6 +24,14 @@ if [ "$(playerctl status)" = "Playing" ]; then
 	playerctl pause
 fi
 
+function outputs {
+  if [ "$SWAYSOCK" ]; then
+    swaymsg -t get_outputs | jq -r '.[]|select(.active==true) .name'
+  elif [ "$NIRI_SOCKET" ]; then
+    niri msg outputs | grep '^Output' | rev | cut -d')' -f2 | cut -d '(' -f1 | rev
+  fi
+}
+
 images=()
 swaylock_args=(
 	--daemonize
@@ -38,7 +46,7 @@ swaylock_args=(
 	--separator-color 00000000
 )
 
-for output in $(swaymsg -t get_outputs | jq -r '.[]|select(.active==true) .name'); do
+for output in $(outputs); do
 	image=$(mktemp --suffix=.png)
 	images+=("$image")
 	swaylock_args+=(-i "$output:$image")

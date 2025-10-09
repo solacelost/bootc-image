@@ -1,9 +1,6 @@
 packages:
-- grim
-- slurp
 - sway
 - sway-systemd
-- swaybg
 - xdg-desktop-portal-wlr
 - xdg-desktop-portal-gtk
 - wev

@@ -20,3 +20,4 @@ alias vllm='podman run --rm -it --security-opt label=disable \
             -e HF_HUB_OFFLINE=0 -e HUGGING_FACE_HUB_TOKEN=$(cat ~/.redhat/hf-token) \
             --network host --name vllm --entrypoint vllm \
             docker.io/rocm/vllm:latest'
+alias rg='rg --hidden'
