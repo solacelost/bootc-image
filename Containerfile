@@ -237,9 +237,7 @@ COPY --from=lan-mouse-build /built/ /
 # Copy our built modules
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
-# TODO: reenable displaylink after swapping to niri, after niri gets proper support
-# see also: https://github.com/YaLTeR/niri/pull/2312
-# COPY --from=displaylink-build /built/ /
+COPY --from=displaylink-build /built/ /
 # Ensure Red Hat configuration (keys, git configs, VPN, etc) are staged
 COPY overlays/redhat/ /
 # Ensure our GUI is configured correctly (configs, flatpaks, etc.)
