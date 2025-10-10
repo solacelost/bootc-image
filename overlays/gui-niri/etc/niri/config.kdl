@@ -28,6 +28,9 @@ input {
 output "LG Electronics 27GL650F 0x0004DD95" {
     transform "90"
 }
+output "LG Electronics 34GK950F 0x0005D90E" {
+    variable-refresh-rate on-demand=true
+}
 
 layout {
     gaps 4
