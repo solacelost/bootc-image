@@ -286,7 +286,7 @@ window-rule {
 }
 
 // Games
-window-rule
+window-rule {
     match app-id="^steam_app_.*"
     open-fullscreen true
     open-on-output "LG Electronics 34GK950F 0x0005D90E"
