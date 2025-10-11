@@ -235,7 +235,8 @@ RUN mkdir -p /usr/share/fonts/inconsolata && \
     fc-cache -f -v
 RUN curl --retry 10 --retry-all-errors -Lo- "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz" | tar xvz -C /usr/local/bin && \
     chmod +x /usr/local/bin/{kubectl,oc}
-RUN GOPATH=/tmp/go go install go.senan.xyz/cliphist@${CLIPHIST_COMMIT} && \
+RUN mkdir -p /tmp/go/{cache,bin} && \
+    GOPATH=/tmp/go GOROOT=/tmp/go GOMODCACHE=/tmp/go/cache go install go.senan.xyz/cliphist@${CLIPHIST_COMMIT} && \
     mv /tmp/go/bin/cliphist /usr/local/bin/ && \
     curl -Lo /usr/local/bin/cliphist-fuzzel-img https://raw.githubusercontent.com/sentriz/cliphist/${CLIPHIST_COMMIT}/contrib/cliphist-fuzzel-img && \
     chmod +x /usr/local/bin/cliphist-fuzzel-img
