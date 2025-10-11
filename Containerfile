@@ -25,6 +25,7 @@ ARG NERD_FONTS_VERSION=3.4.0
 ARG DISPLAYLINK_PUBLISH_DIR=2025-09
 ARG DISPLAYLINK_VERSION=6.2
 ARG EVDI_VERSION=1.14.11
+ARG CLIPHIST_COMMIT=e010e8e0feccb38d131b3a27b1461cb1597af0b5
 
 ARG PACKAGES_HASH
 
@@ -207,6 +208,7 @@ ARG PROTONUP_COMMIT
 ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION
 ARG NERD_FONTS_VERSION
 ARG IMAGE_REF
+ARG CLIPHIST_COMMIT
 
 ARG PACKAGES_HASH
 ENV PACKAGES_HASH=${PACKAGES_HASH}
@@ -233,8 +235,10 @@ RUN mkdir -p /usr/share/fonts/inconsolata && \
     fc-cache -f -v
 RUN curl --retry 10 --retry-all-errors -Lo- "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz" | tar xvz -C /usr/local/bin && \
     chmod +x /usr/local/bin/{kubectl,oc}
-RUN GOPATH=/tmp/go go install go.senan.xyz/cliphist@release-v0.7.0 && \
-    mv /tmp/go/bin/cliphist /usr/local/bin/
+RUN GOPATH=/tmp/go go install go.senan.xyz/cliphist@${CLIPHIST_COMMIT} && \
+    mv /tmp/go/bin/cliphist /usr/local/bin/ && \
+    curl -Lo /usr/local/bin/cliphist-fuzzel-img https://raw.githubusercontent.com/sentriz/cliphist/${CLIPHIST_COMMIT}/contrib/cliphist-fuzzel-img && \
+    chmod +x /usr/local/bin/cliphist-fuzzel-img
 RUN authselect enable-feature with-fingerprint
 RUN echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf
 
