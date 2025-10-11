@@ -233,6 +233,8 @@ RUN mkdir -p /usr/share/fonts/inconsolata && \
     fc-cache -f -v
 RUN curl --retry 10 --retry-all-errors -Lo- "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz" | tar xvz -C /usr/local/bin && \
     chmod +x /usr/local/bin/{kubectl,oc}
+RUN GOPATH=/tmp/go go install go.senan.xyz/cliphist@release-v0.7.0 && \
+    mv /tmp/go/bin/cliphist /usr/local/bin/
 RUN authselect enable-feature with-fingerprint
 RUN echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf
 
