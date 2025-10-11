@@ -256,7 +256,7 @@ spawn-at-startup "flatpak" "run" "com.discordapp.Discord"
 spawn-at-startup "flatpak" "run" "im.riot.Riot"
 spawn-at-startup "/usr/local/bin/niri-stack-chat.sh"
 window-rule {
-    match app-id="^discord$" at-startup=true
+    match app-id="^com.discordapp.Discord$" at-startup=true
     match app-id="^im.riot.Riot$" at-startup=true
     default-column-width { proportion 1.0; }
     open-on-workspace "chat"
