@@ -76,7 +76,7 @@ animations {
     slowdown 0.2
 }
 
-
+spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
 
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
@@ -209,6 +209,8 @@ binds {
     Print { screenshot; }
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
+
+    Mod+Ctrl+P { spawn "cliphist-fuzzel-img"; }
 
     Mod+Escape { quit; }
 }
