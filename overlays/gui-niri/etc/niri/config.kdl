@@ -4,7 +4,7 @@ environment {
 
 input {
     keyboard {
-        xkb {}
+        xkb { }
         numlock
     }
 
@@ -20,7 +20,7 @@ input {
         accel-profile "flat"
     }
 
-    trackpoint {}
+    trackpoint { }
 
     focus-follows-mouse max-scroll-amount="30%"
 }
@@ -211,6 +211,7 @@ binds {
     Alt+Print { screenshot-window; }
 
     Mod+Ctrl+P { spawn "cliphist-fuzzel-img"; }
+    Mod+E { spawn "/usr/local/bin/emoji"; }
 
     Mod+Escape { quit; }
 }

@@ -1,12 +1,11 @@
 packages:
+- fuzzel
+- grim # still useful for more scriptable screenshots than niri
 - waybar
-- grim
-- slurp
 - swayidle
 - swaylock
 - swaybg
 - mako
-- rofi
 - network-manager-applet
 - clipman
 - yad

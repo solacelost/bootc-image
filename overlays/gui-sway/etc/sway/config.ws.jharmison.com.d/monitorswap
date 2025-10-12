@@ -1,4 +1,0 @@
-# config for monitors
-exec "bash -c 'echo sideways > /run/user/1000/monitorswap'"
-exec_always --no-startup-id /usr/local/bin/monitorswap reload
-bindsym $mod+Shift+m exec /usr/local/bin/monitorswap

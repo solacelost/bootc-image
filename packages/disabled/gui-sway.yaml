@@ -1,7 +1,0 @@
-packages:
-- sway
-- sway-systemd
-- xdg-desktop-portal-wlr
-- xdg-desktop-portal-gtk
-- wev
-- wlr-randr
