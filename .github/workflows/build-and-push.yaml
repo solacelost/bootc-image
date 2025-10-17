@@ -33,7 +33,10 @@ jobs:
       - uses: actions/checkout@v5
       - uses: jharmison-redhat/action-bootc-build@main
         with:
+          annotations: |
+            dev.jharmison.git-repository=${{ github.server_url }}/${{ github.repository }}
+            dev.jharmison.commit=${{ github.sha }}
+          build-args: PACKAGES_HASH=${{ hashFiles('packages/**/*.yaml') }}
+          cache-repo: ghcr.io/solacelost/bootc-image/cache
           push: 'true'
           tag: quay.io/solacelost/bootc-image:latest
-          cache-repo: ghcr.io/solacelost/bootc-image/cache
-          build-args: PACKAGES_HASH=${{ hashFiles('packages/**/*.yaml') }}
