@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: jharmison-redhat/action-bootc-build@main
         with:
-          annotations: |
+          labels: |
             dev.jharmison.git-repository=${{ github.server_url }}/${{ github.repository }}
             dev.jharmison.commit=${{ github.sha }}
           build-args: PACKAGES_HASH=${{ hashFiles('packages/**/*.yaml') }}
