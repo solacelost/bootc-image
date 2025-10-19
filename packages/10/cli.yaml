@@ -39,3 +39,5 @@ packages:
 - zip
 - man
 - lorax
+- langpacks-en
+- glibc-langpack-en
