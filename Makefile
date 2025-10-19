@@ -19,6 +19,8 @@ BASE ?= quay.io/fedora/fedora-bootc:$(FEDORA_VERSION)
 REGISTRY ?= quay.io
 REPOSITORY ?= solacelost/bootc-image
 REG_REPO := $(REGISTRY)/$(REPOSITORY)
+SOURCE_REPO ?= https://github.com/$(REPOSITORY)
+SOURCE_REPO_COMMIT ?= $(shell git describe --tags --first-parent --abbrev=40 --long --dirty --always)
 TAG ?= latest
 IMAGE = $(REG_REPO):$(TAG)
 # Help find out if our base image has updated
@@ -62,6 +64,8 @@ tmp/$(LATEST_DIGEST):
 		--device=/dev/fuse \
 		--build-arg=FEDORA_VERSION=$(FEDORA_VERSION) \
 		--build-arg=IMAGE_REF=$(IMAGE) \
+		--label=dev.jharmison.commit=$(SOURCE_REPO_COMMIT) \
+		--label=dev.jharmison.git-repository=$(SOURCE_REPO) \
 		--from $(BASE) \
 		-f $< \
 		. \
