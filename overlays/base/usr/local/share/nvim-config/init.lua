@@ -41,6 +41,7 @@ vim.o.clipboard = 'unnamedplus'
 -- builtin configs
 local map = vim.keymap.set
 map('n', '<leader>w', ':write<CR>', { desc = 'write' })
+map('n', '<leader>d', ':lua vim.diagnostic.open_float()<CR>', { desc = 'diag info' })
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
     vim.highlight.on_yank({ higroup = "YankedText", timeout = 200 })
