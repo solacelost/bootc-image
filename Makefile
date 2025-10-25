@@ -37,6 +37,7 @@ ISO_DEST ?= /dev/sda
 # NETWORK defines the kickstart arguments for configuring the network, defaulting to DHCP on wired links
 NETWORK := --bootproto=dhcp --device=link --activate
 TZ := America/New_York
+LUKS_PASSWORD ?=
 # Templating the kickstart variables is tricky
 KICKSTART_VARS = IMAGE=$(IMAGE) \
 	DEFAULT_DISK=$(DEFAULT_INSTALL_DISK) \
@@ -44,6 +45,7 @@ KICKSTART_VARS = IMAGE=$(IMAGE) \
 	USERNAME=$(USERNAME) \
 	PASSWORD="$(PASSWORD)" \
 	NETWORK="$(NETWORK)" \
+	LUKS_PASSWORD="$(LUKS_PASSWORD)" \
 	TZ=$(TZ)
 
 .PHONY: all
@@ -109,7 +111,7 @@ boot-image/fedora-live.x86_64.iso:
 	curl --retry 10 --retry-all-errors -Lo $@ https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/$(shell curl -s --retry 10 --retry-all-errors -L https://download.fedoraproject.org/pub/fedora/linux/releases/${BOOT_VERSION}/Everything/x86_64/iso/ | grep 'href="' | grep '\.iso</a>' | grep -o '>Fedora-Everything-netinst.*\.iso<' | head -c-2 | tail -c+2)
 
 boot-image/bootc$(ISO_SUFFIX).ks: boot-image/bootc.ks.tpl
-	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$DEFAULT_DISK,$$ISO_SUFFIX,$$PASSWORD,$$NETWORK,$$TZ' < $< >$@
+	$(KICKSTART_VARS) envsubst '$$IMAGE,$$USERNAME,$$DEFAULT_DISK,$$ISO_SUFFIX,$$PASSWORD,$$NETWORK,$$LUKS_PASSWORD,$$TZ' < $< >$@
 
 boot-image/container$(ISO_SUFFIX)/index.json: .build-$(TAG)
 	sudo rm -rf boot-image/container$(ISO_SUFFIX)

@@ -36,6 +36,10 @@ for disk in "${otherdisks[@]}"; do
     done
 done
 
+if [ "${LUKS_PASSWORD}" ]; then
+    luks_options=(--encrypted --passphrase="${LUKS_PASSWORD}")
+fi
+
 cat << EOF > /tmp/part-include
 # Clear installation disk
 clearpart --initlabel --all --disklabel gpt --drives ${install_disk}
@@ -50,7 +54,7 @@ part / --size 40960 --fstype xfs --ondisk ${install_disk} --label root
 # Configure LVM for /var to fill remaining space
 part pv.01 --size 1 --grow --ondisk ${install_disk}
 volgroup fedora pv.01
-logvol /var --percent 100 --grow --fstype xfs --vgname fedora --name var
+logvol /var --percent 100 --grow --fstype xfs --vgname fedora --name var ${luks_options[@]}
 
 # Bootloader configuration
 bootloader --driveorder ${install_disk}
