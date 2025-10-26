@@ -136,7 +136,7 @@ burn: boot-image/bootc-install$(ISO_SUFFIX).iso
 
 .PHONY: clean
 clean:
-	sudo rm -rf .build* .push* boot-image/*.iso boot-image/*.ks boot-image/container* tmp/*
+	sudo rm -rf .build* .push* boot-image/*.iso boot-image/*.ks boot-image/container*
 	sudo podman image rm $(IMAGE) ||:
 	sudo podman image rm $(IMAGE)-unchunked ||:
 	sudo buildah rm --all
