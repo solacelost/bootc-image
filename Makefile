@@ -21,7 +21,8 @@ REPOSITORY ?= solacelost/bootc-image
 REG_REPO := $(REGISTRY)/$(REPOSITORY)
 SOURCE_REPO ?= https://github.com/$(REPOSITORY)
 SOURCE_REPO_COMMIT ?= $(shell git describe --tags --first-parent --abbrev=40 --long --dirty --always)
-PACKAGES_HASH := $(shell sha256sum packages/**/*.yaml | cut -d\  -f1 | sha256sum | cut -d\  -f1)
+EARLY_PACKAGES_HASH := $(shell sha256sum packages/10/*.yaml | cut -d\  -f1 | sha256sum | cut -d\  -f1)
+LATE_PACKAGES_HASH := $(shell sha256sum packages/90/*.yaml | cut -d\  -f1 | sha256sum | cut -d\  -f1)
 TAG ?= latest
 IMAGE = $(REG_REPO):$(TAG)
 # Help find out if our base image has updated
@@ -67,7 +68,8 @@ tmp/$(LATEST_DIGEST):
 		--device=/dev/fuse \
 		--build-arg=FEDORA_VERSION=$(FEDORA_VERSION) \
 		--build-arg=IMAGE_REF=$(IMAGE) \
-		--build-arg=PACKAGES_HASH=$(PACKAGES_HASH) \
+		--build-arg=EARLY_PACKAGES_HASH=$(EARLY_PACKAGES_HASH) \
+		--build-arg=LATE_PACKAGES_HASH=$(LATE_PACKAGES_HASH) \
 		--label=dev.jharmison.commit=$(SOURCE_REPO_COMMIT) \
 		--label=dev.jharmison.git-repository=$(SOURCE_REPO) \
 		--from $(BASE) \

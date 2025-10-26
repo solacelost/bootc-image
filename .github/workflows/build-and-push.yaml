@@ -36,7 +36,9 @@ jobs:
           labels: |
             dev.jharmison.git-repository=${{ github.server_url }}/${{ github.repository }}
             dev.jharmison.commit=${{ github.sha }}
-          build-args: PACKAGES_HASH=${{ hashFiles('packages/**/*.yaml') }}
+          build-args: |
+            EARLY_PACKAGES_HASH=${{ hashFiles('packages/10/*.yaml') }}
+            LATE_PACKAGES_HASH=${{ hashFiles('packages/90/*.yaml') }}
           cache-repo: ghcr.io/solacelost/bootc-image/cache
           extra-args: --retry=6 --retry-delay=10s
           push: 'true'

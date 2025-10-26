@@ -2,3 +2,5 @@ packages:
 - paper-icon-theme
 - materia-gtk-theme
 - sound-theme-freedesktop
+- plymouth
+- plymouth-theme-spinner
