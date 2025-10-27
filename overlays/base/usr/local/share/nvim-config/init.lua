@@ -37,6 +37,8 @@ vim.o.undofile = true
 vim.o.scrolloff = 10
 vim.o.sidescrolloff = 8
 vim.o.clipboard = 'unnamedplus'
+vim.o.foldmethod = 'indent'
+vim.o.foldlevel = 255
 
 -- builtin configs
 local map = vim.keymap.set
