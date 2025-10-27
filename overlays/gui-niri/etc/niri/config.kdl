@@ -322,3 +322,6 @@ window-rule {
         inactive-color "#7d0d2d"
     }
 }
+
+// Node-local configuration - DO NOT EDIT config.kdl, keep all node-local configs in local.kdl
+include "local.kdl"
