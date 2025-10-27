@@ -94,6 +94,41 @@ RUN mkdir -p /built/usr/local/bin /built/etc/systemd/user /built/etc/firewalld/s
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
+FROM base as niri-build
+
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install \
+        rust-glib-sys-devel \
+        rust-pangocairo-devel \
+        libdisplay-info{,-devel} \
+        rust-pipewire-devel \
+        rust-xkbcommon-devel \
+        rust-input-devel \
+        mesa-libgbm{,-devel} \
+        libseat{,-devel} \
+        rust-libudev-devel
+
+WORKDIR /app
+
+RUN git clone https://github.com/scottmckendry/niri
+
+WORKDIR /app/niri
+ENV HOME=/var/roothome
+
+RUN git checkout primary-render-fallback && \
+    cargo build -r
+
+WORKDIR /built
+
+RUN install -Dm755 -t /built/usr/bin /app/niri/target/release/niri && \
+    install -Dm755 -t /built/usr/bin /app/niri/resources/niri-session && \
+    install -Dm644 -t /built/usr/share/wayland-sessions /app/niri/resources/niri.desktop && \
+    install -Dm644 -t /built/usr/share/xdg-desktop-portal /app/niri/resources/niri-portals.conf && \
+    install -Dm644 -t /built/usr/lib/systemd/user /app/niri/resources/niri.service && \
+    install -Dm644 -t /built/usr/lib/systemd/user /app/niri/resources/niri-shutdown.target && \
+    install -Dm644 -t /built/usr/share/licenses/niri /app/niri/LICENSE
+
 FROM base as module-build
 
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -262,8 +297,10 @@ COPY overlays/gui-apps/ /
 COPY overlays/gui-games/ /
 COPY overlays/gui-system/ /
 COPY overlays/gui-tiling/ /
-# Install our GUI configuration
-# COPY overlays/gui-sway/ /
+
+# Install custom niri fork
+COPY --from=niri-build /built/ /
+
 COPY overlays/gui-niri/ /
 
 # Ensure module dependencies are calculated
