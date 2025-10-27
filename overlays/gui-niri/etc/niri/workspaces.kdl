@@ -1,0 +1,7 @@
+// Override these per-machine, but beware changes
+workspace "terminal" {}
+workspace "browser" {}
+workspace "chat" {}
+workspace "redhat" {}
+workspace "slack" {}
+workspace "spotify" {}
