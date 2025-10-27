@@ -26,13 +26,6 @@ input {
     focus-follows-mouse max-scroll-amount="30%"
 }
 
-output "LG Electronics 27GL650F 0x0004DD95" {
-    transform "90"
-}
-output "LG Electronics 34GK950F 0x0005D90E" {
-    variable-refresh-rate on-demand=true
-}
-
 layout {
     gaps 4
 
@@ -223,24 +216,12 @@ gestures {
     }
 }
 
-workspace "terminal" {
-    open-on-output "LG Electronics 34GK950F 0x0005D90E"
-}
-workspace "browser" {
-    open-on-output "LG Electronics 27GL650F 0x0004DD95"
-}
-workspace "chat" {
-    open-on-output "LG Electronics 27GL650F 0x0004DD95"
-}
-workspace "redhat" {
-    open-on-output "LG Electronics 27GL650F 0x0004DD95"
-}
-workspace "slack" {
-    open-on-output "LG Electronics 27GL650F 0x0004DD95"
-}
-workspace "spotify" {
-    open-on-output "LG Electronics 27GL650F 0x0004DD95"
-}
+workspace "terminal" {}
+workspace "browser" {}
+workspace "chat" {}
+workspace "redhat" {}
+workspace "slack" {}
+workspace "spotify" {}
 
 window-rule {
     open-focused true
@@ -256,7 +237,6 @@ window-rule {
 }
 spawn-at-startup "flatpak" "run" "com.discordapp.Discord"
 spawn-at-startup "flatpak" "run" "im.riot.Riot"
-spawn-at-startup "/usr/local/bin/niri-stack-chat.sh"
 window-rule {
     match app-id="^com.discordapp.Discord$" at-startup=true
     match app-id="^im.riot.Riot$" at-startup=true
@@ -296,7 +276,6 @@ window-rule {
 window-rule {
     match app-id="^steam_app_.*"
     open-fullscreen true
-    open-on-output "LG Electronics 34GK950F 0x0005D90E"
     variable-refresh-rate true
 }
 
