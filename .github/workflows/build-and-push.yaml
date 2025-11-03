@@ -17,12 +17,6 @@ jobs:
     permissions:
       packages: write
     steps:
-      - name: Log in to ghcr
-        uses: redhat-actions/podman-login@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Log in to quay
         uses: redhat-actions/podman-login@v1
         with:
@@ -39,7 +33,6 @@ jobs:
           build-args: |
             EARLY_PACKAGES_HASH=${{ hashFiles('packages/10/*.yaml') }}
             LATE_PACKAGES_HASH=${{ hashFiles('packages/90/*.yaml') }}
-          cache-repo: ghcr.io/solacelost/bootc-image/cache
           extra-args: --retry=6 --retry-delay=10s
           push: 'true'
           tag: quay.io/solacelost/bootc-image:latest
