@@ -26,6 +26,10 @@ ARG DISPLAYLINK_PUBLISH_DIR=2025-09
 ARG DISPLAYLINK_VERSION=6.2
 ARG EVDI_VERSION=1.14.11
 ARG CLIPHIST_COMMIT=e010e8e0feccb38d131b3a27b1461cb1597af0b5
+# https://github.com/YaLTeR/niri/pull/2312
+# https://github.com/scottmckendry/niri/tree/primary-render-fallback
+ARG NIRI_FORK_REPO=https://github.com/scottmckendry/niri
+ARG NIRI_FORK_COMMIT=1eeef2ff299f46851cb8026cbc54c2a03ba1fdab
 
 ARG EARLY_PACKAGES_HASH
 ARG LATE_PACKAGES_HASH
@@ -96,6 +100,9 @@ RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 FROM base as niri-build
 
+ARG NIRI_FORK_REPO
+ARG NIRI_FORK_COMMIT
+
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install \
@@ -111,12 +118,12 @@ RUN --mount=type=tmpfs,target=/var/cache \
 
 WORKDIR /app
 
-RUN git clone https://github.com/scottmckendry/niri
+RUN git clone "${NIRI_FORK_REPO}"
 
 WORKDIR /app/niri
 ENV HOME=/var/roothome
 
-RUN git checkout primary-render-fallback && \
+RUN git checkout ${NIRI_FORK_COMMIT} && \
     cargo build -r
 
 WORKDIR /built
