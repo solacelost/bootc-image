@@ -49,6 +49,10 @@ KICKSTART_VARS = IMAGE=$(IMAGE) \
 	LUKS_PASSWORD="$(LUKS_PASSWORD)" \
 	TZ=$(TZ)
 
+BUILD_DATE := $(shell date '+%Y%m%d')
+BUILD_ID := $(shell hack/calculate_build_id.sh $(IMAGE) $(BUILD_DATE))
+VERSION := $(shell printf "%s.%s.%s" $(FEDORA_VERSION) $(BUILD_DATE) $(BUILD_ID))
+
 .PHONY: all
 all: push
 
@@ -72,6 +76,7 @@ tmp/$(LATEST_DIGEST):
 		--build-arg=LATE_PACKAGES_HASH=$(LATE_PACKAGES_HASH) \
 		--label=dev.jharmison.commit=$(SOURCE_REPO_COMMIT) \
 		--label=dev.jharmison.git-repository=$(SOURCE_REPO) \
+		--label=org.opencontainers.image.version=$(VERSION) \
 		--from $(BASE) \
 		-f $< \
 		. \
@@ -133,6 +138,10 @@ vm: boot-image/bootc-install$(ISO_SUFFIX).iso
 .PHONY: burn
 burn: boot-image/bootc-install$(ISO_SUFFIX).iso
 	sudo dd if=./$< of=$(ISO_DEST) bs=1M conv=fsync status=progress
+
+.PHONY: print-version
+print-version:
+	@echo $(VERSION)
 
 .PHONY: clean
 clean:

@@ -25,11 +25,17 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - uses: actions/checkout@v5
+      - id: makefile
+        shell: bash
+        run: |
+          echo "version=$(make print-version)" >> $GITHUB_OUTPUT
+
       - uses: jharmison-redhat/action-bootc-build@main
         with:
           labels: |
             dev.jharmison.git-repository=${{ github.server_url }}/${{ github.repository }}
             dev.jharmison.commit=${{ github.sha }}
+            org.opencontainers.image.version=${{ steps.makefile.outputs.version }}
           build-args: |
             EARLY_PACKAGES_HASH=${{ hashFiles('packages/10/*.yaml') }}
             LATE_PACKAGES_HASH=${{ hashFiles('packages/90/*.yaml') }}
