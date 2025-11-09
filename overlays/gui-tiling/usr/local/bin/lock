@@ -28,7 +28,7 @@ function outputs {
   if [ "$SWAYSOCK" ]; then
     swaymsg -t get_outputs | jq -r '.[]|select(.active==true) .name'
   elif [ "$NIRI_SOCKET" ]; then
-    niri msg outputs | grep '^Output' | rev | cut -d')' -f2 | cut -d '(' -f1 | rev
+    niri msg -j outputs | jq -r '.[]|select(.current_mode!=null) .name'
   fi
 }
 
