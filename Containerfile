@@ -1,5 +1,5 @@
 # hadolint global ignore=DL3040,DL3041,DL4006
-ARG FEDORA_VERSION=43
+ARG FEDORA_VERSION=42
 ARG IMAGE_REF=quay.io/solacelost/bootc-image:latest
 
 # https://github.com/Vladimir-csp/xdg-terminal-exec
