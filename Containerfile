@@ -1,13 +1,13 @@
 # hadolint global ignore=DL3040,DL3041,DL4006
-ARG FEDORA_VERSION=42
+ARG FEDORA_VERSION=43
 ARG IMAGE_REF=quay.io/solacelost/bootc-image:latest
 
 # https://github.com/Vladimir-csp/xdg-terminal-exec
-ARG XDG_TERMINAL_EXEC_COMMIT=b0dcbf7ef663d5079d8b75e74393307d153dc3d6
+ARG XDG_TERMINAL_EXEC_COMMIT=363db91851b5a83d67603556b2da690125ac05f4
 # https://github.com/feschber/lan-mouse
-ARG LAN_MOUSE_COMMIT=e46fe60b3e24be83de38701faa99a4fbd9186f08
+ARG LAN_MOUSE_COMMIT=640fa995a4ae3c5a0aaaafe04857930979edc220
 # https://github.com/dlundqvist/xone
-ARG XONE_COMMIT=3ec5e6d5c6f88188f354b243a19035817d4088fc
+ARG XONE_COMMIT=47d732f2d7fcd5e77317a7ef64fa9422c3e78956
 # https://github.com/v4l2loopback/v4l2loopback
 ARG V4L2LOOPBACK_VERSION=0.15.2
 # https://github.com/derailed/k9s
@@ -25,11 +25,12 @@ ARG NERD_FONTS_VERSION=3.4.0
 ARG DISPLAYLINK_PUBLISH_DIR=2025-09
 ARG DISPLAYLINK_VERSION=6.2
 ARG EVDI_VERSION=1.14.11
-ARG CLIPHIST_COMMIT=e010e8e0feccb38d131b3a27b1461cb1597af0b5
+# https://github.com/sentriz/cliphist
+ARG CLIPHIST_COMMIT=efb61cb5b5a28d896c05a24ac83b9c39c96575f2
 # https://github.com/YaLTeR/niri/pull/2312
 # https://github.com/scottmckendry/niri/tree/primary-render-fallback
 ARG NIRI_FORK_REPO=https://github.com/scottmckendry/niri
-ARG NIRI_FORK_COMMIT=1eeef2ff299f46851cb8026cbc54c2a03ba1fdab
+ARG NIRI_FORK_COMMIT=7b663309c2f543ff762944b1221242f5a8cc4259
 
 ARG EARLY_PACKAGES_HASH
 ARG LATE_PACKAGES_HASH
