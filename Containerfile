@@ -7,7 +7,7 @@ ARG XDG_TERMINAL_EXEC_COMMIT=363db91851b5a83d67603556b2da690125ac05f4
 # https://github.com/feschber/lan-mouse
 ARG LAN_MOUSE_COMMIT=640fa995a4ae3c5a0aaaafe04857930979edc220
 # https://github.com/dlundqvist/xone
-ARG XONE_COMMIT=47d732f2d7fcd5e77317a7ef64fa9422c3e78956
+ARG XONE_COMMIT=90d965254e534151202e79f768bf7a68ea9f9d4f
 # https://github.com/v4l2loopback/v4l2loopback
 ARG V4L2LOOPBACK_VERSION=0.15.2
 # https://github.com/derailed/k9s
@@ -30,7 +30,7 @@ ARG CLIPHIST_COMMIT=efb61cb5b5a28d896c05a24ac83b9c39c96575f2
 # https://github.com/YaLTeR/niri/pull/2312
 # https://github.com/scottmckendry/niri/tree/primary-render-fallback
 ARG NIRI_FORK_REPO=https://github.com/scottmckendry/niri
-ARG NIRI_FORK_COMMIT=7b663309c2f543ff762944b1221242f5a8cc4259
+ARG NIRI_FORK_COMMIT=7fb734d62f809f169bd06647260b0eceb9bdb078
 
 ARG EARLY_PACKAGES_HASH
 ARG LATE_PACKAGES_HASH
