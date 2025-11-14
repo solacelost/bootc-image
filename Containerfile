@@ -31,6 +31,8 @@ ARG CLIPHIST_COMMIT=efb61cb5b5a28d896c05a24ac83b9c39c96575f2
 # https://github.com/scottmckendry/niri/tree/primary-render-fallback
 ARG NIRI_FORK_REPO=https://github.com/scottmckendry/niri
 ARG NIRI_FORK_COMMIT=7fb734d62f809f169bd06647260b0eceb9bdb078
+# https://github.com/vinceliuice/Orchis-theme
+ARG ORCHIS_COMMIT=d00dd33dde5a57eebfbc9b7e8488a535596bf125
 
 ARG EARLY_PACKAGES_HASH
 ARG LATE_PACKAGES_HASH
@@ -242,6 +244,19 @@ COPY overlays/displaylink/ /
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
+FROM base as orchis-build
+
+ARG ORCHIS_COMMIT
+
+WORKDIR /build
+
+RUN mkdir -p /built/usr/share/themes && \
+    git clone https://github.com/vinceliuice/Orchis-theme && \
+    cd Orchis-theme && \
+    git checkout "${ORCHIS_COMMIT}" && \
+    ./install.sh -d /built/usr/share/themes && \
+    tree /built/usr/share/themes
+
 # TODO: Shikane: https://gitlab.com/w0lff/shikane
 
 FROM base as final
@@ -305,6 +320,7 @@ COPY overlays/gui-apps/ /
 COPY overlays/gui-games/ /
 COPY overlays/gui-system/ /
 COPY overlays/gui-tiling/ /
+COPY --from=orchis-build /built/ /
 
 # Install custom niri fork
 COPY --from=niri-build /built/ /
