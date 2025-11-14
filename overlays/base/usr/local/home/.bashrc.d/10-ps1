@@ -65,7 +65,7 @@ function __promptline_cwd {
   local first_char
   local part_count=0
   local formatted_cwd=""
-  local dir_sep="  "
+  local dir_sep=" ╱ "
   local tilde="~"
 
   local cwd="${PWD/#$HOME/$tilde}"
@@ -153,10 +153,10 @@ function __promptline {
   fi
   local wrap="$noprint" end_wrap="$end_noprint"
   local space=" "
-  local sep=""
-  local rsep=""
-  local alt_sep=""
-  local alt_rsep=""
+  local sep="▍"
+  local rsep="🮈"
+  local alt_sep="🭱"
+  local alt_rsep="🭳"
   local reset="${wrap}${RESET}${end_wrap}"
   local reset_bg="${wrap}${esc}49${end_esc}${end_wrap}"
   local a_fg="${wrap}${YELLOW}${end_wrap}"

@@ -1,26 +1,30 @@
-[colors.bright]
-black = "#2e3436"
-blue = "#729fcf"
-cyan = "#34e2e2"
-green = "#8ae234"
-magenta = "#ad7fa8"
-red = "#ef2929"
-white = "#eeeeec"
-yellow = "#fce94f"
+[colors.primary]
+background = "#161616"
+foreground = "#ffffff"
+
+[colors.search.matches]
+foreground = CellBackground
+background = '#ee5396'
 
 [colors.normal]
-black = "#2e3436"
-blue = "#3465a4"
-cyan = "#06989a"
-green = "#73d216"
-magenta = "#75507b"
-red = "#cc0000"
-white = "#d3d7cf"
-yellow = "#edd400"
+black = '#262626'
+magenta = '#ff7eb6'
+green = '#42be65'
+yellow = "#ffe97b"
+blue = '#33b1ff'
+red = '#ee5396'
+cyan = '#3ddbd9'
+white = '#dde1e6'
 
-[colors.primary]
-background = "#111111"
-foreground = "#eeeeee"
+[colors.bright]
+black = '#393939'
+magenta = '#ff7eb6'
+green = '#42be65'
+yellow = "#ffe97b"
+blue = '#33b1ff'
+red = '#ee5396'
+cyan = '#3ddbd9'
+white = '#ffffff'
 
 [font]
 size = 12

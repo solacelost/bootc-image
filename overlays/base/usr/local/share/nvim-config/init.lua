@@ -71,7 +71,7 @@ map('n', '<C-l>', '<C-w>l', { desc = 'right window' })
 local minideps = require 'mini.deps'
 minideps.setup({ path = { package = path_package } })
 local add, now, later = minideps.add, minideps.now, minideps.later
-add({ source = 'ellisonleao/gruvbox.nvim' })
+add({ source = 'nyoom-engineering/oxocarbon.nvim'})
 add({
   source = 'neovim/nvim-lspconfig',
   depends = { 'williamboman/mason.nvim' },
@@ -342,7 +342,7 @@ end)
 
 -- theme
 now(function()
-  vim.cmd.colorscheme('gruvbox')
+  vim.cmd.colorscheme('oxocarbon')
   vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
   vim.api.nvim_set_hl(0, 'NormalNC', { bg = 'none' })
   vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'none' })
