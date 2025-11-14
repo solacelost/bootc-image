@@ -8,7 +8,7 @@
 }
 
 window#waybar {
-    background-color: rgba(38, 38, 38, 0.5);
+    background-color: rgba(38, 38, 38, 0.8);
     border-bottom: 3px solid rgba(57, 57, 57, 0.5);
     color: #ffffff;
     transition-property: background-color;
@@ -30,22 +30,16 @@ window#waybar.hidden {
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 #workspaces button:hover {
     background: rgba(0, 0, 0, 0.2);
+    text-shadow: inherit;
     box-shadow: inset 0 -3px #ffffff;
 }
 
 #workspaces button.focused {
-    background-color: #33b1ff;
-    box-shadow: inset 0 -3px #ffffff;
+    box-shadow: inset 0 -3px #33b1ff;
 }
 
 #workspaces button.urgent {
-    background-color: #ee5396;
-}
-
-#mode {
-    font-style: italic;
-    background-color: #33b1ff;
-    border-bottom: 3px solid #ffffff;
+    box-shadow: inset 0 -3px #ee5396;
 }
 
 #clock,
@@ -61,10 +55,8 @@ window#waybar.hidden {
 #custom-vpn,
 #tray,
 #mode,
-#idle_inhibitor,
-#mpd {
+#idle_inhibitor {
     padding: 0 10px;
-    color: #ffffff;
 }
 
 #window,
@@ -82,19 +74,9 @@ window#waybar.hidden {
     margin-right: 0;
 }
 
-#clock {
-    background-color: #33b1ff;
-}
-
-#battery {
-    background-color: #ffffff;
-    color: #000000;
-}
-
 #battery.charging,
 #battery.plugged {
-    color: #ffffff;
-    background-color: #42be65;
+    color: #42be65;
 }
 
 @keyframes blink {
@@ -105,8 +87,7 @@ window#waybar.hidden {
 }
 
 #battery.critical:not(.charging) {
-    background-color: #ee5396;
-    color: #ffffff;
+    color: #ee5396;
     animation-name: blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
@@ -114,79 +95,75 @@ window#waybar.hidden {
     animation-direction: alternate;
 }
 
-label:focus {
-    background-color: #000000;
-}
-
 #cpu {
-    background-color: #3ddbd9;
-    color: #000000;
+    color: #dde1e6;
 }
 
 #memory {
-    background-color: #be95ff;
+    color: #be95ff;
 }
 
 #disk {
-    background-color: #0f62fe;
+    color: #0f62fe;
 }
 
 #backlight {
-    background-color: #ffe97b;
+    color: #ffe97b;
 }
 
 #network {
-    background-color: #33b1ff;
+    color: #33b1ff;
 }
 
 #network.disconnected {
-    background-color: #ee5396;
+    color: #ee5396;
 }
 
 #custom-vpn {
-    background-color: #33b1ff;
+    color: #33b1ff;
 }
 
 #pulseaudio {
-    background-color: #08bdba;
-    color: #000000;
+    color: #08bdba;
 }
 
 #pulseaudio.muted {
-    background-color: #33b1ff;
-    color: #2a5c45;
+    color: #be95ff;
 }
 
 #custom-media {
-    background-color: #1db954;
+    color: #1db954;
     min-width: 200px;
 }
 
 #custom-makomode {
     min-width: 30px;
-    color: #f2f4f8;
 }
 
 #custom-makomode.dnd {
-    background-color: #161616;
+    color: #525252;
 }
 
 #custom-makomode.default {
-    background-color: #525252;
+    color: #33b1ff;
+}
+
+#idle_inhibitor {
+    color: #525252;
+}
+
+#idle_inhibitor.activated {
+    color: #ffe97b;
 }
 
 #temperature {
     padding: 0 5px;
-    background-color: #3ddbd9;
+    color: #ffe97b;
 }
 
 #temperature.critical {
     padding: 0 5px;
-    background-color: #ee5396;
-}
-
-#tray {
-    background-color: #78a9ff;
+    color: #ee5396;
 }
 
 #tray>.passive {
@@ -198,17 +175,8 @@ label:focus {
     background-color: #ffe97b;
 }
 
-#idle_inhibitor {
-    background-color: #161616;
-}
-
-#idle_inhibitor.activated {
-    background-color: #525252;
-    color: #000000;
-}
-
 #keyboard-state {
-    background: #42be65;
+    color: #3ddbd9;
     padding: 0 0px;
     margin: 0 5px;
     min-width: 16px;

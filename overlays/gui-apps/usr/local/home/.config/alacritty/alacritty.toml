@@ -3,7 +3,7 @@ background = "#161616"
 foreground = "#ffffff"
 
 [colors.search.matches]
-foreground = CellBackground
+foreground = 'CellBackground'
 background = '#ee5396'
 
 [colors.normal]
