@@ -9,7 +9,7 @@ MAKEFLAGS += --no-print-directory
 else
 
 # Vars for building the bootc image
-FEDORA_VERSION ?= 42
+FEDORA_VERSION ?= 43
 RUNTIME ?= podman
 USERNAME ?= james
 PASSWORD ?= password
