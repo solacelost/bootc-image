@@ -303,8 +303,6 @@ RUN plymouth-set-default-theme spinner
 RUN authselect enable-feature with-fingerprint
 RUN echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf
 
-# Ensure our generic system configuration is represented
-COPY overlays/base/ /
 # Copy xdg-terminal-exec
 COPY --from=xdg-terminal-exec-build /built/ /
 # Copy lan-mouse
@@ -313,6 +311,13 @@ COPY --from=lan-mouse-build /built/ /
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
 COPY --from=displaylink-build /built/ /
+# Copy the compiled theme
+COPY --from=orchis-build /built/ /
+# Install custom niri fork
+COPY --from=niri-build /built/ /
+
+# Ensure our generic system configuration is represented
+COPY overlays/base/ /
 # Ensure Red Hat configuration (keys, git configs, VPN, etc) are staged
 COPY overlays/redhat/ /
 # Ensure our GUI is configured correctly (configs, flatpaks, etc.)
@@ -320,11 +325,6 @@ COPY overlays/gui-apps/ /
 COPY overlays/gui-games/ /
 COPY overlays/gui-system/ /
 COPY overlays/gui-tiling/ /
-COPY --from=orchis-build /built/ /
-
-# Install custom niri fork
-COPY --from=niri-build /built/ /
-
 COPY overlays/gui-niri/ /
 
 # Ensure module dependencies are calculated
