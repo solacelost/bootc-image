@@ -1,19 +1,17 @@
-if [[ $PATH != *"$HOME/bin"* ]]; then
-	PATH="$HOME/bin:$PATH"
-fi
-if [[ $PATH != *"$HOME/.local/bin"* ]]; then
-	PATH="$HOME/.local/bin:$PATH"
-fi
-if [[ $PATH != *"$HOME/.cargo/bin"* ]]; then
-	PATH="$HOME/.cargo/bin:$PATH"
-fi
-if [[ $PATH != *"$HOME/go/bin"* ]]; then
-	PATH="$HOME/go/bin:$PATH"
-fi
-if [[ $PATH != *"$HOME/.krew/bin"* ]]; then
-	PATH="$HOME/.krew/bin:$PATH"
-fi
+include_path=(
+    "$HOME/.local/bin"
+    "$HOME/bin"
+    "$HOME/.cargo/bin"
+    "$HOME/go/bin"
+    "$HOME/.krew/bin"
+)
+for newpath in "${include_path[@]}"; do
+    if [[ $PATH != *"$newpath"* ]]; then
+	    PATH="$PATH:$newpath"
+    fi
+done
 export PATH
+unset newpath include_path
 
 case $- in
 *i*) ;;
@@ -52,12 +50,12 @@ if [ -d ~/.bashrc.d ]; then
 fi
 unset rc
 
-if [ -n "${_do_tmux}" ]; then
+if [ -n "${_do_tmux}" ] && "${_do_tmux}"; then
 	if tmux_worthy; then
 		tmux -2 new-session -A -s "$(hostname -s)"
 	fi
 
-	if [ -z "$TMUX" ] && [ -n "$SSH_CLIENT" ]; then
+	if [ -z "$TMUX" ] && [ -n "$SSH_CLIENT" ]; then # spin up a specific session for SSH
 		tmux new-session -A -s ssh
 	fi
 fi

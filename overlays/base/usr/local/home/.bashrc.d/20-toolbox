@@ -1,6 +1,6 @@
 if [ -f /run/.toolboxenv ]; then # we are in a toolbox
 	# We need to properly map our hostname
-	TOOLBOX_HOST_HOSTNAME=$(flatpak-spawn --host hostname)
+	TOOLBOX_HOST_HOSTNAME=$(cut -d. -f1 /run/host/etc/hostname)
 	export TOOLBOX_HOST_HOSTNAME
 	sudo hostname "$TOOLBOX_HOST_HOSTNAME"
 	echo "$TOOLBOX_HOST_HOSTNAME" | sudo tee /etc/hostname &>/dev/null

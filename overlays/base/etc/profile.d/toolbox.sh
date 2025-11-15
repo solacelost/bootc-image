@@ -22,13 +22,7 @@ eval $(
     echo VARIANT_ID="$VARIANT_ID"
 )
 
-if [ -f /run/ostree-booted ] &&
-    ! [ -f "$host_welcome_stub" ] &&
-    [ "${ID}" = "fedora" ] &&
-    { [ "${VARIANT_ID}" = "workstation" ] ||
-        [ "${VARIANT_ID}" = "silverblue" ] ||
-        [ "${VARIANT_ID}" = "kinoite" ] ||
-        [ "${VARIANT_ID}" = "sericea" ]; }; then
+if [ -f /run/ostree-booted ] && ! [ -f "$host_welcome_stub" ] && [ "${ID}" = "fedora" ]; then
     echo ""
     echo "Welcome to ${PRETTY_NAME:-Linux}."
     echo ""
@@ -46,8 +40,7 @@ if [ -f /run/ostree-booted ] &&
     touch "$host_welcome_stub"
 fi
 
-if [ -f /run/.containerenv ] &&
-    [ -f /run/.toolboxenv ]; then
+if [ -f /run/.containerenv ] && [ -f /run/.toolboxenv ]; then
     [ "${BASH_VERSION:-}" != "" ] && PS1=$(printf "\[\033[35m\]⬢ \[\033[0m\]%s" "[\u@\h \W]\\$ ")
     [ "${ZSH_VERSION:-}" != "" ] && PS1=$(printf "\033[35m⬢ \033[0m%s" "[%n@%m]%~%# ")
 
@@ -102,7 +95,7 @@ if [ -f /run/.containerenv ] &&
 
     if [ -e /run/host/etc/toolbox.sh.d ]; then
         if [ ! -L /etc/toolbox.sh.d ] || [ "$(readlink -- /etc/toolbox.sh.d)" != /run/host/etc/toolbox.sh.d ]; then
-            rm -rf /etc/toolbox.sh.d
+            sudo rm -rf /etc/toolbox.sh.d
             sudo ln -s /run/host/etc/toolbox.sh.d /etc/toolbox.sh.d
         fi
         for stub in /etc/toolbox.sh.d/*.sh; do
