@@ -3,3 +3,4 @@ packages:
 - podman
 - skopeo
 - toolbox
+- flatpak-spawn # especially useful since we use the container as a toolbox itself

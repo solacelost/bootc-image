@@ -17,4 +17,7 @@ if [ -f /run/.toolboxenv ]; then # we are in a toolbox
 	if [ -n "$RELEASE_VERSION" ]; then
 		export RELEASE_VERSION
 	fi
+
+  # Ensure we can run podman
+  alias podman='flatpak-spawn --host podman'
 fi
