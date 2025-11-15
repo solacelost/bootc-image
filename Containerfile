@@ -292,8 +292,6 @@ RUN mkdir -p /usr/share/fonts/inconsolata && \
     curl --retry 10 --retry-all-errors -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v${NERD_FONTS_VERSION}/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
     chown -R root:root /usr/share/fonts/inconsolata && \
     fc-cache -f -v
-RUN curl --retry 10 --retry-all-errors -Lo- "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz" | tar xvz -C /usr/local/bin && \
-    chmod +x /usr/local/bin/{kubectl,oc}
 RUN mkdir -p /tmp/go/{cache,bin} && \
     GOPATH=/tmp/go GOCACHE=/tmp/go/.cache go install go.senan.xyz/cliphist@${CLIPHIST_COMMIT} && \
     mv /tmp/go/bin/cliphist /usr/local/bin/ && \
