@@ -247,9 +247,15 @@ ARG ORCHIS_COMMIT
 
 WORKDIR /build
 
-RUN mkdir -p /built/usr/share/themes && \
-    git clone https://github.com/vinceliuice/Orchis-theme && \
-    cd Orchis-theme && \
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install sassc
+
+RUN git clone https://github.com/vinceliuice/Orchis-theme
+
+WORKDIR /build/Orchis-theme
+
+RUN mkdir -p /built/usr/share/themes /built/usr/local/home/.config/gtk-4.0 && \
     git checkout "${ORCHIS_COMMIT}" && \
     ./install.sh -d /built/usr/share/themes && \
     for themefile in assets gtk.css gtk-dark.css; do \
