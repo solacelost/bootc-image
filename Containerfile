@@ -34,9 +34,6 @@ ARG NIRI_FORK_COMMIT=7fb734d62f809f169bd06647260b0eceb9bdb078
 # https://github.com/vinceliuice/Orchis-theme
 ARG ORCHIS_COMMIT=d00dd33dde5a57eebfbc9b7e8488a535596bf125
 
-ARG EARLY_PACKAGES_HASH
-ARG LATE_PACKAGES_HASH
-
 FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 
 # Use only explicitly defined repositories
@@ -255,7 +252,9 @@ RUN mkdir -p /built/usr/share/themes && \
     cd Orchis-theme && \
     git checkout "${ORCHIS_COMMIT}" && \
     ./install.sh -d /built/usr/share/themes && \
-    tree /built/usr/share/themes
+    for themefile in assets gtk.css gtk-dark.css; do \
+      ln -sf /usr/share/themes/Orchis-Dark-Compact/gtk-4.0/$themefile /built/usr/local/home/.config/gtk-4.0/$themefile ; \
+    done
 
 # TODO: Shikane: https://gitlab.com/w0lff/shikane
 
