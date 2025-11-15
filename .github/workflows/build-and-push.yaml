@@ -25,6 +25,9 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - uses: actions/checkout@v5
+        with:
+          lfs: 'true'
+
       - id: makefile
         shell: bash
         run: |
