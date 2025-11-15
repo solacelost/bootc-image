@@ -2,3 +2,5 @@ com.mattermost.Desktop
 com.discordapp.Discord
 com.slack.Slack
 org.signal.Signal
+im.riot.Riot
+org.telegram.desktop

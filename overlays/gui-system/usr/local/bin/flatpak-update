@@ -26,5 +26,8 @@ set -x
 flatpak install --or-update --system --assumeyes --noninteractive --verbose flathub "${apps[@]}"
 
 # Set apps to dark mode, if we can
-flatpak override --system --env=GTK_THEME=Orchis-Dark
+flatpak override --system --env=GTK_THEME=Orchis-Dark-Compact
+flatpak override --system --filesystem=xdg-config/gtk-2.0
+flatpak override --system --filesystem=xdg-config/gtk-3.0
+flatpak override --system --filesystem=xdg-config/gtk-4.0
 flatpak override --system --filesystem=home
