@@ -23,6 +23,7 @@ packages:
 - amdsmi
 - nodejs-bash-language-server
 - rust-analyzer
+- rustfmt
 - gopls
 - rpm-spec-language-server
 - hadolint
