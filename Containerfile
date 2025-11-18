@@ -4,8 +4,6 @@ ARG IMAGE_REF=quay.io/solacelost/bootc-image:latest
 
 # https://github.com/Vladimir-csp/xdg-terminal-exec
 ARG XDG_TERMINAL_EXEC_COMMIT=363db91851b5a83d67603556b2da690125ac05f4
-# https://github.com/feschber/lan-mouse
-ARG LAN_MOUSE_COMMIT=640fa995a4ae3c5a0aaaafe04857930979edc220
 # https://github.com/dlundqvist/xone
 ARG XONE_COMMIT=90d965254e534151202e79f768bf7a68ea9f9d4f
 # https://github.com/v4l2loopback/v4l2loopback
@@ -70,31 +68,6 @@ RUN curl --retry 10 --retry-all-errors -Lo /tmp/xdg-terminal-exec.tar.gz "https:
     tar xvzf /tmp/xdg-terminal-exec.tar.gz && \
     cd xdg-terminal-exec-${COMMIT} && \
     make install prefix=/built/usr/local
-
-RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
-
-FROM base as lan-mouse-build
-
-ARG LAN_MOUSE_COMMIT
-ENV COMMIT=${LAN_MOUSE_COMMIT}
-ENV HOME=/var/roothome
-
-WORKDIR /build
-
-RUN --mount=type=tmpfs,target=/var/cache \
-    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install libXtst-devel
-
-RUN curl --retry 10 --retry-all-errors -Lo /tmp/lan-mouse.tar.gz "https://github.com/feschber/lan-mouse/archive/${COMMIT}.tar.gz" && \
-    tar xvzf /tmp/lan-mouse.tar.gz
-
-RUN cd lan-mouse-${COMMIT} && \
-    cargo build --release --no-default-features --features layer_shell_capture,wlroots_emulation
-
-RUN mkdir -p /built/usr/local/bin /built/etc/systemd/user /built/etc/firewalld/services && \
-    cp lan-mouse-${COMMIT}/target/release/lan-mouse /built/usr/local/bin/ && \
-    sed 's/\/usr\/bin\/lan-mouse/\/usr\/local\/bin\/lan-mouse/' lan-mouse-${COMMIT}/service/lan-mouse.service > /built/etc/systemd/user/lan-mouse.service && \
-    cp lan-mouse-${COMMIT}/firewall/lan-mouse.xml /built/etc/firewalld/services/
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
@@ -308,8 +281,6 @@ RUN echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf
 
 # Copy xdg-terminal-exec
 COPY --from=xdg-terminal-exec-build /built/ /
-# Copy lan-mouse
-COPY --from=lan-mouse-build /built/ /
 # Copy our built modules
 COPY --from=xone-build /built/ /
 COPY --from=v4l2loopback-build /built/ /
