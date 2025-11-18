@@ -28,7 +28,7 @@ ARG CLIPHIST_COMMIT=efb61cb5b5a28d896c05a24ac83b9c39c96575f2
 # https://github.com/YaLTeR/niri/pull/2312
 # https://github.com/scottmckendry/niri/tree/primary-render-fallback
 ARG NIRI_FORK_REPO=https://github.com/scottmckendry/niri
-ARG NIRI_FORK_COMMIT=7fb734d62f809f169bd06647260b0eceb9bdb078
+ARG NIRI_FORK_COMMIT=3cb5153bf2be4f66eb4c22a8e8badf4b324f821d
 # https://github.com/vinceliuice/Orchis-theme
 ARG ORCHIS_COMMIT=d00dd33dde5a57eebfbc9b7e8488a535596bf125
 
