@@ -75,16 +75,8 @@ ARG NIRI_FORK_COMMIT
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install \
-        rust-glib-sys-devel \
-        rust-pangocairo-devel \
-        libdisplay-info{,-devel} \
-        rust-pipewire-devel \
-        rust-xkbcommon-devel \
-        rust-input-devel \
-        mesa-libgbm{,-devel} \
-        libseat{,-devel} \
-        rust-libudev-devel
+    --mount=type=bind,src=./packages,dst=/packages \
+    python3 /packages/install.py -f /packages/build/niri.yaml
 
 WORKDIR /app
 
@@ -157,7 +149,8 @@ ENV VERSION=${V4L2LOOPBACK_VERSION}
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install help2man elfutils-libelf-devel
+    --mount=type=bind,src=./packages,dst=/packages \
+    python3 /packages/install.py -f /packages/build/v4l2loopback.yaml
 
 COPY overlays/v4l2loopback/ /
 
@@ -184,7 +177,8 @@ WORKDIR /build
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install libdrm-devel
+    --mount=type=bind,src=./packages,dst=/packages \
+    python3 /packages/install.py -f /packages/build/displaylink.yaml
 
 RUN curl --retry-all-errors -Lo displaylink.zip "https://www.synaptics.com/sites/default/files/exe_files/${DISPLAYLINK_PUBLISH_DIR}/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu${DISPLAYLINK_VERSION}-EXE.zip" && \
     curl --retry-all-errors -Lo evdi.tar.gz https://github.com/DisplayLink/evdi/archive/v${EVDI_VERSION}.tar.gz
@@ -219,7 +213,8 @@ WORKDIR /build
 
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install sassc
+    --mount=type=bind,src=./packages,dst=/packages \
+    python3 /packages/install.py -f /packages/build/orchis.yaml
 
 RUN git clone https://github.com/vinceliuice/Orchis-theme
 

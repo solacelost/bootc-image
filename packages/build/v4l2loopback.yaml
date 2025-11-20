@@ -1,0 +1,3 @@
+packages:
+  - help2man
+  - elfutils-libelf-devel

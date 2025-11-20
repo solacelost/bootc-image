@@ -1,0 +1,10 @@
+packages:
+  - rust-glib-sys-devel
+  - rust-pangocairo-devel
+  - libdisplay-info libdisplay-info-devel
+  - rust-pipewire-devel
+  - rust-xkbcommon-devel
+  - rust-input-devel
+  - mesa-libgbm mesa-libgbm-devel
+  - libseat libseat-devel
+  - rust-libudev-devel
