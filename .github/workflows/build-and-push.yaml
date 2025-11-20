@@ -39,9 +39,6 @@ jobs:
             dev.jharmison.git-repository=${{ github.server_url }}/${{ github.repository }}
             dev.jharmison.commit=${{ github.sha }}
             org.opencontainers.image.version=${{ steps.makefile.outputs.version }}
-          build-args: |
-            EARLY_PACKAGES_HASH=${{ hashFiles('packages/10/*.yaml') }}
-            LATE_PACKAGES_HASH=${{ hashFiles('packages/90/*.yaml') }}
           extra-args: --retry=6 --retry-delay=10s
           push: 'true'
           tag: quay.io/solacelost/bootc-image:latest

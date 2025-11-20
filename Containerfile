@@ -43,9 +43,6 @@ RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install --allowerasing --from-repo=kernel-blu kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
-ARG EARLY_PACKAGES_HASH
-ENV EARLY_PACKAGES_HASH=${EARLY_PACKAGES_HASH}
-
 # Install defined packages for the lower targets
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
@@ -246,9 +243,6 @@ ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION
 ARG NERD_FONTS_VERSION
 ARG IMAGE_REF
 ARG CLIPHIST_COMMIT
-
-ARG LATE_PACKAGES_HASH
-ENV LATE_PACKAGES_HASH=${LATE_PACKAGES_HASH}
 
 # Install defined packages for the higher targets (GUI etc.)
 RUN --mount=type=tmpfs,target=/var/cache \
