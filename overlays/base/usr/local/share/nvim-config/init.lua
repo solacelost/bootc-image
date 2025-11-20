@@ -71,7 +71,7 @@ map('n', '<C-l>', '<C-w>l', { desc = 'right window' })
 local minideps = require 'mini.deps'
 minideps.setup({ path = { package = path_package } })
 local add, now, later = minideps.add, minideps.now, minideps.later
-add({ source = 'nyoom-engineering/oxocarbon.nvim'})
+add({ source = 'nyoom-engineering/oxocarbon.nvim' })
 add({
   source = 'neovim/nvim-lspconfig',
   depends = { 'williamboman/mason.nvim' },
@@ -259,6 +259,7 @@ now(function()
       'vale_ls',
       'biome',
       'prettier',
+      'black',
     },
     auto_update = true,
     integrations = {
@@ -295,9 +296,9 @@ later(function()
     'helm_ls',
     'vale_ls',
     'biome',
+    'black',
   })
 end)
-later(function() map('n', '<leader>F', vim.lsp.buf.format, { desc = 'format' }) end)
 later(function()
   require 'lint'.linters_by_ft = {
     markdown = { 'vale' },
@@ -328,17 +329,22 @@ later(function()
 end)
 later(function()
   require "conform".setup({
+    format_on_save = {
+      timeout_ms = 500,
+    },
     formatters_by_ft = {
       markdown = { "prettier" },
+      python = { "black", "isort" },
     },
+    default_format_opts = {
+      lsp_format = "fallback",
+    }
   })
-  vim.api.nvim_create_autocmd("BufWritePre", {
-    pattern = "*.md",
-    callback = function(args)
-      require "conform".format({ bufnr = args.buf })
-    end,
-  })
+  require "conform".formatters.black = {
+    prepend_args = { "--line-length", "120" },
+  }
 end)
+later(function() map('n', '<leader>F', ':lua require "conform".format({ async = true })<CR>', { desc = 'format' }) end)
 
 -- theme
 now(function()
