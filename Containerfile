@@ -98,6 +98,21 @@ RUN install -Dm755 -t /built/usr/bin /app/niri/target/release/niri && \
     install -Dm644 -t /built/usr/lib/systemd/user /app/niri/resources/niri-shutdown.target && \
     install -Dm644 -t /built/usr/share/licenses/niri /app/niri/LICENSE
 
+FROM base as rpm-build
+
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    --mount=type=bind,src=./packages,dst=/packages \
+    python3 /packages/install.py -f /packages/build/rpmbuild.yaml
+
+COPY overlays/rpmbuild/ /
+
+ENV RPMBUILD_BASE_DIR=/build \
+    SRC_DIR=/src \
+    GPG_TTY=/dev/console
+
+WORKDIR /src
+
 FROM base as module-build
 
 RUN --mount=type=tmpfs,target=/var/cache \
