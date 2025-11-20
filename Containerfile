@@ -229,7 +229,7 @@ RUN mkdir -p /built/usr/share/themes /built/usr/local/home/.config/gtk-4.0 && \
     git checkout "${ORCHIS_COMMIT}" && \
     ./install.sh -d /built/usr/share/themes && \
     for themefile in assets gtk.css gtk-dark.css; do \
-      ln -sf /usr/share/themes/Orchis-Dark-Compact/gtk-4.0/$themefile /built/usr/local/home/.config/gtk-4.0/$themefile ; \
+    ln -sf /usr/share/themes/Orchis-Dark-Compact/gtk-4.0/$themefile /built/usr/local/home/.config/gtk-4.0/$themefile ; \
     done
 
 # TODO: Shikane: https://gitlab.com/w0lff/shikane
