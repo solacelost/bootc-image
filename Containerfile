@@ -31,6 +31,8 @@ ARG NIRI_FORK_REPO=https://github.com/scottmckendry/niri
 ARG NIRI_FORK_COMMIT=04e89b5dc01983e9eebaa8911e846744d0d0f4d7
 # https://github.com/vinceliuice/Orchis-theme
 ARG ORCHIS_COMMIT=d00dd33dde5a57eebfbc9b7e8488a535596bf125
+# https://github.com/Supreeeme/xwayland-satellite
+ARG XWAYLAND_SATELLITE_COMMIT=6338574bc5c036487486acde264f38f39ea15fad
 
 FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 
@@ -41,14 +43,22 @@ COPY overlays/repos/ /
 # Swap to kernel-blu
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    dnf -y install --allowerasing --from-repo=kernel-blu kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
+    dnf -y install --allowerasing --from-repo=kernel-blu \
+    kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
-# Install defined packages for the lower targets
+# Put install.py in $PATH
+ENV PATH=/usr/libexec/jharmison-packages:$PATH
+
+# Install prereq for install.py
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    --mount=type=bind,src=./packages,dst=/packages \
-    dnf -y install python3-click && \
-    python3 /packages/install.py --min-level=0 --max-level=50
+    dnf -y install python3-click
+
+# Install defined packages for the lower targets
+COPY overlays/early-packages/ /
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    install.py
 
 FROM base as xdg-terminal-exec-build
 
@@ -73,43 +83,66 @@ FROM base as niri-build
 ARG NIRI_FORK_REPO
 ARG NIRI_FORK_COMMIT
 
+COPY overlays/niri-build/ /
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    --mount=type=bind,src=./packages,dst=/packages \
-    python3 /packages/install.py -f /packages/build/niri.yaml
+    install.py -p niri-build
 
-WORKDIR /app
+WORKDIR /build
 
-RUN git clone "${NIRI_FORK_REPO}"
+RUN git clone --depth 1 --revision ${NIRI_FORK_COMMIT} ${NIRI_FORK_REPO}
 
-WORKDIR /app/niri
+WORKDIR /build/niri
 ENV HOME=/var/roothome
 
-RUN git checkout ${NIRI_FORK_COMMIT} && \
-    cargo build -r
+RUN cargo build -r
 
 WORKDIR /built
 
-RUN install -Dm755 -t /built/usr/bin /app/niri/target/release/niri && \
-    install -Dm755 -t /built/usr/bin /app/niri/resources/niri-session && \
-    install -Dm644 -t /built/usr/share/wayland-sessions /app/niri/resources/niri.desktop && \
-    install -Dm644 -t /built/usr/share/xdg-desktop-portal /app/niri/resources/niri-portals.conf && \
-    install -Dm644 -t /built/usr/lib/systemd/user /app/niri/resources/niri.service && \
-    install -Dm644 -t /built/usr/lib/systemd/user /app/niri/resources/niri-shutdown.target && \
-    install -Dm644 -t /built/usr/share/licenses/niri /app/niri/LICENSE
+RUN install -Dm755 -t /built/usr/bin /build/niri/target/release/niri && \
+    install -Dm755 -t /built/usr/bin /build/niri/resources/niri-session && \
+    install -Dm644 -t /built/usr/share/wayland-sessions /build/niri/resources/niri.desktop && \
+    install -Dm644 -t /built/usr/share/xdg-desktop-portal /build/niri/resources/niri-portals.conf && \
+    install -Dm644 -t /built/usr/lib/systemd/user /build/niri/resources/niri.service && \
+    install -Dm644 -t /built/usr/lib/systemd/user /build/niri/resources/niri-shutdown.target && \
+    install -Dm644 -t /built/usr/share/licenses/niri /build/niri/LICENSE
+
+FROM base as xwayland-satellite-build
+
+ARG XWAYLAND_SATELLITE_COMMIT
+
+COPY overlays/xwayland-satellite-build/ /
+RUN --mount=type=tmpfs,target=/var/cache \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    install.py -p xwayland-satellite-build
+
+WORKDIR /build
+
+RUN git clone --depth 1 --revision ${XWAYLAND_SATELLITE_COMMIT} https://github.com/Supreeeme/xwayland-satellite
+
+WORKDIR /build/xwayland-satellite
+ENV HOME=/var/roothome
+
+RUN cargo build -r -F systemd
+
+WORKDIR /built
+
+RUN install -Dpm0755 -t /built/usr/bin /build/xwayland-satellite/target/release/xwayland-satellite
 
 FROM base as rpm-build
 
+COPY overlays/rpmbuild/ /
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    --mount=type=bind,src=./packages,dst=/packages \
-    python3 /packages/install.py -f /packages/build/rpmbuild.yaml
+    install.py -p rpmbuild --setopt=fedora.exclude= --setopt=updates.exclude=
 
-COPY overlays/rpmbuild/ /
 
 ENV RPMBUILD_BASE_DIR=/build \
     SRC_DIR=/src \
-    GPG_TTY=/dev/console
+    GPG_TTY=/dev/console \
+    HOME=/build
+
+RUN mkdir -p $HOME
 
 WORKDIR /src
 
@@ -162,12 +195,10 @@ FROM module-build as v4l2loopback-build
 ARG V4L2LOOPBACK_VERSION
 ENV VERSION=${V4L2LOOPBACK_VERSION}
 
+COPY overlays/v4l2loopback/ /
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    --mount=type=bind,src=./packages,dst=/packages \
-    python3 /packages/install.py -f /packages/build/v4l2loopback.yaml
-
-COPY overlays/v4l2loopback/ /
+    install.py -p v4l2loopback-build
 
 # hadolint ignore=DL3003
 RUN curl --retry 10 --retry-all-errors -Lo /tmp/v4l2loopback.tar.gz "https://github.com/v4l2loopback/v4l2loopback/archive/v${VERSION}/v4l2loopback-${VERSION}.tar.gz" && \
@@ -190,22 +221,23 @@ ARG EVDI_VERSION
 
 WORKDIR /build
 
+COPY overlays/displaylink/ /
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    --mount=type=bind,src=./packages,dst=/packages \
-    python3 /packages/install.py -f /packages/build/displaylink.yaml
+    install.py -p displaylink-build
 
-RUN curl --retry-all-errors -Lo displaylink.zip "https://www.synaptics.com/sites/default/files/exe_files/${DISPLAYLINK_PUBLISH_DIR}/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu${DISPLAYLINK_VERSION}-EXE.zip" && \
-    curl --retry-all-errors -Lo evdi.tar.gz https://github.com/DisplayLink/evdi/archive/v${EVDI_VERSION}.tar.gz
+RUN curl --retry-all-errors -Lo /tmp/displaylink.zip "https://www.synaptics.com/sites/default/files/exe_files/${DISPLAYLINK_PUBLISH_DIR}/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu${DISPLAYLINK_VERSION}-EXE.zip" && \
+    unzip /tmp/displaylink.zip && \
+    rm -f /tmp/displaylink.zip
+
+RUN curl --retry-all-errors -Lo- https://github.com/DisplayLink/evdi/archive/v${EVDI_VERSION}.tar.gz | tar xvz
 
 RUN moddir="$(cat /moddir)" && \
-    unzip displaylink.zip && \
     chmod +x displaylink-driver-*.run && \
     ./displaylink-driver-*.run --noexec --keep --target displaylink-driver-${DISPLAYLINK_VERSION} && \
     mkdir -p /built/usr/libexec/displaylink && \
     mv displaylink-driver-${DISPLAYLINK_VERSION}/x64-ubuntu-1604/DisplayLinkManager /built/usr/libexec/displaylink/ && \
     mv displaylink-driver-${DISPLAYLINK_VERSION}/{ella-dock,firefly-monitor,navarro-dock,ridge-dock}-release.spkg /built/usr/libexec/displaylink/ && \
-    tar xvzf evdi.tar.gz && \
     cd evdi-${EVDI_VERSION}/library && \
     make && \
     mv libevdi.so.${EVDI_VERSION} /built/usr/libexec/displaylink/ && \
@@ -216,27 +248,24 @@ RUN moddir="$(cat /moddir)" && \
     mkdir -p "/built$moddir/extra/evdi" && \
     mv evdi.ko "/built$moddir/extra/evdi"
 
-COPY overlays/displaylink/ /
-
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 FROM base as orchis-build
 
 ARG ORCHIS_COMMIT
 
-WORKDIR /build
-
+COPY overlays/orchis/ /
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    --mount=type=bind,src=./packages,dst=/packages \
-    python3 /packages/install.py -f /packages/build/orchis.yaml
+    install.py -p orchis-build
 
-RUN git clone https://github.com/vinceliuice/Orchis-theme
+WORKDIR /build
+
+RUN git clone --depth 1 --revision ${ORCHIS_COMMIT} https://github.com/vinceliuice/Orchis-theme
 
 WORKDIR /build/Orchis-theme
 
 RUN mkdir -p /built/usr/share/themes /built/usr/local/home/.config/gtk-4.0 && \
-    git checkout "${ORCHIS_COMMIT}" && \
     ./install.sh -d /built/usr/share/themes && \
     for themefile in assets gtk.css gtk-dark.css; do \
     ln -sf /usr/share/themes/Orchis-Dark-Compact/gtk-4.0/$themefile /built/usr/local/home/.config/gtk-4.0/$themefile ; \
@@ -255,10 +284,10 @@ ARG IMAGE_REF
 ARG CLIPHIST_COMMIT
 
 # Install defined packages for the higher targets (GUI etc.)
+COPY overlays/late-packages/ /
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-    --mount=type=bind,src=./packages,dst=/packages \
-    python3 /packages/install.py --min-level=51 --max-level=100
+    install.py -d /usr/share/doc/jharmison-packages/gui
 
 # Some uncomposable changes
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -293,6 +322,8 @@ COPY --from=displaylink-build /built/ /
 COPY --from=orchis-build /built/ /
 # Install custom niri fork
 COPY --from=niri-build /built/ /
+# Install mainline xwayland-satelilte
+COPY --from=xwayland-satellite-build /built/ /
 
 # Ensure our generic system configuration is represented
 COPY overlays/base/ /

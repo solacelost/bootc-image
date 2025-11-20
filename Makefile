@@ -61,7 +61,7 @@ tmp/auth.json:
 tmp/$(LATEST_DIGEST):
 	@touch $@
 
-.build-$(TAG)-unchunked: Containerfile tmp/$(LATEST_DIGEST) $(shell find overlays -type f -o -type l) $(shell find packages -type f)
+.build-$(TAG)-unchunked: Containerfile tmp/$(LATEST_DIGEST) $(shell find overlays -type f -o -type l)
 	sudo $(RUNTIME) build \
 		--arch $(ARCH) \
 		--pull=newer \
