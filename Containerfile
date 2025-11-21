@@ -43,6 +43,8 @@ COPY overlays/repos/ /
 # Swap to kernel-blu
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install --allowerasing \
+    generic-release generic-logos generic-release-notes && \
     dnf -y install --allowerasing --from-repo=kernel-blu \
     kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
