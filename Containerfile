@@ -35,6 +35,11 @@ ARG XWAYLAND_SATELLITE_COMMIT=f379ff5722a821212eb59ada9cf8e51cb3654aad
 
 FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 
+################################################################################
+# Inital base image includes early packages, kernel-blu, and removes Fedora
+# branding.
+################################################################################
+
 # Use only explicitly defined repositories
 RUN rm -rf /etc/yum.repos.d
 COPY overlays/repos/ /
@@ -63,6 +68,10 @@ RUN --mount=type=tmpfs,target=/var/cache \
 
 FROM base as xdg-terminal-exec-build
 
+################################################################################
+# xdg-terminal-exec not in repos, needs compiled
+################################################################################
+
 ARG XDG_TERMINAL_EXEC_COMMIT
 ENV COMMIT=${XDG_TERMINAL_EXEC_COMMIT}
 
@@ -80,6 +89,10 @@ RUN curl --retry 10 --retry-all-errors -Lo /tmp/xdg-terminal-exec.tar.gz "https:
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 FROM base as niri-build
+
+################################################################################
+# Niri built from main
+################################################################################
 
 ARG NIRI_REPO
 ARG NIRI_COMMIT
@@ -108,7 +121,13 @@ RUN install -Dm755 -t /built/usr/bin /build/niri/target/release/niri && \
     install -Dm644 -t /built/usr/lib/systemd/user /build/niri/resources/niri-shutdown.target && \
     install -Dm644 -t /built/usr/share/licenses/niri /build/niri/LICENSE
 
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
+
 FROM base as xwayland-satellite-build
+
+################################################################################
+# xwayland-satellite built from main
+################################################################################
 
 ARG XWAYLAND_SATELLITE_COMMIT
 
@@ -130,7 +149,13 @@ WORKDIR /built
 
 RUN install -Dpm0755 -t /built/usr/bin /build/xwayland-satellite/target/release/xwayland-satellite
 
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
+
 FROM base as rpm-build
+
+################################################################################
+# Reusable rpm-build layer
+################################################################################
 
 COPY overlays/rpmbuild/ /
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -148,6 +173,10 @@ WORKDIR /src
 
 FROM base as module-build
 
+################################################################################
+# Reusable module-build layer
+################################################################################
+
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     kver=$(dnf list --installed | awk '/kernel\.x86_64/{print $2}') && \
@@ -157,6 +186,10 @@ RUN --mount=type=tmpfs,target=/var/cache \
 WORKDIR /build
 
 FROM module-build as xone-build
+
+################################################################################
+# Build xone module for Xbox controller dongle support
+################################################################################
 
 ARG XONE_COMMIT
 ENV COMMIT=${XONE_COMMIT}
@@ -192,6 +225,10 @@ RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 FROM module-build as v4l2loopback-build
 
+################################################################################
+# Build v4l2loopback for dslr camera
+################################################################################
+
 ARG V4L2LOOPBACK_VERSION
 ENV VERSION=${V4L2LOOPBACK_VERSION}
 
@@ -214,6 +251,10 @@ RUN curl --retry 10 --retry-all-errors -Lo /tmp/v4l2loopback.tar.gz "https://git
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 FROM module-build as displaylink-build
+
+################################################################################
+# Build DisplayLink and EVDI drivers/userspace pieces
+################################################################################
 
 ARG DISPLAYLINK_PUBLISH_DIR
 ARG DISPLAYLINK_VERSION
@@ -252,6 +293,10 @@ RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 FROM base as orchis-build
 
+################################################################################
+# Build orchis GTK themes
+################################################################################
+
 ARG ORCHIS_COMMIT
 
 COPY overlays/orchis/ /
@@ -271,9 +316,15 @@ RUN mkdir -p /built/usr/share/themes /built/usr/local/home/.config/gtk-4.0 && \
     ln -sf /usr/share/themes/Orchis-Dark-Compact/gtk-4.0/$themefile /built/usr/local/home/.config/gtk-4.0/$themefile ; \
     done
 
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
+
 # TODO: Shikane: https://gitlab.com/w0lff/shikane
 
 FROM base as final
+
+################################################################################
+# Final image definition from all stages
+################################################################################
 
 ARG K9S_VERSION
 ARG SOPS_VERSION
@@ -289,27 +340,37 @@ RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     install.py -d /usr/share/doc/jharmison-packages/gui
 
+################################################################################
 # Some uncomposable changes
+################################################################################
+# Install RPMs from GitHub releases
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install \
     https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_linux_amd64.rpm \
     https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-${SOPS_VERSION}-1.x86_64.rpm
+# Install python packages directly into system
 RUN uv pip install --no-cache --system \
     git+https://github.com/AUNaseef/protonup.git@${PROTONUP_COMMIT} \
     nautilus-open-any-terminal==${NAUTILUS_OPEN_ANY_TERMINAL_VERSION}
+# Ensure glib schemas reflect any themes
 RUN glib-compile-schemas /usr/local/share/glib-2.0/schemas
+# Download and enable font
 RUN mkdir -p /usr/share/fonts/inconsolata && \
     curl --retry 10 --retry-all-errors -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v${NERD_FONTS_VERSION}/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
     chown -R root:root /usr/share/fonts/inconsolata && \
     fc-cache -f -v
+# Install cliphist from go release
 RUN mkdir -p /tmp/go/{cache,bin} && \
     GOPATH=/tmp/go GOCACHE=/tmp/go/.cache go install go.senan.xyz/cliphist@${CLIPHIST_COMMIT} && \
     mv /tmp/go/bin/cliphist /usr/local/bin/ && \
     curl -Lo /usr/local/bin/cliphist-fuzzel-img https://raw.githubusercontent.com/sentriz/cliphist/${CLIPHIST_COMMIT}/contrib/cliphist-fuzzel-img && \
     chmod +x /usr/local/bin/cliphist-fuzzel-img
+# Set boot animation theme
 RUN plymouth-set-default-theme spinner
+# Enable fingerprint if enrolled on system
 RUN authselect enable-feature with-fingerprint
+# Enable toolbox to refer to bootc image itself
 RUN echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf
 
 # Copy xdg-terminal-exec
