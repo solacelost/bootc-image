@@ -1,11 +1,11 @@
-ARG K9S_VERSION
-ARG SOPS_VERSION
-
 # Install defined packages for the higher targets (GUI etc.)
 COPY overlays/late-packages/ /
 RUN --mount=type=tmpfs,target=/var/cache \
   --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
   install.py -d /usr/share/doc/jharmison-packages/gui
+
+ARG K9S_VERSION
+ARG SOPS_VERSION
 
 # Install RPMs from GitHub releases
 RUN --mount=type=tmpfs,target=/var/cache \

@@ -1,4 +1,4 @@
-ARG IMAGE_REF
+ARG IMAGE_REF=quay.io/solacelost/bootc-image:latest
 
 # Enable fingerprint if enrolled on system
 RUN authselect enable-feature with-fingerprint

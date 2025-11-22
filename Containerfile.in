@@ -15,7 +15,7 @@ FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 #include ./Containerfile.d/30-build-xwayland-satellite
 
 #include ./Containerfile.d/30-module-displaylink
-#include "./Containerfile.d/30-module-v4l2loopback
+#include ./Containerfile.d/30-module-v4l2loopback
 #include ./Containerfile.d/30-module-xone
 
 FROM base as final

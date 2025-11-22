@@ -1,11 +1,12 @@
-ARG PROTONUP_COMMIT
 ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION
-ARG CLIPHIST_COMMIT
+ARG PROTONUP_COMMIT
 
 # Install python packages directly into system
 RUN uv pip install --no-cache --system \
   git+https://github.com/AUNaseef/protonup.git@${PROTONUP_COMMIT} \
   nautilus-open-any-terminal==${NAUTILUS_OPEN_ANY_TERMINAL_VERSION}
+
+ARG CLIPHIST_COMMIT
 
 # Install cliphist from go release
 RUN mkdir -p /tmp/go/{cache,bin} && \

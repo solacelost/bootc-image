@@ -1,5 +1,3 @@
-ARG IMAGE_REF=quay.io/solacelost/bootc-image:latest
-
 # https://github.com/Vladimir-csp/xdg-terminal-exec
 ARG XDG_TERMINAL_EXEC_COMMIT=363db91851b5a83d67603556b2da690125ac05f4
 # https://github.com/dlundqvist/xone

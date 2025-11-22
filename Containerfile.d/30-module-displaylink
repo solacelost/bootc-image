@@ -4,10 +4,6 @@ FROM module-build as module-displaylink
 # Build DisplayLink and EVDI drivers/userspace pieces
 ################################################################################
 
-ARG DISPLAYLINK_PUBLISH_DIR
-ARG DISPLAYLINK_VERSION
-ARG EVDI_VERSION
-
 WORKDIR /build
 
 COPY overlays/module-displaylink/ /
@@ -15,9 +11,14 @@ RUN --mount=type=tmpfs,target=/var/cache \
   --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
   install.py -p module-displaylink
 
+ARG DISPLAYLINK_PUBLISH_DIR
+ARG DISPLAYLINK_VERSION
+
 RUN curl --retry-all-errors -Lo /tmp/displaylink.zip "https://www.synaptics.com/sites/default/files/exe_files/${DISPLAYLINK_PUBLISH_DIR}/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu${DISPLAYLINK_VERSION}-EXE.zip" && \
   unzip /tmp/displaylink.zip && \
   rm -f /tmp/displaylink.zip
+
+ARG EVDI_VERSION
 
 RUN curl --retry-all-errors -Lo- https://github.com/DisplayLink/evdi/archive/v${EVDI_VERSION}.tar.gz | tar xvz
 

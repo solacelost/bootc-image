@@ -4,9 +4,6 @@ FROM base as build-niri
 # Niri built from main
 ################################################################################
 
-ARG NIRI_REPO
-ARG NIRI_COMMIT
-
 COPY overlays/build-niri/ /
 RUN --mount=type=tmpfs,target=/var/cache \
   --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
@@ -14,22 +11,24 @@ RUN --mount=type=tmpfs,target=/var/cache \
 
 WORKDIR /build
 
-RUN git clone --depth 1 --revision ${NIRI_COMMIT} ${NIRI_REPO}
+ARG NIRI_REPO
+ARG NIRI_COMMIT
 
-WORKDIR /build/niri
+RUN git clone --depth 1 --revision ${NIRI_COMMIT} ${NIRI_REPO} .
+
 ENV HOME=/var/roothome
 
 RUN cargo build -r
 
 WORKDIR /built
 
-RUN install -Dm755 -t /built/usr/bin /build/niri/target/release/niri && \
-  install -Dm755 -t /built/usr/bin /build/niri/resources/niri-session && \
-  install -Dm644 -t /built/usr/share/wayland-sessions /build/niri/resources/niri.desktop && \
-  install -Dm644 -t /built/usr/share/xdg-desktop-portal /build/niri/resources/niri-portals.conf && \
-  install -Dm644 -t /built/usr/lib/systemd/user /build/niri/resources/niri.service && \
-  install -Dm644 -t /built/usr/lib/systemd/user /build/niri/resources/niri-shutdown.target && \
-  install -Dm644 -t /built/usr/share/licenses/niri /build/niri/LICENSE
+RUN install -Dm755 -t /built/usr/bin /build/target/release/niri && \
+  install -Dm755 -t /built/usr/bin /build/resources/niri-session && \
+  install -Dm644 -t /built/usr/share/wayland-sessions /build/resources/niri.desktop && \
+  install -Dm644 -t /built/usr/share/xdg-desktop-portal /build/resources/niri-portals.conf && \
+  install -Dm644 -t /built/usr/lib/systemd/user /build/resources/niri.service && \
+  install -Dm644 -t /built/usr/lib/systemd/user /build/resources/niri-shutdown.target && \
+  install -Dm644 -t /built/usr/share/licenses/niri /build/LICENSE
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
