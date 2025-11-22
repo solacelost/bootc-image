@@ -1,6 +1,6 @@
 packages:
-- buildah
-- podman
-- skopeo
-- toolbox
-- flatpak-spawn # especially useful since we use the container as a toolbox itself
+  - buildah
+  - flatpak-spawn # especially useful since we use the container as a toolbox itself
+  - podman
+  - skopeo
+  - toolbox

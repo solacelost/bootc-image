@@ -1,7 +1,7 @@
 packages:
-- gamemode
-- gamescope
-- mangohud
-- steam
-- wine-mono
-- lact
+  - gamemode
+  - gamescope
+  - lact
+  - mangohud
+  - steam
+  - wine-mono

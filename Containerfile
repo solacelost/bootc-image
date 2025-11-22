@@ -137,7 +137,6 @@ RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     install.py -p rpmbuild --setopt=fedora.exclude= --setopt=updates.exclude=
 
-
 ENV RPMBUILD_BASE_DIR=/build \
     SRC_DIR=/src \
     GPG_TTY=/dev/console \

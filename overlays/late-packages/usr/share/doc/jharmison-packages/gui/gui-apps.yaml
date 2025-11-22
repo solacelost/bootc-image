@@ -1,15 +1,15 @@
 packages:
-- alacritty
-- gnome-calculator
-- google-chrome-stable
-- gimp
-- zathura zathura-djvu zathura-pdf-mupdf zathura-ps zathura-bash-completion
-- nautilus
-- nautilus-extensions
-- nautilus-python
-- blueman-nautilus
-- file-roller-nautilus
-- sushi
-- nm-connection-editor-desktop
-- virt-manager
-- virt-viewer
+  - alacritty
+  - blueman-nautilus
+  - file-roller-nautilus
+  - gimp
+  - gnome-calculator
+  - google-chrome-stable
+  - nautilus
+  - nautilus-extensions
+  - nautilus-python
+  - nm-connection-editor-desktop
+  - sushi
+  - virt-manager
+  - virt-viewer
+  - zathura zathura-djvu zathura-pdf-mupdf zathura-ps zathura-bash-completion

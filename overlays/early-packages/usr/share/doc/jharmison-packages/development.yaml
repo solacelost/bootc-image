@@ -1,34 +1,34 @@
 packages:
-- ShellCheck
-- asciinema
-- autoconf
-- automake
-- cargo
-- cloc
-- cmake
-- fd-find
-- fzf
-- gcc-c++
-- git
-- git-lfs
-- golang
-- neovim
-- nodejs-npm
-- oniguruma
-- patch
-- uv
-- ripgrep
-- pigz
-- rocm-smi
-- amdsmi
-- nodejs-bash-language-server
-- rust-analyzer
-- rustfmt
-- gopls
-- rpm-spec-language-server
-- hadolint
-- tree-sitter-cli
-- python3-neovim
-- words
-- python3-requests
-- awscli2
+  - ShellCheck
+  - amdsmi
+  - asciinema
+  - autoconf
+  - automake
+  - awscli2
+  - cargo
+  - cloc
+  - cmake
+  - fd-find
+  - fzf
+  - gcc-c++
+  - git
+  - git-lfs
+  - golang
+  - gopls
+  - hadolint
+  - neovim
+  - nodejs-bash-language-server
+  - nodejs-npm
+  - oniguruma
+  - patch
+  - pigz
+  - python3-neovim
+  - python3-requests
+  - ripgrep
+  - rocm-smi
+  - rpm-spec-language-server
+  - rust-analyzer
+  - rustfmt
+  - tree-sitter-cli
+  - uv
+  - words

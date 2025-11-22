@@ -1,8 +1,8 @@
 packages:
-- qemu-kvm
-- libvirt-daemon
-- libvirt-client
-- libvirt-daemon-driver-network
-- libvirt-daemon-config-network
-- virt-install
-- guestfs-tools
+  - guestfs-tools
+  - libvirt-client
+  - libvirt-daemon
+  - libvirt-daemon-config-network
+  - libvirt-daemon-driver-network
+  - qemu-kvm
+  - virt-install

@@ -1,29 +1,16 @@
 packages:
-- bluez
-- bluez-tools
-- iproute
-- iproute-tc
-- iptables-utils
-- iptables-services
-- iptables-nft
-- net-tools
-- bind-utils
-- nftables
-- NetworkManager
-- NetworkManager-tui
-- NetworkManager-wifi
-- bridge-utils
-- firewalld
-- curl
-- fail2ban-firewalld
-- fail2ban-systemd
-- nmstate
-- hostname
-- openssl
-- openssh-clients
-- systemd-resolved
-- socat
-- wireguard-tools
-- wpa_supplicant
+  - NetworkManager-tui
+  - NetworkManager-wifi
+  - bluez
+  - bluez-tools
+  - bridge-utils
+  - fail2ban-firewalld
+  - fail2ban-systemd
+  - firewalld
+  - hostname
+  - nmstate
+  - systemd-resolved
+  - wireguard-tools
+  - wpa_supplicant
 exclude:
-- systemd-networkd
+  - systemd-networkd

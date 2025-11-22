@@ -1,5 +1,5 @@
 packages:
-  - niri
   - lsb_release
-  - xdg-desktop-portal-gtk
+  - niri
   - xdg-desktop-portal-gnome
+  - xdg-desktop-portal-gtk

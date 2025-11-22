@@ -1,13 +1,13 @@
 packages:
-- fuzzel
-- grim # still useful for more scriptable screenshots than niri
-- waybar
-- swayidle
-- swaylock
-- swaybg
-- mako
-- network-manager-applet
-- clipman
-- yad
-- wdisplays
-- gnome-settings-daemon
+  - clipman
+  - fuzzel
+  - gnome-settings-daemon
+  - grim # still useful for more scriptable screenshots than niri
+  - mako
+  - network-manager-applet
+  - swaybg
+  - swayidle
+  - swaylock
+  - waybar
+  - wdisplays
+  - yad

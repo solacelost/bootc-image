@@ -1,43 +1,30 @@
 packages:
-- age
-- btop
-- fastfetch
-- jq
-- light
-- lm_sensors
-- p7zip
-- pbzip2
-- tmux
-- pinentry
-- python3-policycoreutils
-- psutils
-- rclone
-- s3cmd
-- smartmontools
-- subscription-manager
-- vim-common
-- yt-dlp
-- nfs-utils
-- attr
-- bash-completion
-- less
-- vim-minimal
-- nvme-cli
-- lsof
-- yq
-- pciutils
-- rsync
-- iputils
-- upower
-- cpio
-- procps-ng
-- psmisc
-- tree
-- unzip
-- usbutils
-- which
-- zip
-- man
-- lorax
-- langpacks-en
-- glibc-langpack-en
+  - age
+  - btop
+  - fastfetch
+  - glibc-langpack-en
+  - jq
+  - langpacks-en
+  - light
+  - lm_sensors
+  - lorax
+  - man
+  - p7zip
+  - pbzip2
+  - pciutils
+  - psutils
+  - python3-policycoreutils
+  - rclone
+  - rsync
+  - s3cmd
+  - smartmontools
+  - subscription-manager
+  - tmux
+  - tree
+  - unzip
+  - upower
+  - usbutils
+  - vim-common
+  - yq
+  - yt-dlp
+  - zip

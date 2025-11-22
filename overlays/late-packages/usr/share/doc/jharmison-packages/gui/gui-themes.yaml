@@ -1,5 +1,5 @@
 packages:
-- candy-icon-theme
-- sound-theme-freedesktop
-- plymouth
-- plymouth-theme-spinner
+  - candy-icon-theme
+  - plymouth
+  - plymouth-theme-spinner
+  - sound-theme-freedesktop
