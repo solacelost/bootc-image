@@ -25,14 +25,13 @@ ARG DISPLAYLINK_VERSION=6.2
 ARG EVDI_VERSION=1.14.11
 # https://github.com/sentriz/cliphist
 ARG CLIPHIST_COMMIT=efb61cb5b5a28d896c05a24ac83b9c39c96575f2
-# https://github.com/YaLTeR/niri/pull/2312
-# https://github.com/scottmckendry/niri/tree/primary-render-fallback
-ARG NIRI_FORK_REPO=https://github.com/scottmckendry/niri
-ARG NIRI_FORK_COMMIT=04e89b5dc01983e9eebaa8911e846744d0d0f4d7
+# https://github.com/YaLTeR/niri
+ARG NIRI_REPO=https://github.com/YaLTeR/niri
+ARG NIRI_COMMIT=cfc01b895c0c7cbb9692852488675cc46693bd2a
 # https://github.com/vinceliuice/Orchis-theme
-ARG ORCHIS_COMMIT=d00dd33dde5a57eebfbc9b7e8488a535596bf125
+ARG ORCHIS_COMMIT=ff798aa9af2548d395ee95bbdab5fa54603c8588
 # https://github.com/Supreeeme/xwayland-satellite
-ARG XWAYLAND_SATELLITE_COMMIT=6338574bc5c036487486acde264f38f39ea15fad
+ARG XWAYLAND_SATELLITE_COMMIT=f379ff5722a821212eb59ada9cf8e51cb3654aad
 
 FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 
@@ -82,8 +81,8 @@ RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 
 FROM base as niri-build
 
-ARG NIRI_FORK_REPO
-ARG NIRI_FORK_COMMIT
+ARG NIRI_REPO
+ARG NIRI_COMMIT
 
 COPY overlays/niri-build/ /
 RUN --mount=type=tmpfs,target=/var/cache \
@@ -92,7 +91,7 @@ RUN --mount=type=tmpfs,target=/var/cache \
 
 WORKDIR /build
 
-RUN git clone --depth 1 --revision ${NIRI_FORK_COMMIT} ${NIRI_FORK_REPO}
+RUN git clone --depth 1 --revision ${NIRI_COMMIT} ${NIRI_REPO}
 
 WORKDIR /build/niri
 ENV HOME=/var/roothome
