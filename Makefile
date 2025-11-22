@@ -54,7 +54,7 @@ VERSION := $(shell printf "%s.%s.%s" $(FEDORA_VERSION) $(BUILD_DATE) $(BUILD_ID)
 .PHONY: all
 all: push
 
-tmp/Containerfile: Containerfile.in $(wildcard Containerfile.d/*)
+tmp/Containerfile: Containerfile.tpl $(wildcard Containerfile.d/*)
 	@hack/template-containerfile.awk $< > $@
 
 tmp/auth.json:

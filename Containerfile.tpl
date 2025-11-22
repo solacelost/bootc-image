@@ -1,5 +1,7 @@
 ARG FEDORA_VERSION=43
 
+# In order to build this Containerfile, use hack/template-containerfile.awk
+
 #include ./Containerfile.d/00-versions
 
 FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
@@ -46,3 +48,5 @@ COPY overlays/gui-niri/ /
 #include ./Containerfile.d/90-finalize
 
 RUN bootc container lint
+
+# vim: ft=dockerfile
