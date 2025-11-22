@@ -1,11 +1,11 @@
-NAME="Galaxy Brain OS"
+NAME="Fail Whale"
 VERSION="43 (Forty Three)"
-ID=galaxybrain
+ID=fail-whale
 ID_LIKE=fedora
 VERSION_ID=43
-PRETTY_NAME="Galaxy Brain OS 43 (Forty Three)"
+PRETTY_NAME="Fail Whale 43 (Forty Three)"
 ANSI_COLOR="38;5;54;48;5;55"
-LOGO=galaxy-logo-icon
+LOGO=fail-whale-icon
 HOME_URL="https://github.com/solacelost/bootc-image"
 SUPPORT_URL="https://github.com/solacelost/bootc-image"
 BUG_REPORT_URL="https://github.com/solacelost/bootc-image"
