@@ -54,6 +54,9 @@ VERSION := $(shell printf "%s.%s.%s" $(FEDORA_VERSION) $(BUILD_DATE) $(BUILD_ID)
 .PHONY: all
 all: push
 
+tmp/Containerfile: Containerfile.in $(wildcard Containerfile.d/*)
+	@hack/template-containerfile.awk $< > $@
+
 tmp/auth.json:
 	@echo Please put a valid auth.json for $(REGISTRY) to push $(IMAGE) in $@ >&2
 	@exit 1
@@ -61,7 +64,7 @@ tmp/auth.json:
 tmp/$(LATEST_DIGEST):
 	@touch $@
 
-.build-$(TAG)-unchunked: Containerfile tmp/$(LATEST_DIGEST) $(shell find overlays -type f -o -type l)
+.build-$(TAG)-unchunked: tmp/Containerfile tmp/$(LATEST_DIGEST) $(shell find overlays -type f -o -type l)
 	sudo $(RUNTIME) build \
 		--arch $(ARCH) \
 		--pull=newer \

@@ -1,0 +1,48 @@
+ARG FEDORA_VERSION=43
+
+#include ./Containerfile.d/00-versions
+
+FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
+
+#include ./Containerfile.d/10-base
+
+#include ./Containerfile.d/20-module-build
+#include ./Containerfile.d/20-rpm-build
+
+#include ./Containerfile.d/30-build-niri
+#include ./Containerfile.d/30-build-orchis
+#include ./Containerfile.d/30-build-xdg-terminal-exec
+#include ./Containerfile.d/30-build-xwayland-satellite
+
+#include ./Containerfile.d/30-module-displaylink
+#include "./Containerfile.d/30-module-v4l2loopback
+#include ./Containerfile.d/30-module-xone
+
+FROM base as final
+
+#include ./Containerfile.d/50-late-packages
+#include ./Containerfile.d/60-extra-package-manager-packages
+
+COPY --from=build-niri /built/ /
+COPY --from=build-orchis /built/ /
+COPY --from=build-xdg-terminal-exec /built/ /
+COPY --from=build-xwayland-satellite /built/ /
+
+COPY --from=module-displaylink /built/ /
+COPY --from=module-v4l2loopback /built/ /
+COPY --from=module-xone /built/ /
+
+COPY overlays/base/ /
+COPY overlays/redhat/ /
+COPY overlays/gui-apps/ /
+COPY overlays/gui-games/ /
+COPY overlays/gui-system/ /
+COPY overlays/gui-tiling/ /
+COPY overlays/gui-niri/ /
+
+#include ./Containerfile.d/70-gui-tweaks
+#include ./Containerfile.d/80-final-config
+
+#include ./Containerfile.d/90-finalize
+
+RUN bootc container lint

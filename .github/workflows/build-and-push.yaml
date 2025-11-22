@@ -31,10 +31,12 @@ jobs:
       - id: makefile
         shell: bash
         run: |
+          make tmp/Containerfile
           echo "version=$(make print-version)" >> $GITHUB_OUTPUT
 
       - uses: jharmison-redhat/action-bootc-build@main
         with:
+          file: tmp/Containerfile
           labels: |
             dev.jharmison.git-repository=${{ github.server_url }}/${{ github.repository }}
             dev.jharmison.commit=${{ github.sha }}

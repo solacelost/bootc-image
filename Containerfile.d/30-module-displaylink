@@ -1,0 +1,42 @@
+FROM module-build as module-displaylink
+
+################################################################################
+# Build DisplayLink and EVDI drivers/userspace pieces
+################################################################################
+
+ARG DISPLAYLINK_PUBLISH_DIR
+ARG DISPLAYLINK_VERSION
+ARG EVDI_VERSION
+
+WORKDIR /build
+
+COPY overlays/module-displaylink/ /
+RUN --mount=type=tmpfs,target=/var/cache \
+  --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+  install.py -p module-displaylink
+
+RUN curl --retry-all-errors -Lo /tmp/displaylink.zip "https://www.synaptics.com/sites/default/files/exe_files/${DISPLAYLINK_PUBLISH_DIR}/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu${DISPLAYLINK_VERSION}-EXE.zip" && \
+  unzip /tmp/displaylink.zip && \
+  rm -f /tmp/displaylink.zip
+
+RUN curl --retry-all-errors -Lo- https://github.com/DisplayLink/evdi/archive/v${EVDI_VERSION}.tar.gz | tar xvz
+
+RUN moddir="$(cat /moddir)" && \
+  chmod +x displaylink-driver-*.run && \
+  ./displaylink-driver-*.run --noexec --keep --target displaylink-driver-${DISPLAYLINK_VERSION} && \
+  mkdir -p /built/usr/libexec/displaylink && \
+  mv displaylink-driver-${DISPLAYLINK_VERSION}/x64-ubuntu-1604/DisplayLinkManager /built/usr/libexec/displaylink/ && \
+  mv displaylink-driver-${DISPLAYLINK_VERSION}/{ella-dock,firefly-monitor,navarro-dock,ridge-dock}-release.spkg /built/usr/libexec/displaylink/ && \
+  cd evdi-${EVDI_VERSION}/library && \
+  make && \
+  mv libevdi.so.${EVDI_VERSION} /built/usr/libexec/displaylink/ && \
+  ln -s /usr/libexec/displaylink/libevdi.so.${EVDI_VERSION} /built/usr/libexec/displaylink/libevdi.so && \
+  ln -s /usr/libexec/displaylink/libevdi.so.${EVDI_VERSION} /built/usr/libexec/displaylink/libevdi.so.1 && \
+  cd ../module && \
+  make V=1 -C "$moddir/build" "M=${PWD}" && \
+  mkdir -p "/built$moddir/extra/evdi" && \
+  mv evdi.ko "/built$moddir/extra/evdi"
+
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
+
+# vim: ft=dockerfile

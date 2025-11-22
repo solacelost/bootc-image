@@ -1,0 +1,29 @@
+FROM base as build-xwayland-satellite
+
+################################################################################
+# xwayland-satellite built from main
+################################################################################
+
+ARG XWAYLAND_SATELLITE_COMMIT
+
+COPY overlays/build-xwayland-satellite/ /
+RUN --mount=type=tmpfs,target=/var/cache \
+  --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+  install.py -p build-xwayland-satellite
+
+WORKDIR /build
+
+RUN git clone --depth 1 --revision ${XWAYLAND_SATELLITE_COMMIT} https://github.com/Supreeeme/xwayland-satellite
+
+WORKDIR /build/xwayland-satellite
+ENV HOME=/var/roothome
+
+RUN cargo build -r -F systemd
+
+WORKDIR /built
+
+RUN install -Dpm0755 -t /built/usr/bin /build/xwayland-satellite/target/release/xwayland-satellite
+
+RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
+
+# vim: ft=dockerfile

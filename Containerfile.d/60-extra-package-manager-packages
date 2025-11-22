@@ -1,0 +1,17 @@
+ARG PROTONUP_COMMIT
+ARG NAUTILUS_OPEN_ANY_TERMINAL_VERSION
+ARG CLIPHIST_COMMIT
+
+# Install python packages directly into system
+RUN uv pip install --no-cache --system \
+  git+https://github.com/AUNaseef/protonup.git@${PROTONUP_COMMIT} \
+  nautilus-open-any-terminal==${NAUTILUS_OPEN_ANY_TERMINAL_VERSION}
+
+# Install cliphist from go release
+RUN mkdir -p /tmp/go/{cache,bin} && \
+  GOPATH=/tmp/go GOCACHE=/tmp/go/.cache go install go.senan.xyz/cliphist@${CLIPHIST_COMMIT} && \
+  mv /tmp/go/bin/cliphist /usr/local/bin/ && \
+  curl -Lo /usr/local/bin/cliphist-fuzzel-img https://raw.githubusercontent.com/sentriz/cliphist/${CLIPHIST_COMMIT}/contrib/cliphist-fuzzel-img && \
+  chmod +x /usr/local/bin/cliphist-fuzzel-img
+
+# vim: ft=dockerfile
