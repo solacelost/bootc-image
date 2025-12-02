@@ -1,0 +1,9 @@
+packages:
+  - alsa-sof-firmware
+  - atmel-firmware
+  - iwlegacy-firmware
+  - iwlwifi-dvm-firmware
+  - iwlwifi-mld-firmware
+  - iwlwifi-mvm-firmware
+  - libertas-firmware
+  - zd1211-firmware
