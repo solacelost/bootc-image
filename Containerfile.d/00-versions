@@ -1,7 +1,7 @@
 # https://github.com/Vladimir-csp/xdg-terminal-exec
 ARG XDG_TERMINAL_EXEC_COMMIT=363db91851b5a83d67603556b2da690125ac05f4
 # https://github.com/dlundqvist/xone
-ARG XONE_COMMIT=90d965254e534151202e79f768bf7a68ea9f9d4f
+ARG XONE_COMMIT=e927febbedbf8d6f040ff081b0c6703738e7e8d2
 # https://github.com/v4l2loopback/v4l2loopback
 ARG V4L2LOOPBACK_VERSION=0.15.3
 # https://github.com/derailed/k9s
@@ -27,6 +27,6 @@ ARG NIRI_COMMIT=f874b2fce50e0f7ba21e270c86cfa168a1506b82
 # https://github.com/vinceliuice/Orchis-theme
 ARG ORCHIS_COMMIT=ff798aa9af2548d395ee95bbdab5fa54603c8588
 # https://github.com/Supreeeme/xwayland-satellite
-ARG XWAYLAND_SATELLITE_COMMIT=6a5150c45c77c16ae4d79a8847a1cc1b2f26cc5c
+ARG XWAYLAND_SATELLITE_COMMIT=9a71e77b1e06dbad4a472265e59b52ac83cbe00c
 
 # vim: ft=dockerfile
