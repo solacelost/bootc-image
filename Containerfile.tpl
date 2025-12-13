@@ -11,7 +11,6 @@ FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 #include ./Containerfile.d/20-module-build
 #include ./Containerfile.d/20-rpm-build
 
-#include ./Containerfile.d/30-build-niri
 #include ./Containerfile.d/30-build-orchis
 #include ./Containerfile.d/30-build-xdg-terminal-exec
 #include ./Containerfile.d/30-build-xwayland-satellite
@@ -25,7 +24,6 @@ FROM base as final
 #include ./Containerfile.d/50-late-packages
 #include ./Containerfile.d/60-extra-package-manager-packages
 
-COPY --from=build-niri /built/ /
 COPY --from=build-orchis /built/ /
 COPY --from=build-xdg-terminal-exec /built/ /
 COPY --from=build-xwayland-satellite /built/ /

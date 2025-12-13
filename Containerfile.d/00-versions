@@ -21,9 +21,6 @@ ARG DISPLAYLINK_VERSION=6.2
 ARG EVDI_VERSION=1.14.11
 # https://github.com/sentriz/cliphist
 ARG CLIPHIST_COMMIT=efb61cb5b5a28d896c05a24ac83b9c39c96575f2
-# https://github.com/YaLTeR/niri
-ARG NIRI_REPO=https://github.com/YaLTeR/niri
-ARG NIRI_COMMIT=f874b2fce50e0f7ba21e270c86cfa168a1506b82
 # https://github.com/vinceliuice/Orchis-theme
 ARG ORCHIS_COMMIT=ff798aa9af2548d395ee95bbdab5fa54603c8588
 # https://github.com/Supreeeme/xwayland-satellite
