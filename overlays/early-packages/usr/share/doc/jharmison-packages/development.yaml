@@ -21,6 +21,7 @@ packages:
   - nodejs-npm
   - oniguruma
   - patch
+  - perf
   - pigz
   - python3-neovim
   - python3-requests
