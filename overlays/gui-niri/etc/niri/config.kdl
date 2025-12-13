@@ -77,6 +77,7 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     Mod+Return cooldown-ms=500 hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
+    Mod+Ctrl+Return cooldown-ms=500 hotkey-overlay-title="Open a terminal to the same location: alacritty" { spawn-sh "exec alacritty --working-directory $(bash -c \"echo $(niri msg --json windows | jq -r '.[] | select(.app_id = \"Alacritty\") | select(.is_focused) | .title' | cut -d: -f2-)\")"; }
     Mod+D repeat=false hotkey-overlay-title="Run an program: fuzzel" { spawn "fuzzel"; }
     Super+Alt+L repeat=false hotkey-overlay-title="Lock the Screen: swaylock" { spawn "lock"; }
 
