@@ -20,7 +20,7 @@ while (($# > 0)); do
 	shift
 done
 
-if [ "$(playerctl status)" = "Playing" ]; then
+if [ "$(playerctl status)" = "Playing" ] && wpctl status | grep -qF spotify; then
 	playerctl pause
 fi
 
