@@ -1,0 +1,8 @@
+_bootc_status_flag="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/bootc-status-shown"
+if ! [ -e "$_bootc_status_flag" ]; then
+    fastfetch
+    echo
+    pkexec bootc status
+    touch "$_bootc_status_flag"
+fi
+unset _bootc_status_flag
