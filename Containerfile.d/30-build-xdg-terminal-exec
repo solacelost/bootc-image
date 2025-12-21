@@ -8,6 +8,7 @@ ARG XDG_TERMINAL_EXEC_COMMIT
 
 WORKDIR /build
 
+COPY overlays/build-xdg-terminal-exec/ /
 RUN --mount=type=tmpfs,target=/var/cache \
     --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
     dnf -y install scdoc
