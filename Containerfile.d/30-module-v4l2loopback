@@ -6,20 +6,20 @@ FROM module-build as module-v4l2loopback
 
 COPY overlays/module-v4l2loopback/ /
 RUN --mount=type=tmpfs,target=/var/cache \
-  --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-  install.py -p module-v4l2loopback
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    install.py -p module-v4l2loopback
 
 ARG V4L2LOOPBACK_VERSION
 
 RUN curl --retry 10 --retry-all-errors -Lo- \
-  "https://github.com/v4l2loopback/v4l2loopback/archive/v${V4L2LOOPBACK_VERSION}/v4l2loopback-${V4L2LOOPBACK_VERSION}.tar.gz" | \
-  tar xvz --strip-components=1 && \
-  make V=1 install-utils DESTDIR=/built PREFIX=/usr && \
-  make V=1 install-man DESTDIR=/built PREFIX=/usr && \
-  moddir="$(cat /moddir)" && \
-  make V=1 -C "$moddir/build" "M=${PWD}" && \
-  mkdir -p "/built$moddir/extra/v4l2loopback" && \
-  cp -r v4l2loopback.ko "/built$moddir/extra/v4l2loopback/"
+    "https://github.com/v4l2loopback/v4l2loopback/archive/v${V4L2LOOPBACK_VERSION}/v4l2loopback-${V4L2LOOPBACK_VERSION}.tar.gz" | \
+    tar xvz --strip-components=1 && \
+    make V=1 install-utils DESTDIR=/built PREFIX=/usr && \
+    make V=1 install-man DESTDIR=/built PREFIX=/usr && \
+    moddir="$(cat /moddir)" && \
+    make V=1 -C "$moddir/build" "M=${PWD}" && \
+    mkdir -p "/built$moddir/extra/v4l2loopback" && \
+    cp -r v4l2loopback.ko "/built$moddir/extra/v4l2loopback/"
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 

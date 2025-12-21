@@ -6,8 +6,8 @@ FROM base as build-orchis
 
 COPY overlays/build-orchis/ /
 RUN --mount=type=tmpfs,target=/var/cache \
-  --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-  install.py -p build-orchis
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    install.py -p build-orchis
 
 WORKDIR /build
 
@@ -16,10 +16,10 @@ ARG ORCHIS_COMMIT
 RUN git clone --depth 1 --revision ${ORCHIS_COMMIT} https://github.com/vinceliuice/Orchis-theme .
 
 RUN mkdir -p /built/usr/share/themes /built/usr/local/home/.config/gtk-4.0 && \
-  ./install.sh -d /built/usr/share/themes && \
-  for themefile in assets gtk.css gtk-dark.css; do \
-  ln -sf /usr/share/themes/Orchis-Dark-Compact/gtk-4.0/$themefile /built/usr/local/home/.config/gtk-4.0/$themefile ; \
-  done
+    ./install.sh -d /built/usr/share/themes && \
+    for themefile in assets gtk.css gtk-dark.css; do \
+    ln -sf /usr/share/themes/Orchis-Dark-Compact/gtk-4.0/$themefile /built/usr/local/home/.config/gtk-4.0/$themefile ; \
+    done
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 

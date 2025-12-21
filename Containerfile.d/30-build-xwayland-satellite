@@ -8,8 +8,8 @@ ARG XWAYLAND_SATELLITE_COMMIT
 
 COPY overlays/build-xwayland-satellite/ /
 RUN --mount=type=tmpfs,target=/var/cache \
-  --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-  install.py -p build-xwayland-satellite
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    install.py -p build-xwayland-satellite
 
 WORKDIR /build
 

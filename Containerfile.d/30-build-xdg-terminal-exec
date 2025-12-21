@@ -9,13 +9,13 @@ ARG XDG_TERMINAL_EXEC_COMMIT
 WORKDIR /build
 
 RUN --mount=type=tmpfs,target=/var/cache \
-  --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-  dnf -y install scdoc
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install scdoc
 
 RUN curl --retry 10 --retry-all-errors -Lo- \
-  "https://github.com/Vladimir-csp/xdg-terminal-exec/archive/${XDG_TERMINAL_EXEC_COMMIT}.tar.gz" | \
-  tar xvz --strip-components=1 && \
-  make install prefix=/built/usr/local
+    "https://github.com/Vladimir-csp/xdg-terminal-exec/archive/${XDG_TERMINAL_EXEC_COMMIT}.tar.gz" | \
+    tar xvz --strip-components=1 && \
+    make install prefix=/built/usr/local
 
 RUN find /built -exec touch -d 1970-01-01T00:00:00Z {} \;
 

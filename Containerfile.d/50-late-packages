@@ -1,17 +1,17 @@
 # Install defined packages for the higher targets (GUI etc.)
 COPY overlays/late-packages/ /
 RUN --mount=type=tmpfs,target=/var/cache \
-  --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-  install.py -d /usr/share/doc/jharmison-packages/gui
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    install.py -d /usr/share/doc/jharmison-packages/gui
 
 ARG K9S_VERSION
 ARG SOPS_VERSION
 
 # Install RPMs from GitHub releases
 RUN --mount=type=tmpfs,target=/var/cache \
-  --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
-  dnf -y install \
-  https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_linux_amd64.rpm \
-  https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-${SOPS_VERSION}-1.x86_64.rpm
+    --mount=type=cache,id=dnf-cache,target=/var/cache/libdnf5 \
+    dnf -y install \
+    https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_linux_amd64.rpm \
+    https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-${SOPS_VERSION}-1.x86_64.rpm
 
 # vim: ft=dockerfile

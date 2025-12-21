@@ -5,9 +5,9 @@ ARG NERD_FONTS_VERSION
 
 # Download and enable font
 RUN mkdir -p /usr/share/fonts/inconsolata && \
-  curl --retry 10 --retry-all-errors -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v${NERD_FONTS_VERSION}/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
-  chown -R root:root /usr/share/fonts/inconsolata && \
-  fc-cache -f -v
+    curl --retry 10 --retry-all-errors -Lo- https://github.com/ryanoasis/nerd-fonts/releases/download/v${NERD_FONTS_VERSION}/Inconsolata.tar.xz | tar xvJ -C /usr/share/fonts/inconsolata && \
+    chown -R root:root /usr/share/fonts/inconsolata && \
+    fc-cache -f -v
 
 # Set boot animation theme
 RUN plymouth-set-default-theme spinner
