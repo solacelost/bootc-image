@@ -1,7 +1,7 @@
 # https://github.com/Vladimir-csp/xdg-terminal-exec
 ARG XDG_TERMINAL_EXEC_COMMIT=aeb3ef9360eda035b80e44baa2e74fb46fc691e3
 # https://github.com/dlundqvist/xone
-ARG XONE_COMMIT=e927febbedbf8d6f040ff081b0c6703738e7e8d2
+ARG XONE_COMMIT=17d9b6a8939085d6e13b8c3ad684d28ca3166a02
 # https://github.com/v4l2loopback/v4l2loopback
 ARG V4L2LOOPBACK_VERSION=0.15.3
 # https://github.com/derailed/k9s
