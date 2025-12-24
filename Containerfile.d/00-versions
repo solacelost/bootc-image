@@ -23,7 +23,5 @@ ARG EVDI_VERSION=1.14.11
 ARG CLIPHIST_COMMIT=efb61cb5b5a28d896c05a24ac83b9c39c96575f2
 # https://github.com/vinceliuice/Orchis-theme
 ARG ORCHIS_COMMIT=ff798aa9af2548d395ee95bbdab5fa54603c8588
-# https://github.com/Supreeeme/xwayland-satellite
-ARG XWAYLAND_SATELLITE_COMMIT=9a71e77b1e06dbad4a472265e59b52ac83cbe00c # this is v0.8 tag
 
 # vim: ft=dockerfile

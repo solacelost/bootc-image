@@ -3,3 +3,7 @@ packages:
   - niri
   - xdg-desktop-portal-gnome
   - xdg-desktop-portal-gtk
+  - xwayland-satellite
+
+args:
+  - --enablerepo=updates-testing

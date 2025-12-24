@@ -13,7 +13,6 @@ FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 
 #include ./Containerfile.d/30-build-orchis
 #include ./Containerfile.d/30-build-xdg-terminal-exec
-#include ./Containerfile.d/30-build-xwayland-satellite
 
 #include ./Containerfile.d/30-module-displaylink
 #include ./Containerfile.d/30-module-v4l2loopback
@@ -26,7 +25,6 @@ FROM base as final
 
 COPY --from=build-orchis /built/ /
 COPY --from=build-xdg-terminal-exec /built/ /
-COPY --from=build-xwayland-satellite /built/ /
 
 COPY --from=module-displaylink /built/ /
 COPY --from=module-v4l2loopback /built/ /

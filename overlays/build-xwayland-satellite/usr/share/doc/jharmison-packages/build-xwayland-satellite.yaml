@@ -1,8 +1,0 @@
-packages:
-  - clang
-  - gcc
-  - glibc-devel
-  - pkgconfig(wayland-client)
-  - pkgconfig(wayland-cursor)
-  - pkgconfig(wayland-server)
-  - pkgconfig(xcb-cursor)
