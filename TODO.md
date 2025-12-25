@@ -1,11 +1,10 @@
 - [x] Multi-disk handling
 - [x] Home as a partition
 - [x] Flatpak handling
-- [ ] Pipeline definition for OKD
 - [ ] Implement a decent Shikane setup
-- [ ] Encrypt /var partition by default
+- [x] Encrypt /var partition by default
 - [ ] Enable fprintd to detect fingerprint reader and prompt to set if unset
 - [ ] Investigate RaySession?
 - [x] Re-implement DSLR webcam setup
 - [x] Red Hat VPN and certificates
-- [ ] Find a universal way to cache intermediate build stages in Containerfile (e.g. cargo build cache)
+- [ ] Find a better public CI / build system than GHA
