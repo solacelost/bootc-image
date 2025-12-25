@@ -1,9 +1,9 @@
 [Unit]
 PartOf=graphical-session.target
 After=graphical-session.target mako.service
-Requisite=graphical-session.target
-Requires=mako.service
+Requisite=graphical-session.target mako.service
 
 [Service]
 Type=oneshot
+ExecStartPre=/usr/bin/nm-online -s -q -t 180
 ExecStart=/usr/local/bin/neversink-update.sh

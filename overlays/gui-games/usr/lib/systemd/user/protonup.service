@@ -6,4 +6,5 @@ Requisite=graphical-session.target
 
 [Service]
 Type=oneshot
+ExecStartPre=/usr/bin/nm-online -s -q -t 180
 ExecStart=/usr/local/bin/protonup -y
