@@ -1,3 +1,12 @@
 COPY overlays/game-path-of-exile-2/ /
+RUN awk -i inplace '\
+    /^binds/ {INSERT=1};\
+    /^}/ && INSERT {\
+    print "";\
+    print "    // Launch PoE2 Sidekick price checker";\
+    print "    Ctrl+Shift+D repeat=false hotkey-overlay-title=\"Price Check\" { spawn \"/usr/local/bin/pricecheck.sh\"; }";\
+    INSERT=0\
+    };\
+    {print}' /etc/niri/config.kdl
 
 # vim: ft=dockerfile
