@@ -1,4 +1,5 @@
 [Unit]
+Description=Enable swayidle to lock the screen
 PartOf=graphical-session.target
 After=graphical-session.target
 Requisite=graphical-session.target

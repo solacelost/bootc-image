@@ -1,0 +1,9 @@
+[Unit]
+Description=Update Proton-GE on session start
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/protonup -y
