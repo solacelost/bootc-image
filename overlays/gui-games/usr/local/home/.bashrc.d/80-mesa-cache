@@ -1,5 +1,7 @@
 if [ -z "$HOME" ]; then
-	if [ -d "/var/home/$USER" ]; then
+  if [ -z "$USER" ]; then
+    export HOME="$(getent passwd "$(id -r -u)" | cut -d: -f6)"
+	elif [ -d "/var/home/$USER" ]; then
 		export HOME="/var/home/$USER"
 	elif [ -d "/home/$USER" ]; then
 		export HOME="/home/$USER"
