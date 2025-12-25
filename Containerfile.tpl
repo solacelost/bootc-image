@@ -45,6 +45,9 @@ COPY overlays/gui-niri/ /
 
 #include ./Containerfile.d/90-finalize
 
+ENTRYPOINT []
+CMD []
+
 RUN bootc container lint
 
 # vim: ft=dockerfile
