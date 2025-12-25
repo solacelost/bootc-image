@@ -1,0 +1,6 @@
+[Unit]
+Description=Path of Exile 2 Sidekick Web Image
+
+[Build]
+SetWorkingDirectory=/etc/containers/systemd/users/poe2-sidekick
+ImageTag=localhost/poe2-sidekick:latest

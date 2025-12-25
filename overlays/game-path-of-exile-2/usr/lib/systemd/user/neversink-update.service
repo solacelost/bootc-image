@@ -1,0 +1,9 @@
+[Unit]
+PartOf=graphical-session.target
+After=graphical-session.target mako.service
+Requisite=graphical-session.target
+Requires=mako.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/neversink-update.sh

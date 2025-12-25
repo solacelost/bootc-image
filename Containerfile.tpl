@@ -41,6 +41,8 @@ COPY overlays/gui-niri/ /
 #include ./Containerfile.d/70-gui-tweaks
 #include ./Containerfile.d/80-final-config
 
+#include ./Containerfile.d/89-games
+
 #include ./Containerfile.d/90-finalize
 
 RUN bootc container lint

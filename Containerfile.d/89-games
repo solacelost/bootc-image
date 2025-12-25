@@ -1,0 +1,3 @@
+COPY overlays/game-path-of-exile-2/ /
+
+# vim: ft=dockerfile

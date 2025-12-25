@@ -1,0 +1,4 @@
+[Volume]
+VolumeName=sidekick-data
+User=1001
+Group=1001

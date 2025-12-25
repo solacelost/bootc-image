@@ -1,0 +1,11 @@
+[Unit]
+Description=Path of Exile 2 Sidekick Web
+
+[Container]
+Image=poe2-sidekick.build
+ContainerName=sidekick
+Volume=poe2-sidekick.volume:/app/Sidekick/src/Sidekick.Web/sidekick
+PublishPort=5000:5000/tcp
+
+[Install]
+WantedBy=default.target

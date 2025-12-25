@@ -1,0 +1,41 @@
+FROM registry.fedoraproject.org/fedora:43
+
+RUN dnf -y install npm nodejs dotnet-sdk-8.0 git && \
+    dnf -y clean all
+
+ENV HOME=/app
+WORKDIR /app
+
+RUN dnf -y install \
+    python3-pip \
+    libicu \
+    libjpeg-turbo \
+    libwebp \
+    flite \
+    pcre \
+    libffi \
+    gtk4 \
+    webkitgtk6.0 && \
+    dnf -y clean all && \
+    python3 -m pip install --no-cache-dir playwright && \
+    playwright install chromium && \
+    chown -R 1001:0 /app
+
+USER 1001
+
+ARG REF=main
+
+RUN git clone --depth 1 --revision ${REF} https://github.com/Sidekick-Poe/Sidekick.git
+
+WORKDIR /app/Sidekick
+
+RUN sed -i '/Sidekick.Wpf/,+1d' Sidekick.sln && \
+    dotnet build --configuration Release
+
+COPY overlay/ /
+
+WORKDIR /app/Sidekick/src/Sidekick.Web
+VOLUME /app/Sidekick/src/Sidekick.Web/sidekick
+EXPOSE 5000
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD []
