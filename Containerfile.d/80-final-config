@@ -3,6 +3,7 @@ ARG IMAGE_REF=quay.io/solacelost/bootc-image:latest
 # Enable fingerprint if enrolled on system
 RUN authselect enable-feature with-fingerprint
 # Enable toolbox to refer to bootc image itself
+LABEL com.github.containers.toolbox=true
 RUN echo "image = \"${IMAGE_REF}\"" >> /etc/containers/toolbox.conf
 
 # vim: ft=dockerfile
